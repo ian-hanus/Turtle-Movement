@@ -15,17 +15,11 @@ public interface CommandHistory {
      * @param index is an integer representing how many commands ago the desired command was entered
      * @return the String of the desired command
      */
-    static public String getHistory(int index){
-        List<String> history = new ArrayList<String>();
-        return history.get(index);
-    }
+    String getHistory(int index);
 
     /**
      * Add the new command to the history
      * @param newCommand is the string form of the command that was entered in the terminal
      */
-    static public void addHistory(String newCommand){
-        List<String> history = new ArrayList<String>();
-        history.add(newCommand);
-    }
+    void addHistory(String newCommand);
 }
