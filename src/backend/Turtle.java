@@ -11,14 +11,14 @@ public interface Turtle {
      *
      * @return the x-coordinate
      */
-    int getX();
+    double getX();
 
     /**
      * Gets the y-coordinate of the turtle
      *
      * @return the y-coordinate
      */
-    int getY();
+    double getY();
 
     /**
      * Determines whether the pen was down or up for the turtle's most recent move
@@ -32,7 +32,7 @@ public interface Turtle {
      *
      * @return the angle, in degrees, of the turtle's heading
      */
-    int getOrientation();
+    double getOrientation();
 
     /**
      * Determines whether the turtle should be visible or not
@@ -40,4 +40,11 @@ public interface Turtle {
      * @return true if the turtle is visible, false otherwise
      */
     boolean getVisibility();
+
+    /**
+     * Determines whether the turtle is resetting or not
+     *
+     * @return true if the turtle has just reset, false otherwise
+     */
+    boolean isReset();
 }

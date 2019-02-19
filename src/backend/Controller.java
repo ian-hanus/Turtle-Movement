@@ -17,7 +17,7 @@ public interface Controller {
      * @param commands the string representing the commands passed from the frontend
      * @return the results of the commands
      */
-    Queue<Object> runCommands(String commands);
+    Queue<Turtle> runCommands(String commands);
 
     /**
      * Uses the Parser class to parse the string representing the current commands. Will be private.
