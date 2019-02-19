@@ -39,8 +39,6 @@ public interface Config {
      * Set the language that will be coded into to translate the commands
      * @param s is the string representing the language
      */
-    default public void setLanguage(String s){
-        this.setLanguage(s);
-    }
+    void setLanguage(String s);
 
 }
