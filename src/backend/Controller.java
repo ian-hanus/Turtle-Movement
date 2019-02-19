@@ -12,16 +12,18 @@ import java.util.Queue;
 public interface Controller {
 
     /**
-     * Uses the Parser class to parse the string representing the current commands. Will be private.
-     *
-     * @return the list of Expression objects that correspond to the commands
-     */
-    List<Expression> parseCommands();
-
-    /**
      * Evaluates each of the expressions that represent the parsed commands
-     * @param expressions the list of Expression objects that represent the commands
+     *
+     * @param commands the string representing the commands passed from the frontend
      * @return the results of the commands
      */
-    Queue<Object> runCommands(List<Expression> expressions);
+    Queue<Object> runCommands(String commands);
+
+    /**
+     * Uses the Parser class to parse the string representing the current commands. Will be private.
+     *
+     * @param commands the string representing the commands passed from the frontend
+     * @return the list of Expression objects that correspond to the commands
+     */
+    List<Expression> parseCommands(String commands);
 }
