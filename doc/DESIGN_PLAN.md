@@ -31,7 +31,7 @@ Within the frontend, there are various pairs and sets of components that will ne
 The most important part of the internal API of the frontend will require the canvas to be updated after a program is run (and a list of TurtleStates is acquired from the backend). This will take into account the current state of the configuration and draw lines accordingly.
 
 ### Picture of Components Relation
-
+![SLogoUML](https://i.imgur.com/pe0zEC7.png)
 
 
 ## User Interface
