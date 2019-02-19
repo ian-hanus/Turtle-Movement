@@ -13,8 +13,8 @@ public interface CommandHistory {
      * @param index is an integer representing how many commands ago the desired command was entered
      * @return the String of the desired command
      */
-    static public String getHistory(int index){
-        List<String> history = new ArrayList<String>();
+    static public Command getHistory(int index){
+        List<Command> history = new ArrayList<Command>();
         return history.get(index);
     }
 
