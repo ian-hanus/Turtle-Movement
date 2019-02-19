@@ -1,3 +1,5 @@
+package frontend;
+
 import javafx.scene.paint.Color;
 
 /**

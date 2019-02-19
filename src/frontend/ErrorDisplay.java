@@ -1,3 +1,5 @@
+package frontend;
+
 /**
  * Display an error in a command that the user entered with the desired string
  */

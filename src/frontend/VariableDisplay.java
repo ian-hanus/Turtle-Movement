@@ -1,3 +1,5 @@
+package frontend;
+
 public interface VariableDisplay {
     default public void addVariable(Variable v){
     }
