@@ -36,17 +36,17 @@
 ## Internal APIs:
 ### backend:
      Subroutine 
-     Variable
+     frontend.Variable
      Expression
      Turtle
 
 ### Front End:
      View
      Display 
-     Terminal
-     Config
+     frontend.Terminal
+     frontend.Config
      Drawing
-     Variable Display
+     frontend.Variable Display
      Error Display
 
 # Use Cases:
