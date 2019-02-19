@@ -14,12 +14,14 @@ public interface Controller {
     /**
      * Uses the Parser class to parse the string representing the current commands. Will be private.
      *
+     * @param commands the string representing the commands passed from the frontend
      * @return the list of Expression objects that correspond to the commands
      */
-    List<Expression> parseCommands();
+    List<Expression> parseCommands(String commands);
 
     /**
      * Evaluates each of the expressions that represent the parsed commands
+     *
      * @param expressions the list of Expression objects that represent the commands
      * @return the results of the commands
      */
