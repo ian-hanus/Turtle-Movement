@@ -3,12 +3,14 @@ package frontend;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.control.TextArea;
+
+
+import java.awt.*;
 
 public class View {
     private Scene myScene;
@@ -17,18 +19,17 @@ public class View {
     private HBox myTitlePane;
     private VBox myHistory;
 
-
-    private final int HEIGHT = 600;
-    private final int WIDTH = 900;
+    private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
     public View() {
         myTitlePane = new HBox();
         myBorderPane = new BorderPane();
-        myScene = new Scene(myBorderPane, WIDTH, HEIGHT);
+        myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
         myRightPane = new GridPane();
         myBorderPane.setTop(myTitlePane);
+        myRightPane.setAlignment(Pos.TOP_LEFT);
         myBorderPane.setRight(myRightPane);
         myBorderPane.setBottom(drawTerminal());
         myBorderPane.setCenter(drawCanvas());
@@ -46,21 +47,19 @@ public class View {
     private Node drawCanvas(){
         HBox canvas = new HBox();
         canvas.getStyleClass().add("canvas");
-        canvas.getChildren().add(new Text("Canvas"));
-        canvas.setMaxHeight(450);
+        canvas.getChildren().add(new Label("Canvas"));
         canvas.setTranslateY(-2);
-        canvas.setMaxWidth(640);
         canvas.setTranslateX(8);
         return canvas;
     }
 
     private Node drawTerminal(){
-        HBox terminal = new HBox();
+        FlowPane terminal = new FlowPane();
         terminal.getStyleClass().add("box-bot");
-        terminal.getChildren().add(new Text("Terminal"));
         terminal.setMaxWidth(880);
         terminal.setTranslateX(10);
         terminal.setTranslateY(-10);
+        terminal.getChildren().add(new TextArea());
         return terminal;
     }
 
@@ -85,9 +84,8 @@ public class View {
     private VBox drawRightBox(String title){
         VBox rightBox = new VBox();
         rightBox.getStyleClass().add("box-right");
-        Text text = new Text(title);
-        rightBox.getChildren().add(text);
-        rightBox.setAlignment(Pos.TOP_LEFT);
+        Label label = new Label(title);
+        rightBox.getChildren().add(label);
         return rightBox;
     }
 
