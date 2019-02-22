@@ -33,7 +33,7 @@
     -fx-border-color: rgb(0,50,0);
     -fx-min-height: 140;
     -fx-max-height: 140;
-    -fx-translate-y: 0;
+    -fx-translate-y: -10;
 }
 
 .text-area{
@@ -43,9 +43,16 @@
     -fx-spacing: 2;
     -fx-max-width: 875;
     -fx-min-width: 875;
-    -fx-min-height: 120;
-    -fx-max-height: 120;
-    -fx-alignment: baseline-left;
+    -fx-min-height: 100;
+    -fx-max-height: 100;
+}
+
+.text-area .content {
+    -fx-background-color: rgb(255, 255, 255);
+}
+
+.text-area:focused .content {
+    -fx-background-color: rgb(255, 255, 255);
 }
 
 .canvas{
@@ -88,4 +95,9 @@
     -fx-alignment: center;
     -fx-padding: 15;
     -fx-hgap: 10;
+}
+
+.button {
+    -fx-pref-width: 100;
+    -fx-pref-height: 20;
 }

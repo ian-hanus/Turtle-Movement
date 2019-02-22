@@ -1,8 +1,11 @@
 package frontend;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -59,7 +62,16 @@ public class View {
         terminal.setMaxWidth(880);
         terminal.setTranslateX(10);
         terminal.setTranslateY(-10);
-        terminal.getChildren().add(new TextArea());
+        TextArea terminalText = new TextArea();
+        terminal.getChildren().add(terminalText);
+        Button runButton = new Button();
+        runButton.setText("Run");
+        terminal.getChildren().add(runButton);
+        runButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                addCommandHistory(terminalText.getText());
+            }
+        });
         return terminal;
     }
 
