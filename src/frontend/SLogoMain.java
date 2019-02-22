@@ -8,6 +8,7 @@ public class SLogoMain extends Application {
         View newView = new View();
         stage.setScene(newView.getScene());
         stage.show();
+
     }
 
     public static void main (String[] args) {
