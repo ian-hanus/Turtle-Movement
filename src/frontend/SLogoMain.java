@@ -10,6 +10,7 @@ public class SLogoMain extends Application {
     private FileChooser myImageChooser;
 
     public void start(Stage stage){
+        stage.setResizable(false);
         CommandHistory commandHistory = new CommandHistory();
         VariableDisplay variableDisplay = new VariableDisplay();
         initializeImageChooser();
@@ -22,7 +23,7 @@ public class SLogoMain extends Application {
         myImageChooser = new FileChooser();
         myImageChooser.setTitle("Choose a file for turtle image");
         myImageChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
-        myImageChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image File", ".png"));
+        myImageChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG image file", "*.png"));
     }
 
     void loadTurtleImage(){
