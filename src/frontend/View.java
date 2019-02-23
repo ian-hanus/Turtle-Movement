@@ -11,11 +11,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
-
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 
 public class View {
@@ -24,12 +21,17 @@ public class View {
     private GridPane myRightPane;
     private HBox myTitlePane;
     private VBox myHistoryBox;
-    private List<String> myCommandHistory;
+    private VBox myVariableBox;
+    private VBox myConfigBox;
+    private CommandHistory myCommandHistory;
+    private VariableDisplay myVariableHistory;
+    private SLogoMain myMain;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
-    public View() {
+    public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main) {
+        myMain = main;
         myTitlePane = new HBox();
         myBorderPane = new BorderPane();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
@@ -40,7 +42,8 @@ public class View {
         myBorderPane.setRight(myRightPane);
         myBorderPane.setBottom(drawTerminal());
         myBorderPane.setCenter(drawCanvas());
-        myCommandHistory = new ArrayList<>();
+        myCommandHistory = commandHistory;
+        myVariableHistory = variableDisplay;
         resetGUI();
     }
 
@@ -72,10 +75,11 @@ public class View {
         terminal.getChildren().add(terminalText);
         Button runButton = new Button();
         runButton.setText("Run");
+        runButton.getStyleClass().add("run-button");
         terminal.getChildren().add(runButton);
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                addCommandHistory(terminalText.getText());
+                addCommand(terminalText.getText());
                 terminalText.setText("");
             }
         });
@@ -83,9 +87,18 @@ public class View {
     }
 
     private void drawConfig(){
-        VBox config = drawRightBox("Configuration");
+        myConfigBox = drawRightBox("Configuration");
+        Button loadImageButton = new Button("");
+        loadImageButton.setText("Load New Turtle Image");
+        loadImageButton.getStyleClass().add("load-button");
+        myConfigBox.getChildren().add(loadImageButton);
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(config, 0, 0);
+        myRightPane.add(myConfigBox, 0, 0);
+        loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                myMain.loadTurtleImage();
+            }
+        });
     }
 
     private void drawHistory(){
@@ -95,9 +108,9 @@ public class View {
     }
 
     private void drawVariables(){
-        VBox variables = drawRightBox("Current Variables");
+        myVariableBox = drawRightBox("Current Variables");
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(variables, 0, 2);
+        myRightPane.add(myVariableBox, 0, 2);
     }
 
     private VBox drawRightBox(String title){
@@ -117,20 +130,20 @@ public class View {
         myTitlePane.getChildren().add(title);
     }
 
-    public void addCommandHistory(String allCommands){
+    public void addCommand(String allCommands){
         String[] commands = allCommands.split("\n");
-        myCommandHistory.addAll(Arrays.asList(commands));
+        myCommandHistory.addHistory(commands);
         drawHistory();
         for(int k = 4; k >= 0; k--){
-            if(myCommandHistory.size() - k > 0) {
-                myHistoryBox.getChildren().add(new Text(myCommandHistory.get(myCommandHistory.size() - k - 1)));
+            if(myCommandHistory.getSize() - k > 0) {
+                myHistoryBox.getChildren().add(new Text(myCommandHistory.getCommandString(myCommandHistory.getSize() - k - 1)));
             }
         }
     }
 
-//    public void addVariable(String variable, String value){
-//        myHistory.getChildren().add(new Text(variable + " " + value));
-//    }
+    public void addVariable(String variable, String value){
+
+    }
 
     public Scene getScene(){
         return myScene;
