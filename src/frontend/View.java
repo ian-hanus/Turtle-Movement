@@ -31,6 +31,8 @@ public class View {
     private SLogoMain myMain;
     private ColorPicker myColorPicker;
     private Color myBackgroundColor;
+    private Terminal myTerminal;
+    private FlowPane myTerminalPane;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -40,6 +42,7 @@ public class View {
         myTitlePane = new HBox();
         myCanvas = new HBox();
         myBorderPane = new BorderPane();
+        myTerminalPane = new FlowPane();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
         myRightPane = new GridPane();
@@ -70,26 +73,26 @@ public class View {
     }
 
     private Node drawTerminal(){
-        FlowPane terminal = new FlowPane();
-        terminal.getStyleClass().add("box-bot");
-        terminal.setMaxWidth(880);
-        terminal.setTranslateX(10);
-        terminal.setTranslateY(-10);
-        terminal.getChildren().add(new Label("Terminal"));
+        myTerminalPane.getStyleClass().add("box-bot");
+        myTerminalPane.setMaxWidth(880);
+        myTerminalPane.setTranslateX(10);
+        myTerminalPane.setTranslateY(-10);
+        myTerminalPane.getChildren().add(new Label("Terminal"));
         TextArea terminalText = new TextArea();
         terminalText.getStyleClass().add("text-area-terminal");
-        terminal.getChildren().add(terminalText);
+        myTerminalPane.getChildren().add(terminalText);
         Button runButton = new Button();
         runButton.setText("Run");
         runButton.getStyleClass().add("run-button");
-        terminal.getChildren().add(runButton);
+        myTerminalPane.getChildren().add(runButton);
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                addCommand(terminalText.getText());
+                myTerminal.setInput(terminalText.getText());
+                addCommand(myTerminal.getInput());
                 terminalText.setText("");
             }
         });
-        return terminal;
+        return myTerminalPane;
     }
 
     private void drawConfig(){

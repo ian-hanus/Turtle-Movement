@@ -1,14 +1,39 @@
 package frontend;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Place where user inputs commands.
  */
-public interface Terminal {
+public class Terminal {
+    private String myInput;
+    private List<String> myValidCommands;
 
+    public Terminal(){
+        myValidCommands = new ArrayList<>();
+    }
 
-    /**
-     * Will be used internally to get the command to frontend.CommandHistory
-     * @return the String version of the desired command
-     */
-    String getInput();
+    public void setInput(String input){
+        myInput = input;
+    }
+
+    public String getInput(){
+        return myInput;
+    }
+
+    public void addCommand(String command){
+        myValidCommands.add(command);
+    }
+
+    public void addAllCommands(String[] commands){
+        myValidCommands.addAll(Arrays.asList(commands));
+    }
+
+//    /**
+//     * Will be used internally to get the command to frontend.CommandHistory
+//     * @return the String version of the desired command
+//     */
+//    String getInput();
 }
