@@ -134,9 +134,9 @@
 
 .load-button{
     -fx-pref-width: 250;
-    -fx-pref-height: 20;
+    -fx-pref-height: 30;
     -fx-alignment: center;
-    -fx-translate-x: 25;
+    -fx-translate-x: 20;
     -fx-focus-color: transparent;
     -fx-border-color: rgb(255, 255, 255);
 }
@@ -147,4 +147,14 @@
     -fx-font-family: Verdana;
     -fx-font-size: 10;
     -fx-font-weight: 100;
+}
+
+.color-picker{
+    -fx-pref-width: 250;
+    -fx-pref-height: 30;
+    -fx-alignment: center;
+    -fx-translate-x: 20;
+    -fx-focus-color: transparent;
+    -fx-border-color: rgb(255, 255, 255);
+    -fx-translate-y: 10;
 }

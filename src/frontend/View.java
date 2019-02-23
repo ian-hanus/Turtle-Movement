@@ -2,10 +2,12 @@ package frontend;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -20,12 +22,15 @@ public class View {
     private BorderPane myBorderPane;
     private GridPane myRightPane;
     private HBox myTitlePane;
+    private HBox myCanvas;
     private VBox myHistoryBox;
     private VBox myVariableBox;
     private VBox myConfigBox;
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableHistory;
     private SLogoMain myMain;
+    private ColorPicker myColorPicker;
+    private Color myBackgroundColor;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -33,6 +38,7 @@ public class View {
     public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main) {
         myMain = main;
         myTitlePane = new HBox();
+        myCanvas = new HBox();
         myBorderPane = new BorderPane();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
@@ -44,6 +50,7 @@ public class View {
         myBorderPane.setCenter(drawCanvas());
         myCommandHistory = commandHistory;
         myVariableHistory = variableDisplay;
+        myColorPicker = new ColorPicker();
         resetGUI();
     }
 
@@ -56,12 +63,10 @@ public class View {
     }
 
     private Node drawCanvas(){
-        HBox canvas = new HBox();
-        canvas.getStyleClass().add("canvas");
-        canvas.getChildren().add(new Label("Canvas"));
-        canvas.setTranslateY(-2);
-        canvas.setTranslateX(8);
-        return canvas;
+        myCanvas.getStyleClass().add("canvas");
+        myCanvas.setTranslateY(-2);
+        myCanvas.setTranslateX(8);
+        return myCanvas;
     }
 
     private Node drawTerminal(){
@@ -93,11 +98,19 @@ public class View {
         loadImageButton.setText("Load New Turtle Image");
         loadImageButton.getStyleClass().add("load-button");
         myConfigBox.getChildren().add(loadImageButton);
+        myColorPicker.getStyleClass().add("color-picker");
+        myConfigBox.getChildren().add(myColorPicker);
         myRightPane.getStyleClass().add("pane-right");
         myRightPane.add(myConfigBox, 0, 0);
         loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myMain.loadTurtleImage();
+            }
+        });
+        myColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                myBackgroundColor = myColorPicker.getValue();
+                setCanvasBackground(myBackgroundColor);
             }
         });
     }
@@ -140,6 +153,10 @@ public class View {
                 myHistoryBox.getChildren().add(new Text(myCommandHistory.getCommandString(myCommandHistory.getSize() - k - 1)));
             }
         }
+    }
+
+    private void setCanvasBackground(Color color){
+        myCanvas.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     public void addVariable(String variable, String value){
