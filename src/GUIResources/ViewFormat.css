@@ -55,10 +55,11 @@
     -fx-focus-color: transparent;
     -fx-background-color: rgb(255, 255, 255);
     -fx-spacing: 2;
-    -fx-max-width: 870;
-    -fx-min-width: 870;
+    -fx-max-width: 868;
+    -fx-min-width: 868;
     -fx-min-height: 90;
     -fx-max-height: 90;
+    -fx-translate-x: 2;
 }
 
 .text-right{

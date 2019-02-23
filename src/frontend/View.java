@@ -43,6 +43,7 @@ public class View {
         myCanvas = new HBox();
         myBorderPane = new BorderPane();
         myTerminalPane = new FlowPane();
+        myTerminal = new Terminal();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
         myRightPane = new GridPane();
@@ -88,6 +89,7 @@ public class View {
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myTerminal.setInput(terminalText.getText());
+                myCommandHistory.addHistory(terminalText.getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
                 terminalText.setText("");
