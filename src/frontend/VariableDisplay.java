@@ -23,6 +23,15 @@ public class VariableDisplay {
         return myVariableHistory.get(myKeyOrder.get(index));
     }
 
+    public int getSize(){
+        return myKeyOrder.size();
+    }
+
+    public String getVariableString(int index){
+        String key = myKeyOrder.get(index);
+        return key + " = " + myVariableHistory.get(key);
+    }
+
 //    /**
 //     * Add a new variable
 //     * @param v variable added

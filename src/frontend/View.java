@@ -27,7 +27,7 @@ public class View {
     private VBox myVariableBox;
     private VBox myConfigBox;
     private CommandHistory myCommandHistory;
-    private VariableDisplay myVariableHistory;
+    private VariableDisplay myVariableDisplay;
     private SLogoMain myMain;
     private ColorPicker myColorPicker;
     private Color myBackgroundColor;
@@ -49,7 +49,7 @@ public class View {
         myBorderPane.setBottom(drawTerminal());
         myBorderPane.setCenter(drawCanvas());
         myCommandHistory = commandHistory;
-        myVariableHistory = variableDisplay;
+        myVariableDisplay = variableDisplay;
         myColorPicker = new ColorPicker();
         resetGUI();
     }
@@ -159,8 +159,14 @@ public class View {
         myCanvas.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
-    public void addVariable(String variable, String value){
-
+    public void addVariableDisplay(String variable, String value){
+        myVariableDisplay.addVariable(variable, value);
+        drawVariables();
+        for(int k = 4; k >= 0; k--){
+            if(myVariableDisplay.getSize() - k > 0){
+                myVariableBox.getChildren().add(new Text(myVariableDisplay.getVariableString(myVariableDisplay.getSize() - k - 1)));
+            }
+        }
     }
 
     public Scene getScene(){
