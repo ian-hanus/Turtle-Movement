@@ -122,7 +122,6 @@ public class View {
         myCommandHistory.addAll(Arrays.asList(commands));
         drawHistory();
         for(int k = 4; k >= 0; k--){
-            System.out.println(myCommandHistory.size() - k);
             if(myCommandHistory.size() - k > 0) {
                 myHistoryBox.getChildren().add(new Text(myCommandHistory.get(myCommandHistory.size() - k - 1)));
             }
