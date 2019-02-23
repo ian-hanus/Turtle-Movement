@@ -88,7 +88,8 @@ public class View {
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myTerminal.setInput(terminalText.getText());
-                addCommand(myTerminal.getInput());
+                updateCommandHistory();
+                updateVariableDisplay();
                 terminalText.setText("");
             }
         });
@@ -147,9 +148,7 @@ public class View {
         myTitlePane.getChildren().add(title);
     }
 
-    public void addCommand(String allCommands){
-        String[] commands = allCommands.split("\n");
-        myCommandHistory.addHistory(commands);
+    public void updateCommandHistory(){
         drawHistory();
         for(int k = 4; k >= 0; k--){
             if(myCommandHistory.getSize() - k > 0) {
@@ -162,8 +161,7 @@ public class View {
         myCanvas.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
-    public void addVariableDisplay(String variable, String value){
-        myVariableDisplay.addVariable(variable, value);
+    public void updateVariableDisplay(){
         drawVariables();
         for(int k = 4; k >= 0; k--){
             if(myVariableDisplay.getSize() - k > 0){

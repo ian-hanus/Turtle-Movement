@@ -30,10 +30,4 @@ public class Terminal {
     public void addAllCommands(String[] commands){
         myValidCommands.addAll(Arrays.asList(commands));
     }
-
-//    /**
-//     * Will be used internally to get the command to frontend.CommandHistory
-//     * @return the String version of the desired command
-//     */
-//    String getInput();
 }
