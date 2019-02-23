@@ -12,15 +12,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import java.awt.*;
 
 public class View {
     private Scene myScene;
     private BorderPane myBorderPane;
     private GridPane myRightPane;
     private HBox myTitlePane;
-    private VBox myHistory;
+    private VBox myHistoryBox;
+    private List<String> myCommandHistory;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -36,6 +40,7 @@ public class View {
         myBorderPane.setRight(myRightPane);
         myBorderPane.setBottom(drawTerminal());
         myBorderPane.setCenter(drawCanvas());
+        myCommandHistory = new ArrayList<>();
         resetGUI();
     }
 
@@ -63,6 +68,7 @@ public class View {
         terminal.setTranslateX(10);
         terminal.setTranslateY(-10);
         TextArea terminalText = new TextArea();
+        terminalText.getStyleClass().add("text-area-terminal");
         terminal.getChildren().add(terminalText);
         Button runButton = new Button();
         runButton.setText("Run");
@@ -70,6 +76,7 @@ public class View {
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 addCommandHistory(terminalText.getText());
+                terminalText.setText("");
             }
         });
         return terminal;
@@ -82,9 +89,9 @@ public class View {
     }
 
     private void drawHistory(){
-        myHistory = drawRightBox("Command History");
+        myHistoryBox = drawRightBox("Command History");
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myHistory, 0, 1);
+        myRightPane.add(myHistoryBox, 0, 1);
     }
 
     private void drawVariables(){
@@ -110,13 +117,20 @@ public class View {
         myTitlePane.getChildren().add(title);
     }
 
-    public void addCommandHistory(String command){
-        myHistory.getChildren().add(new Text(command));
+    public void addCommandHistory(String allCommands){
+        String[] commands = allCommands.split("\n");
+        myCommandHistory.addAll(Arrays.asList(commands));
+        drawHistory();
+        for(int k = 4; k >= 0; k--){
+            if(myCommandHistory.size() - k > 0) {
+                myHistoryBox.getChildren().add(new Text(myCommandHistory.get(myCommandHistory.size() - k - 1)));
+            }
+        }
     }
 
-    public void addVariable(String variable, String value){
-        myHistory.getChildren().add(new Text(variable + " " + value));
-    }
+//    public void addVariable(String variable, String value){
+//        myHistory.getChildren().add(new Text(variable + " " + value));
+//    }
 
     public Scene getScene(){
         return myScene;
