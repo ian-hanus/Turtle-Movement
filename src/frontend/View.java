@@ -70,6 +70,7 @@ public class View {
         terminal.setMaxWidth(880);
         terminal.setTranslateX(10);
         terminal.setTranslateY(-10);
+        terminal.getChildren().add(new Label("Terminal"));
         TextArea terminalText = new TextArea();
         terminalText.getStyleClass().add("text-area-terminal");
         terminal.getChildren().add(terminalText);
