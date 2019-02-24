@@ -26,11 +26,13 @@ public class Canvas extends HBox {
 
     private void udpateCanvas(List<TurtleState> states){
         while (!states.isEmpty()){
-            executeStep(states.get(0), currState);
+            if(currState.isDown()){
+                drawLine(currState, states.get(0));
+            }
             currState = states.remove(0);
         }
-        turtleSprite.setX(currState.getX()%getWidth());
-        turtleSprite.setY(currState.getY()%getHeight());
+        turtleSprite.setX((currState.getX() + getWidth()/2) % getWidth());
+        turtleSprite.setY((currState.getY() + getHeight()/2 ) % getHeight());
         turtleSprite.setRotate(currState.getAngle());
         if (!currState.isVisible()){
             turtleSprite.setImage(null);
@@ -40,11 +42,17 @@ public class Canvas extends HBox {
 
     }
 
-    private void executeStep(TurtleState curr, TurtleState prev){
+    private void executeStep(TurtleState start, TurtleState end){
 
     }
 
-    private void drawLine (TurtleState curr, TurtleState prev){
+    private void drawLine (TurtleState start, TurtleState end){
+        boolean wrapVert = (getHeight()/2 + (start.getY())) / getHeight() == end.getY()/getHeight();
+        boolean wrapHorz = (getWidth()/2 + start.getX()/getWidth()) == end.getX()/getWidth();
+        if (!wrapHorz && !wrapVert){
+
+        }
+
 
     }
 

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -33,12 +34,15 @@ public class View {
     private Color myBackgroundColor;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
+    private Configuration myConfiguration;
+    private Image myTurtleImage;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
-    public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main) {
+    public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
         myMain = main;
+        myConfiguration = configuration;
         myTitlePane = new HBox();
         myCanvas = new HBox();
         myBorderPane = new BorderPane();
@@ -110,12 +114,14 @@ public class View {
         myRightPane.add(myConfigBox, 0, 0);
         loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                myMain.loadTurtleImage();
+                myTurtleImage = myMain.loadTurtleImage();
+                myConfiguration.setTurtleImage(myTurtleImage);
             }
         });
         myColorPicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                myBackgroundColor = myColorPicker.getValue();
+                myConfiguration.setBackgroundColor(myColorPicker.getValue());
+                myBackgroundColor = myConfiguration.getBackgroundColor();
                 setCanvasBackground(myBackgroundColor);
             }
         });
