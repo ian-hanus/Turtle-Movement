@@ -1,6 +1,7 @@
 package frontend;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -13,8 +14,9 @@ public class SLogoMain extends Application {
         stage.setResizable(false);
         CommandHistory commandHistory = new CommandHistory();
         VariableDisplay variableDisplay = new VariableDisplay();
+        Configuration configuration = new Configuration();
         initializeImageChooser();
-        View newView = new View(commandHistory, variableDisplay, this);
+        View newView = new View(commandHistory, variableDisplay, this, configuration);
         stage.setScene(newView.getScene());
         stage.show();
     }
@@ -26,8 +28,9 @@ public class SLogoMain extends Application {
         myImageChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG image file", "*.png"));
     }
 
-    void loadTurtleImage(){
+    Image loadTurtleImage(){
         File imageFile = myImageChooser.showOpenDialog(new Stage());
+        return new Image(imageFile.toURI().toString());
     }
 
     public static void main (String[] args) {
