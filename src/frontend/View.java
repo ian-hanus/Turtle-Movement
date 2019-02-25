@@ -15,7 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
 import java.awt.Dimension;
-
+import java.util.ArrayList;
+import java.io.File;
 
 
 public class View {
@@ -23,7 +24,7 @@ public class View {
     private BorderPane myBorderPane;
     private GridPane myRightPane;
     private HBox myTitlePane;
-    private HBox myCanvas;
+    private Canvas myCanvas;
     private VBox myHistoryBox;
     private VBox myVariableBox;
     private VBox myConfigBox;
@@ -44,7 +45,7 @@ public class View {
         myMain = main;
         myConfiguration = configuration;
         myTitlePane = new HBox();
-        myCanvas = new HBox();
+        myCanvas = new Canvas(new Image(new File("./src/GUIResources/turtle.png").toURI().toString()), Color.BLACK); // be cautious of path name
         myBorderPane = new BorderPane();
         myTerminalPane = new FlowPane();
         myTerminal = new Terminal();
@@ -97,6 +98,13 @@ public class View {
                 updateCommandHistory();
                 updateVariableDisplay();
                 terminalText.setText("");
+                //TESTING
+                ArrayList<TurtleState> testStates = new ArrayList<>();
+                /*testStates.add(new TurtleState(100,100, 0, true, true ));
+                testStates.add(new TurtleState(120, 160, 0, true, true));
+                testStates.add(new TurtleState(-120, -20, 80, true, true));
+                */
+                myCanvas.updateCanvas(testStates);
             }
         });
         return myTerminalPane;
