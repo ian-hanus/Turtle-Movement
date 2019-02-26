@@ -92,6 +92,7 @@
     -fx-border-width: 5;
     -fx-spacing: 10;
     -fx-translate-y: -10;
+    -fx-translate-x: 10
 }
 
 .title {
@@ -153,11 +154,27 @@
 }
 
 .color-picker{
-    -fx-pref-width: 250;
+    -fx-pref-width: 100;
     -fx-pref-height: 20;
     -fx-alignment: center;
     -fx-translate-x: 20;
     -fx-focus-color: transparent;
     -fx-border-color: rgb(255, 255, 255);
     -fx-translate-y: 0;
+    -fx-color-label-visible: false;
+    -fx-hgap: 100;
+}
+
+.color-picker-row{
+    -fx-pref-width: 250;
+    -fx-pref-height: 20;
+    -fx-translate-x: 0;
+    -fx-focus-color: transparent;
+    -fx-border-color: rgb(255, 255, 255);
+    -fx-translate-y: 0;
+}
+
+.color-picker-label{
+    -fx-font-size: 10;
+    -fx-translate-x: 70;
 }

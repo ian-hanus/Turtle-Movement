@@ -25,7 +25,7 @@ public class SLogoMain extends Application {
         myImageChooser = new FileChooser();
         myImageChooser.setTitle("Choose a file for turtle image");
         myImageChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
-        myImageChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG image file", "*.png"));
+        myImageChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG image file", "*.png", "*.jpg"));
     }
 
     Image loadTurtleImage(){
