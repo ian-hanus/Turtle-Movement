@@ -1,19 +1,18 @@
 package frontend;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.control.TextArea;
+
 import java.awt.Dimension;
 
 
@@ -27,15 +26,16 @@ public class View {
     private VBox myHistoryBox;
     private VBox myVariableBox;
     private VBox myConfigBox;
-    private CommandHistory myCommandHistory;
-    private VariableDisplay myVariableDisplay;
-    private SLogoMain myMain;
-    private ColorPicker myColorPicker;
+    private ColorPicker myBackgroundColorPicker;
+    private ColorPicker myPenColorPicker;
     private Color myBackgroundColor;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
     private Configuration myConfiguration;
     private Image myTurtleImage;
+    private CommandHistory myCommandHistory;
+    private VariableDisplay myVariableDisplay;
+    private SLogoMain myMain;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -58,7 +58,8 @@ public class View {
         myBorderPane.setCenter(drawCanvas());
         myCommandHistory = commandHistory;
         myVariableDisplay = variableDisplay;
-        myColorPicker = new ColorPicker();
+        myBackgroundColorPicker = new ColorPicker();
+        myPenColorPicker = new ColorPicker();
         resetGUI();
     }
 
@@ -104,25 +105,60 @@ public class View {
 
     private void drawConfig(){
         myConfigBox = drawRightBox("Configuration");
+        createLoadButton(myConfigBox);
+        createBackgroundPicker(myConfigBox);
+        createPenPicker(myConfigBox);
+        createLanguageDropdown(myConfigBox);
+        myRightPane.getStyleClass().add("pane-right");
+        myRightPane.add(myConfigBox, 0, 0);
+    }
+
+    private void createLoadButton(VBox configBox){
         Button loadImageButton = new Button("");
         loadImageButton.setText("Load New Turtle Image");
         loadImageButton.getStyleClass().add("load-button");
         myConfigBox.getChildren().add(loadImageButton);
-        myColorPicker.getStyleClass().add("color-picker");
-        myConfigBox.getChildren().add(myColorPicker);
-        myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myConfigBox, 0, 0);
         loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myTurtleImage = myMain.loadTurtleImage();
                 myConfiguration.setTurtleImage(myTurtleImage);
             }
         });
-        myColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+    }
+
+    private void createBackgroundPicker(VBox configBox){
+        myBackgroundColorPicker.getStyleClass().add("color-picker");
+        configBox.getChildren().add(myBackgroundColorPicker);
+        myBackgroundColorPicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                myConfiguration.setBackgroundColor(myColorPicker.getValue());
+                myConfiguration.setBackgroundColor(myBackgroundColorPicker.getValue());
                 myBackgroundColor = myConfiguration.getBackgroundColor();
                 setCanvasBackground(myBackgroundColor);
+            }
+        });
+    }
+
+    private void createPenPicker(VBox configBox){
+        myPenColorPicker.getStyleClass().add("color-picker");
+        configBox.getChildren().add(myPenColorPicker);
+        myPenColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                myConfiguration.setPenColor(myPenColorPicker.getValue());
+                myBackgroundColor = myConfiguration.getBackgroundColor();
+                setCanvasBackground(myBackgroundColor);
+            }
+        });
+    }
+
+    private void createLanguageDropdown(VBox configBox){
+        ComboBox languageBox = new ComboBox();
+        languageBox.setItems(FXCollections.observableArrayList(Language.values()));
+        languageBox.setPromptText("Language");
+        languageBox.getStyleClass().add("load-button");
+        myConfigBox.getChildren().add(languageBox);
+        languageBox.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                myConfiguration.setLanguage((Language)languageBox.getValue());
             }
         });
     }

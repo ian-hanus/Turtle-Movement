@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 
 import java.io.File;
 
+import static frontend.Language.ENGLISH;
+
 /**
  * Stores the features of our simulation that should be able to be changed from a series of dropdowns and menus
  */
@@ -12,11 +14,15 @@ public class Configuration {
     private Color myBackgroundColor;
     private Image myTurtleImage;
     private String defaultPath = "data/DefaultTurtle.png";
+    private Color myPenColor;
+    private Language myLanguage;
 
     public Configuration(){
         myBackgroundColor = Color.WHITE;
         File turtleFile = new File(defaultPath);
         myTurtleImage = new Image(turtleFile.toURI().toString());
+        myPenColor = Color.BLACK;
+        myLanguage = ENGLISH;
     }
 
     public Image getTurtleImage(){
@@ -33,6 +39,18 @@ public class Configuration {
 
     public void setBackgroundColor(Color color){
         myBackgroundColor = color;
+    }
+
+    public void setPenColor(Color color){
+        myPenColor = color;
+    }
+
+    public void setLanguage(Language language){
+        myLanguage = language;
+    }
+
+    public Language getLanguage(){
+        return myLanguage;
     }
 //    /**
 //     * Get the current color of the turtle
