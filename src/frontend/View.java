@@ -121,7 +121,13 @@ public class View {
         myConfigBox.getChildren().add(loadImageButton);
         loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                myTurtleImage = myMain.loadTurtleImage();
+                try {
+                    myTurtleImage = myMain.loadTurtleImage();
+                }
+                catch(NullPointerException x){
+                    ErrorDisplay invalidFile = new ErrorDisplay("Image Loader", "Invalid file");
+                    invalidFile.display();
+                }
                 myConfiguration.setTurtleImage(myTurtleImage);
                 myCanvas.setTurtleImage(myCanvas.getTurtleSprite(), myTurtleImage);
             }
