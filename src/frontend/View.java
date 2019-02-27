@@ -12,11 +12,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.io.File;
-
+import java.util.List;
 
 public class View {
     private Scene myScene;
@@ -24,12 +23,8 @@ public class View {
     private GridPane myRightPane;
     private HBox myTitlePane;
     private Canvas myCanvas;
-    private VBox myHistoryBox;
-    private VBox myVariableBox;
-    private VBox myConfigBox;
-    private ColorPicker myBackgroundColorPicker;
-    private ColorPicker myPenColorPicker;
-    private Color myBackgroundColor;
+    private VBox myHistoryBox, myVariableBox, myConfigBox;
+    private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
     private Configuration myConfiguration;
@@ -74,8 +69,6 @@ public class View {
 
     private Node drawCanvas(){
         myCanvas.getStyleClass().add("canvas");
-        myCanvas.setTranslateY(-2);
-        myCanvas.setTranslateX(8);
         return myCanvas;
     }
 
@@ -128,34 +121,49 @@ public class View {
         myConfigBox.getChildren().add(loadImageButton);
         loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                myTurtleImage = myMain.loadTurtleImage();
+                try {
+                    myTurtleImage = myMain.loadTurtleImage();
+                }
+                catch(NullPointerException x){
+                    ErrorDisplay invalidFile = new ErrorDisplay("Image Loader", "Invalid file");
+                    invalidFile.display();
+                }
                 myConfiguration.setTurtleImage(myTurtleImage);
+                myCanvas.setTurtleImage(myCanvas.getTurtleSprite(), myTurtleImage);
             }
         });
     }
 
     private void createBackgroundPicker(VBox configBox){
-        myBackgroundColorPicker.getStyleClass().add("color-picker");
-        configBox.getChildren().add(myBackgroundColorPicker);
+        HBox colorRow = createColorRow(myBackgroundColorPicker, "Background Color");
+        configBox.getChildren().add(colorRow);
         myBackgroundColorPicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myConfiguration.setBackgroundColor(myBackgroundColorPicker.getValue());
-                myBackgroundColor = myConfiguration.getBackgroundColor();
-                setCanvasBackground(myBackgroundColor);
+                setCanvasBackground(myConfiguration.getBackgroundColor());
             }
         });
     }
 
     private void createPenPicker(VBox configBox){
-        myPenColorPicker.getStyleClass().add("color-picker");
-        configBox.getChildren().add(myPenColorPicker);
+        HBox colorRow = createColorRow(myPenColorPicker, "Pen Color");
+        configBox.getChildren().add(colorRow);
         myPenColorPicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myConfiguration.setPenColor(myPenColorPicker.getValue());
-                myBackgroundColor = myConfiguration.getBackgroundColor();
-                setCanvasBackground(myBackgroundColor);
+                myCanvas.setPenColor(myConfiguration.getPenColor());
             }
         });
+    }
+
+    private HBox createColorRow(ColorPicker colorPicker, String labelString){
+        HBox colorRow = new HBox();
+        colorRow.getStyleClass().add("color-picker-row");
+        colorPicker.getStyleClass().add("color-picker");
+        Label label= new Label(labelString);
+        label.getStyleClass().add("color-picker-label");
+        colorRow.getChildren().addAll(colorPicker, label);
+        return colorRow;
     }
 
     private void createLanguageDropdown(VBox configBox){

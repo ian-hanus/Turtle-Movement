@@ -22,12 +22,4 @@ public class Terminal {
     public String getInput(){
         return myInput;
     }
-
-    public void addCommand(String command){
-        myValidCommands.add(command);
-    }
-
-    public void addAllCommands(String[] commands){
-        myValidCommands.addAll(Arrays.asList(commands));
-    }
 }

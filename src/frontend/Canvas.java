@@ -79,4 +79,12 @@ public class Canvas extends Pane {
             this.getChildren().add(nextLine);
         }
     }
+
+    public ImageView getTurtleSprite(){
+        return turtleSprite;
+    }
+
+    public void setPenColor(Color color){
+        penColor = color;
+    }
 }

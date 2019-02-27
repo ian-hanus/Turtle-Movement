@@ -13,7 +13,7 @@ import static frontend.Language.ENGLISH;
 public class Configuration {
     private Color myBackgroundColor;
     private Image myTurtleImage;
-    private String defaultPath = "data/DefaultTurtle.png";
+    private String defaultPath = "./src/GUIResources/turtle.png";
     private Color myPenColor;
     private Language myLanguage;
 
@@ -51,6 +51,10 @@ public class Configuration {
 
     public Language getLanguage(){
         return myLanguage;
+    }
+
+    public Color getPenColor(){
+        return myPenColor;
     }
 //    /**
 //     * Get the current color of the turtle
