@@ -69,8 +69,6 @@ public class View {
 
     private Node drawCanvas(){
         myCanvas.getStyleClass().add("canvas");
-        List<TurtleState> turtleStates = new ArrayList<>();
-        myCanvas.updateCanvas(turtleStates);
         return myCanvas;
     }
 
