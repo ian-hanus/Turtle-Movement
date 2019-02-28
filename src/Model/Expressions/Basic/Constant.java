@@ -1,13 +1,19 @@
 package Model.Expressions.Basic;
 
+import Model.Exceptions.AlteringExpressionException;
 import Model.Expressions.Expression;
 
 public class Constant extends Expression{
 
 
-    private final double constant;
+    private double constant;
 
-    public Constant(double constant){
+    public Constant(double constant) throws AlteringExpressionException{
+        setArguments(constant);
+    }
+
+    public void setArguments(double constant) throws AlteringExpressionException {
+        finalizeStates();
         this.constant = constant;
     }
 
