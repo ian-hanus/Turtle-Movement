@@ -19,4 +19,5 @@ public interface Expression {
      * @return the type of the result of the expression being evaluated
      */
     String getReturnType();
+
 }
