@@ -1,5 +1,6 @@
 package backend;
 
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class Result {
@@ -9,7 +10,7 @@ public class Result {
 
     public Result() {
         returnValue = 0;
-        turtleStates = new Queue<Turtle>();
+        turtleStates = new LinkedList<>();
     }
 
     public void setReturnValue(int value) {
