@@ -2,14 +2,14 @@ package frontend;
 
 public class TurtleState {
 
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private double angle;
     private boolean visible;
     private boolean down;
     private boolean shouldReset;
 
-    public TurtleState(int xpos, int ypos, double orientation, boolean isVisible, boolean isDown){
+    public TurtleState(double xpos, double ypos, double orientation, boolean isVisible, boolean isDown){
         x = xpos;
         y = ypos;
         angle = orientation;
@@ -24,13 +24,12 @@ public class TurtleState {
         this.angle = toCopy.getAngle();
         this.visible = toCopy.isVisible();
         this.down = toCopy.isDown();
-        this.shouldReset = toCopy.shouldReset();
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
-    public int getY() {
+    public double getY() {
         return y;
     }
     public double getAngle() {
@@ -44,8 +43,8 @@ public class TurtleState {
     }
     public boolean shouldReset() { return shouldReset; }
 
-    public void setX(int x) { this.x = x; }
-    public void setY(int y) { this.y = y; }
+    public void setX(double x) { this.x = x; }
+    public void setY(double y) { this.y = y; }
     public void setAngle(double angle) { this.angle = angle; }
     public void setVisibility(boolean visible) { this.visible = visible; }
     public void setDown(boolean down) { this.down = down; }
