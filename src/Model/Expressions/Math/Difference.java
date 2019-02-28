@@ -3,26 +3,26 @@ import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
 import Model.Exceptions.AlteringExpressionException;
 
-public class Sum extends Expression{
+public class Difference extends Expression{
 
-    private Expression augend;
-    private Expression addend;
+    private Expression minuend;
+    private Expression subtrahend;
 
-    public Sum(Expression augend, Expression addend) throws AlteringExpressionException
+    public Difference(Expression augend, Expression addend) throws AlteringExpressionException
     {
         setArguments(augend, addend);
     }
 
-    public void setArguments(Expression augend, Expression addend) throws AlteringExpressionException{
+    public void setArguments(Expression minuend, Expression subtrahend) throws AlteringExpressionException{
         finalizeStates();
-        this.augend = augend;
-        this.addend = addend;
+        this.minuend = minuend;
+        this.subtrahend = subtrahend;
     }
 
     @Override
     public int evaluate() throws UninitializedExpressionException {
         checkInitialization();
-        return augend.evaluate() + addend.evaluate();
+        return minuend.evaluate() - subtrahend.evaluate();
     }
 
     @Override
