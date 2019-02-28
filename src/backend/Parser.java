@@ -1,23 +1,37 @@
 package backend;
 
-import java.util.List;
+import java.util.EmptyStackException;
+import java.util.Stack;
 
-/**
- * Interface for the class that will parse the command string and create corresponding Expression objects.
- */
-public interface Parser {
+public class Parser {
 
-    /**
-     * Parses the string representing the commands and makes a list of corresponding Expression objects.
-     *
-     * @return the list of expressions
-     */
-    List<Expression> parse();
+    String[] commandStrings;
 
-    /**
-     * Parses an individual command string and creates the corresponding Expression object
-     *
-     * @return the expression
-     */
-    Expression parseExpr();
+    public Parser(String commands, String language) {
+        commandStrings = commands.split(" ");
+        translate(language);
+    }
+
+    private void translate(String language) {
+        // TODO
+    }
+
+    public void parse() {
+        Stack<String> brackets = new Stack<>();
+        Stack<String> expressionComponents = new Stack<>();
+        for (int i = commandStrings.length - 1; i >= 0; i++) {
+            String currString = commandStrings[i];
+            if (currString.equals("]")) {
+                brackets.push("]");
+            }
+            else if (currString.equals("[")) {
+                try {
+                    brackets.pop();
+                }
+                catch (EmptyStackException e) {
+                    // TODO
+                }
+            }
+        }
+    }
 }
