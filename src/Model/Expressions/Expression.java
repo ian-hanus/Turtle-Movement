@@ -17,7 +17,7 @@ public abstract class Expression{
      *
      * @return the result of the command being run
      */
-    public abstract int evaluate() throws UninitializedExpressionException;
+    public abstract double evaluate() throws UninitializedExpressionException;
 
     /**
      * Getter for the types of arguments that the Expression expects

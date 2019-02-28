@@ -5,14 +5,14 @@ import Model.Expressions.Expression;
 public class Constant extends Expression{
 
 
-    private final int constant;
+    private final double constant;
 
-    public Constant(int constant){
+    public Constant(double constant){
         this.constant = constant;
     }
 
     @Override
-    public int evaluate(){
+    public double evaluate(){
         return constant;
     }
 
