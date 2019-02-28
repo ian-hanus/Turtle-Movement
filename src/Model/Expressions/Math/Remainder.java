@@ -3,12 +3,12 @@ import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
 import Model.Exceptions.AlteringExpressionException;
 
-public class Quotient extends Expression{
+public class Remainder extends Expression{
 
     private Expression dividend;
     private Expression divisor;
 
-    public Quotient(Expression dividend, Expression divisor) throws AlteringExpressionException
+    public Remainder(Expression dividend, Expression divisor) throws AlteringExpressionException
     {
         setArguments(dividend, divisor);
     }
@@ -22,7 +22,7 @@ public class Quotient extends Expression{
     @Override
     public double evaluate() throws UninitializedExpressionException {
         checkInitialization();
-        return dividend.evaluate() / divisor.evaluate();
+        return dividend.evaluate() % divisor.evaluate();
     }
 
     @Override
