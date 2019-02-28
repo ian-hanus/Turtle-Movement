@@ -91,9 +91,10 @@ public class View {
                 myCommandHistory.addHistory(terminalText.getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
-                terminalText.setText("");
                 //TESTING
                 ArrayList<TurtleState> testStates = new ArrayList<>();
+                ReturnPopup returnPopup = new ReturnPopup("Return Value: " + "test");
+                returnPopup.display();
                 /*testStates.add(new TurtleState(100,100, 0, true, true ));
                 testStates.add(new TurtleState(120, 160, 0, true, true));
                 testStates.add(new TurtleState(-120, -20, 80, true, true));

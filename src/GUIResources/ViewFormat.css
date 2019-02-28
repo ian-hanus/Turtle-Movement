@@ -134,6 +134,14 @@
     -fx-translate-y: -30;
 }
 
+.return-text{
+    -fx-pref-width: 100;
+    -fx-pref-height: 20;
+    -fx-alignment: center;
+    -fx-translate-x: 10;
+    -fx-translate-y: -30;
+}
+
 .load-button{
     -fx-pref-width: 250;
     -fx-min-height: 20;
