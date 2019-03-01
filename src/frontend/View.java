@@ -33,7 +33,7 @@ public class View {
     private VariableDisplay myVariableDisplay;
     private SLogoMain myMain;
 
-    private final Dimension WINDOW_SIZE = new Dimension(600, 900);
+    private final Dimension WINDOW_SIZE = new Dimension(6001, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
     public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
