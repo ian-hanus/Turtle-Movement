@@ -23,7 +23,7 @@ public class View {
     private GridPane myRightPane;
     private HBox myTitlePane;
     private Canvas myCanvas;
-    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus;
+    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus, myPalette;
     private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
@@ -33,7 +33,7 @@ public class View {
     private VariableDisplay myVariableDisplay;
     private SLogoMain myMain;
 
-    private final Dimension WINDOW_SIZE = new Dimension(900, 900);
+    private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
     public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
@@ -64,6 +64,7 @@ public class View {
         drawHistory();
         drawVariables();
         drawTurtleStatus();
+        drawPalette();
         drawCanvas();
         drawTitle();
     }
@@ -110,12 +111,32 @@ public class View {
 
     private void drawConfig(){
         myConfigBox = drawRightBox("Configuration");
+        myConfigBox.setMaxHeight(150);
+        myConfigBox.setMinHeight(150);
         createLoadButton(myConfigBox);
         createBackgroundPicker(myConfigBox);
         createPenPicker(myConfigBox);
         createLanguageDropdown(myConfigBox);
+        createSlider(myConfigBox);
         myRightPane.getStyleClass().add("pane-right");
         myRightPane.add(myConfigBox, 0, 0);
+    }
+
+    private void drawPalette(){
+        myPalette = drawRightBox("Palette");
+        myPalette.getStyleClass().add("right-box");
+        myRightPane.add(myPalette, 1, 1);
+    }
+
+    private void createSlider(VBox configBox){
+        HBox sliderRow = new HBox();
+        sliderRow.getStyleClass().add("color-picker-row");
+        Slider penSlider = new Slider(0, 1, 0.1);
+        penSlider.getStyleClass().add("slider");
+        Label penLabel = new Label("Pen Width");
+        penLabel.getStyleClass().add("slider-label");
+        sliderRow.getChildren().addAll(penSlider, penLabel);
+        configBox.getChildren().add(sliderRow);
     }
 
     private void createLoadButton(VBox configBox){
@@ -191,8 +212,10 @@ public class View {
 
     private void drawTurtleStatus(){
         myTurtleStatus = drawRightBox("Turtle Status");
+        myTurtleStatus.setMaxHeight(150);
+        myTurtleStatus.setMinHeight(150);
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myTurtleStatus, 0, 3);
+        myRightPane.add(myTurtleStatus, 1, 0);
     }
 
     private void drawVariables(){

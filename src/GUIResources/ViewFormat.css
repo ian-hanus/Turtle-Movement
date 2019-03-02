@@ -19,10 +19,10 @@
     -fx-border-width: 5;
     -fx-min-width: 300;
     -fx-max-width: 300;
-    -fx-max-height: 130;
-    -fx-min-height: 130;
+    -fx-pref-height: 120;
     -fx-translate-y: -10;
     -fx-focus-color: transparent;
+    -fx-hgap: 20;
 }
 
 .box-right .content{
@@ -47,6 +47,8 @@
     -fx-border-color: rgb(0,50,0);
     -fx-min-height: 135;
     -fx-max-height: 135;
+    -fx-min-width: 1180;
+    -fx-max-width: 1180;
     -fx-translate-y: -15;
 }
 
@@ -55,8 +57,8 @@
     -fx-focus-color: transparent;
     -fx-background-color: rgb(255, 255, 255);
     -fx-spacing: 2;
-    -fx-max-width: 868;
-    -fx-min-width: 868;
+    -fx-min-width: 1160;
+    -fx-max-width: 1160;
     -fx-min-height: 90;
     -fx-max-height: 90;
     -fx-translate-x: 2;
@@ -83,8 +85,8 @@
 }
 
 .canvas{
-    -fx-max-height: 700;
-    -fx-min-height: 700;
+    -fx-max-height: 400;
+    -fx-min-height: 400;
     -fx-pref-width: 10;
     -fx-background-color: rgb(255, 255, 255);
     -fx-border-color: rgb(0,50,0);
@@ -118,6 +120,7 @@
     -fx-alignment: top-left;
     -fx-padding: 15;
     -fx-vgap: 10;
+    -fx-hgap: 10;
 }
 
 .pane-bot{
@@ -130,7 +133,7 @@
     -fx-pref-width: 100;
     -fx-pref-height: 20;
     -fx-alignment: center;
-    -fx-translate-x: 660;
+    -fx-translate-x: 800;
     -fx-translate-y: -30;
     -fx-hgap: 10;
 }
@@ -186,4 +189,15 @@
 .color-picker-label{
     -fx-font-size: 10;
     -fx-translate-x: 70;
+}
+
+.slider{
+    -fx-min-width: 175;
+    -fx-max-width: 175;
+    -fx-translate-x: 20;
+}
+
+.slider-label{
+    -fx-font-size: 10;
+    -fx-translate-x: 20;
 }
