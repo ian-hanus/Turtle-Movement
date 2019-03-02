@@ -83,15 +83,15 @@
 }
 
 .canvas{
-    -fx-max-height: 411;
-    -fx-min-height: 411;
+    -fx-max-height: 700;
+    -fx-min-height: 700;
     -fx-pref-width: 10;
     -fx-background-color: rgb(255, 255, 255);
     -fx-border-color: rgb(0,50,0);
     -fx-border-style: solid;
     -fx-border-width: 5;
     -fx-spacing: 10;
-    -fx-translate-y: -10;
+    -fx-translate-y: -12;
     -fx-translate-x: 10
 }
 
@@ -130,8 +130,9 @@
     -fx-pref-width: 100;
     -fx-pref-height: 20;
     -fx-alignment: center;
-    -fx-translate-x: 750;
+    -fx-translate-x: 660;
     -fx-translate-y: -30;
+    -fx-hgap: 10;
 }
 
 .return-text{
