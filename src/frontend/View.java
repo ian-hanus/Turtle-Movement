@@ -23,7 +23,7 @@ public class View {
     private GridPane myRightPane;
     private HBox myTitlePane;
     private Canvas myCanvas;
-    private VBox myHistoryBox, myVariableBox, myConfigBox;
+    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus;
     private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
@@ -33,7 +33,7 @@ public class View {
     private VariableDisplay myVariableDisplay;
     private SLogoMain myMain;
 
-    private final Dimension WINDOW_SIZE = new Dimension(600, 900);
+    private final Dimension WINDOW_SIZE = new Dimension(900, 900);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
     public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
@@ -63,6 +63,7 @@ public class View {
         drawConfig();
         drawHistory();
         drawVariables();
+        drawTurtleStatus();
         drawCanvas();
         drawTitle();
     }
@@ -81,19 +82,22 @@ public class View {
         TextArea terminalText = new TextArea();
         terminalText.getStyleClass().add("text-area-terminal");
         myTerminalPane.getChildren().add(terminalText);
-        Button runButton = new Button();
-        runButton.setText("Run");
+        Button runButton = new Button("Run");
         runButton.getStyleClass().add("run-button");
         myTerminalPane.getChildren().add(runButton);
+        Button helpButton = new Button("Help");
+        helpButton.getStyleClass().add("run-button");
+        myTerminalPane.getChildren().add(helpButton);
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myTerminal.setInput(terminalText.getText());
                 myCommandHistory.addHistory(terminalText.getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
-                terminalText.setText("");
                 //TESTING
                 ArrayList<TurtleState> testStates = new ArrayList<>();
+                ReturnPopup returnPopup = new ReturnPopup("Return Value: " + "test");
+                returnPopup.display();
                 /*testStates.add(new TurtleState(100,100, 0, true, true ));
                 testStates.add(new TurtleState(120, 160, 0, true, true));
                 testStates.add(new TurtleState(-120, -20, 80, true, true));
@@ -183,6 +187,12 @@ public class View {
         myHistoryBox = drawRightBox("Command History");
         myRightPane.getStyleClass().add("pane-right");
         myRightPane.add(myHistoryBox, 0, 1);
+    }
+
+    private void drawTurtleStatus(){
+        myTurtleStatus = drawRightBox("Turtle Status");
+        myRightPane.getStyleClass().add("pane-right");
+        myRightPane.add(myTurtleStatus, 0, 3);
     }
 
     private void drawVariables(){
