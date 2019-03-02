@@ -18,7 +18,7 @@ public class Constant extends Expression{
 
     @Override
     public Class[] getArgumentTypes() {
-        return new Class[]{Integer.TYPE};
+        return new Class[]{Double.TYPE};
     }
 
 

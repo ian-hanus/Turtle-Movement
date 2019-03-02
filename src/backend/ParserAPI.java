@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Interface for the class that will parse the command string and create corresponding Expression objects.
  */
-public interface Parser {
+public interface ParserAPI {
 
     /**
      * Parses the string representing the commands and makes a list of corresponding Expression objects.
