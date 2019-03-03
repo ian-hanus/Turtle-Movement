@@ -1,8 +1,6 @@
 package Model.Expressions.TurtleCommands;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
-import java.lang.Math;
+
 import java.util.Deque;
 import frontend.TurtleState;
 

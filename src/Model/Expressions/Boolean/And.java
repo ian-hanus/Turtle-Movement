@@ -1,33 +1,24 @@
 package Model.Expressions.Boolean;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
 
-public class And extends Expression{
+import java.util.Arrays;
 
-    private Expression input1;
-    private Expression input2;
+public class And implements Expression{
 
-    public And(Expression input1, Expression input2) throws AlteringExpressionException
+    private Expression[] inputs;
+
+    public And(Expression... inputs)
     {
-        setArguments(input1, input2);
-    }
-
-    public void setArguments(Expression input1, Expression input2) throws AlteringExpressionException{
-        finalizeStates();
-        this.input1 = input1;
-        this.input2 = input2;
+        if(inputs.length == 0){
+            throw new IllegalArgumentException("Insufficient Expressions input");
+        }
+        this.inputs = inputs;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return (input1.evaluate() !=0 && input2.evaluate() !=0) ? 1 : 0;
-    }
-
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public double evaluate() {
+        return Arrays.stream(inputs)
+                .map(expression -> expression.evaluate() == 0 ? 0 : 1)
+                .reduce(1, (a,b) -> a*b);
     }
 }

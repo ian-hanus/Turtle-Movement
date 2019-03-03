@@ -1,7 +1,6 @@
 package Model.Expressions.TurtleQueries;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+
 import java.util.Deque;
 import frontend.TurtleState;
 

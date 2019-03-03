@@ -1,6 +1,5 @@
 package Model.Expressions.Basic;
 
-import Model.Exceptions.AlteringExpressionException;
 import Model.Expressions.Expression;
 
 import java.util.Map;

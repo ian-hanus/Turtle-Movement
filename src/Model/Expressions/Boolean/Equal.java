@@ -1,7 +1,5 @@
 package Model.Expressions.Boolean;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
 
 public class Equal extends Expression{
 

@@ -1,5 +1,4 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
 import Model.Exceptions.AlteringExpressionException;
 

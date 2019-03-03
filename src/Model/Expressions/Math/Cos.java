@@ -1,7 +1,6 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+
 import java.lang.Math;
 
 public class Cos extends Expression {
