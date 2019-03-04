@@ -2,6 +2,7 @@ package frontend;
 
 public class TurtleState {
 
+    private int id;
     private double x;
     private double y;
     private double angle;
@@ -19,6 +20,7 @@ public class TurtleState {
     }
 
     public TurtleState(TurtleState toCopy){
+        this.id = toCopy.getID();
         this.x = toCopy.getX();
         this.y = toCopy.getY();
         this.angle = toCopy.getAngle();
@@ -26,6 +28,7 @@ public class TurtleState {
         this.down = toCopy.isDown();
     }
 
+    public int getID(){return id;}
     public double getX() {
         return x;
     }
@@ -43,6 +46,7 @@ public class TurtleState {
     }
     public boolean shouldReset() { return shouldReset; }
 
+    public void setID(int id) {this.id = id;}
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
     public void setAngle(double angle) { this.angle = angle; }

@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.Turtle;
+import backend.TurtleSprite;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -8,50 +9,34 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
 
 public class Canvas extends Pane {
     private final int STARTING_ANGLE = 90;
-    private final double TURTLE_SIZE = 30;
+
+    private final TurtleState STARTING_STATE =  new TurtleState(0, 0, STARTING_ANGLE, true, true);
+    private final Color DEFAULT_PENCOLOR = Color.BLACK;
+    private final Image DEFAULT_IMAGE = new Image(new File("./src/GUIResources/turtle.png").toURI().toString());
     Color penColor;
-    ImageView turtleSprite = new ImageView();
-    Image activeTurtleImage;
-    TurtleState currState;
+    Map<Integer, TurtleSprite> turtles = new HashMap<>();
     //Set<Line> lines;
 
-    public Canvas(Image turtleImage, Color pencolor){
-        penColor = pencolor;
+    public Canvas(){
+        penColor = DEFAULT_PENCOLOR;
         //lines = new HashSet<>();
-        currState = new TurtleState(0, 0, STARTING_ANGLE, true, true);
-        System.out.println(this.getHeight());
-        System.out.println(this.getWidth());
-        activeTurtleImage = turtleImage;
-        turtleSprite.setFitHeight(TURTLE_SIZE);
-        turtleSprite.setFitWidth(TURTLE_SIZE);
-        turtleSprite.setPreserveRatio(true);
-        setTurtle(turtleSprite, currState);
+        turtles.put(1, new TurtleSprite());
+        turtles.get(1).setTurtle(STARTING_STATE, this.getHeight(), this.getWidth());
+
+//        System.out.println(this.getHeight());
+//        System.out.println(this.getWidth());
+
+
     }
 
-    private void setTurtle(ImageView sprite, TurtleState ts){
-        if (currState.isVisible()){
-            setTurtleImage(sprite, activeTurtleImage);
-        } else {
-            turtleSprite.setImage(null);
-        }
-        sprite.setX((currState.getX() + getWidth()/2) % getWidth());
-        sprite.setY((-currState.getY() + getHeight()/2 ) % getHeight());
-        sprite.setRotate(currState.getAngle());
-    }
+   public void setTurtle(int id, TurtleState ts){
 
-    public void setTurtleImage(ImageView sprite, Image i) {
-        if(!this.getChildren().contains(sprite)){
-            this.getChildren().add(sprite);
-        }
-        sprite.setImage(i);
-        activeTurtleImage = i;
-    }
+   }
 
 
     public void updateCanvas(List<TurtleState> states){

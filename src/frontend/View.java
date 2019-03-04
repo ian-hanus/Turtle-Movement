@@ -45,7 +45,7 @@ public class View {
         myMain = main;
         myConfiguration = configuration;
         myTitlePane = new HBox();
-        myCanvas = new Canvas(new Image(new File("./src/GUIResources/turtle.png").toURI().toString()), Color.BLACK); // be cautious of path name
+        myCanvas = new Canvas(); // be cautious of path name
         myBorderPane = new BorderPane();
         myTerminalPane = new FlowPane();
         myTerminal = new Terminal();
