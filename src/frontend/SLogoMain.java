@@ -6,8 +6,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SLogoMain extends Application {
+    private List<Stage> myStages =new ArrayList<>();
+    private List<View> myViews = new ArrayList<>();
+
     private FileChooser myImageChooser;
 
     public void start(Stage stage){
@@ -16,10 +21,13 @@ public class SLogoMain extends Application {
         VariableDisplay variableDisplay = new VariableDisplay();
         Configuration configuration = new Configuration();
         initializeImageChooser();
-        View newView = new View(commandHistory, variableDisplay, this, configuration);
+        View newView = new View(commandHistory, variableDisplay, this, configuration, stage);
+        myStages.add(stage);
+        myViews.add(newView);
         stage.setScene(newView.getScene());
         stage.show();
     }
+
 
     private void initializeImageChooser(){
         myImageChooser = new FileChooser();

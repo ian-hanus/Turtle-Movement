@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.io.File;
@@ -23,7 +26,8 @@ public class View {
     private GridPane myRightPane;
     private HBox myTitlePane;
     private Canvas myCanvas;
-    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus, myPalette;
+    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus, myPalette, myResults;
+    private TextArea myTerminalText;
     private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
@@ -32,11 +36,12 @@ public class View {
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableDisplay;
     private SLogoMain myMain;
+    private Slider myPenSlider;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
-    public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
+    public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration, Stage stage) {
         myMain = main;
         myConfiguration = configuration;
         myTitlePane = new HBox();
@@ -44,8 +49,6 @@ public class View {
         myBorderPane = new BorderPane();
         myTerminalPane = new FlowPane();
         myTerminal = new Terminal();
-        myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
-        myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
         myRightPane = new GridPane();
         myBorderPane.setTop(myTitlePane);
         myRightPane.setAlignment(Pos.TOP_LEFT);
@@ -57,6 +60,8 @@ public class View {
         myBackgroundColorPicker = new ColorPicker();
         myPenColorPicker = new ColorPicker();
         resetGUI();
+        myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
+        myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
     }
 
     private void resetGUI(){
@@ -65,6 +70,7 @@ public class View {
         drawVariables();
         drawTurtleStatus();
         drawPalette();
+        drawResults();
         drawCanvas();
         drawTitle();
     }
@@ -80,9 +86,9 @@ public class View {
         myTerminalPane.setTranslateX(10);
         myTerminalPane.setTranslateY(-10);
         myTerminalPane.getChildren().add(new Label("Terminal"));
-        TextArea terminalText = new TextArea();
-        terminalText.getStyleClass().add("text-area-terminal");
-        myTerminalPane.getChildren().add(terminalText);
+        myTerminalText = new TextArea();
+        myTerminalText.getStyleClass().add("text-area-terminal");
+        myTerminalPane.getChildren().add(myTerminalText);
         Button runButton = new Button("Run");
         runButton.getStyleClass().add("run-button");
         myTerminalPane.getChildren().add(runButton);
@@ -91,22 +97,23 @@ public class View {
         myTerminalPane.getChildren().add(helpButton);
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                myTerminal.setInput(terminalText.getText());
-                myCommandHistory.addHistory(terminalText.getText().split("\n"));
+                myConfiguration.setPenWidth(myPenSlider.getValue());
+                myTerminal.setInput(myTerminalText.getText());
+                myCommandHistory.addHistory(myTerminalText.getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
                 //TESTING
                 ArrayList<TurtleState> testStates = new ArrayList<>();
-                ReturnPopup returnPopup = new ReturnPopup("Return Value: " + "test");
-                returnPopup.display();
-                /*testStates.add(new TurtleState(100,100, 0, true, true ));
-                testStates.add(new TurtleState(120, 160, 0, true, true));
-                testStates.add(new TurtleState(-120, -20, 80, true, true));
-                */
+                myTerminalText.setText("");
                 myCanvas.updateCanvas(testStates);
             }
         });
         return myTerminalPane;
+    }
+
+    private void drawResults(){
+        myResults = drawRightBox("Results");
+        myRightPane.add(myResults, 1, 2);
     }
 
     private void drawConfig(){
@@ -119,7 +126,7 @@ public class View {
         createLanguageDropdown(myConfigBox);
         createSlider(myConfigBox);
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myConfigBox, 0, 0);
+        myRightPane.add(myConfigBox, 1, 0);
     }
 
     private void drawPalette(){
@@ -131,11 +138,11 @@ public class View {
     private void createSlider(VBox configBox){
         HBox sliderRow = new HBox();
         sliderRow.getStyleClass().add("color-picker-row");
-        Slider penSlider = new Slider(0, 1, 0.1);
-        penSlider.getStyleClass().add("slider");
+        myPenSlider = new Slider(1, 20, 1);
+        myPenSlider.getStyleClass().add("slider");
         Label penLabel = new Label("Pen Width");
         penLabel.getStyleClass().add("slider-label");
-        sliderRow.getChildren().addAll(penSlider, penLabel);
+        sliderRow.getChildren().addAll(myPenSlider, penLabel);
         configBox.getChildren().add(sliderRow);
     }
 
@@ -206,8 +213,10 @@ public class View {
 
     private void drawHistory(){
         myHistoryBox = drawRightBox("Command History");
+        myHistoryBox.setMinWidth(400);
+        myHistoryBox.setMaxWidth(400);
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myHistoryBox, 0, 1);
+        myRightPane.add(myHistoryBox, 0, 2);
     }
 
     private void drawTurtleStatus(){
@@ -215,13 +224,13 @@ public class View {
         myTurtleStatus.setMaxHeight(150);
         myTurtleStatus.setMinHeight(150);
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myTurtleStatus, 1, 0);
+        myRightPane.add(myTurtleStatus, 0, 0);
     }
 
     private void drawVariables(){
         myVariableBox = drawRightBox("Current Variables");
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myVariableBox, 0, 2);
+        myRightPane.add(myVariableBox, 0, 1);
     }
 
     private VBox drawRightBox(String title){
@@ -238,14 +247,19 @@ public class View {
         Text titleText = new Text("SLogo: Team 1");
         titleText.setFill(Color.WHITE);
         title.getChildren().add(titleText);
-        myTitlePane.getChildren().add(title);
+        Button newSlogo = new Button("New Window");
+        newSlogo.setOnAction(e -> myMain.start(new Stage()));
+        newSlogo.getStyleClass().add("new-sim-button");
+        myTitlePane.getChildren().addAll(title, newSlogo);
     }
 
     public void updateCommandHistory(){
         drawHistory();
         for(int k = 4; k >= 0; k--){
             if(myCommandHistory.getSize() - k > 0) {
-                myHistoryBox.getChildren().add(new Text(myCommandHistory.getCommandString(myCommandHistory.getSize() - k - 1)));
+                Button commandButton = new Button(myCommandHistory.getCommandString(myCommandHistory.getSize() - k - 1));
+                myHistoryBox.getChildren().add(commandButton);
+                commandButton.setOnAction(e -> myTerminalText.setText(commandButton.getText()));
             }
         }
     }
@@ -258,7 +272,7 @@ public class View {
         drawVariables();
         for(int k = 4; k >= 0; k--){
             if(myVariableDisplay.getSize() - k > 0){
-                myVariableBox.getChildren().add(new Text(myVariableDisplay.getVariableString(myVariableDisplay.getSize() - k - 1)));
+                myVariableBox.getChildren().add(new Button(myVariableDisplay.getVariableString(myVariableDisplay.getSize() - k - 1)));
             }
         }
     }
