@@ -85,15 +85,15 @@
 }
 
 .canvas{
-    -fx-max-height: 400;
-    -fx-min-height: 400;
+    -fx-max-height: 404;
+    -fx-min-height: 404;
     -fx-pref-width: 10;
     -fx-background-color: rgb(255, 255, 255);
     -fx-border-color: rgb(0,50,0);
     -fx-border-style: solid;
     -fx-border-width: 5;
     -fx-spacing: 10;
-    -fx-translate-y: -12;
+    -fx-translate-y: -10;
     -fx-translate-x: 10
 }
 
@@ -133,8 +133,18 @@
     -fx-pref-width: 100;
     -fx-pref-height: 20;
     -fx-alignment: center;
-    -fx-translate-x: 800;
-    -fx-translate-y: -30;
+    -fx-translate-x: 950;
+    -fx-translate-y: -15;
+    -fx-hgap: 10;
+}
+
+.new-sim-button{
+    -fx-pref-width: 100;
+    -fx-max-height: 20;
+    -fx-min-height: 20;
+    -fx-alignment: center;
+    -fx-font-size: 10;
+    -fx-translate-x: 450;
     -fx-hgap: 10;
 }
 

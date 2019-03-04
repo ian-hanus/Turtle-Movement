@@ -16,6 +16,9 @@ public class Configuration {
     private String defaultPath = "./src/GUIResources/turtle.png";
     private Color myPenColor;
     private Language myLanguage;
+    private double myPenWidth;
+
+    private static final int DEFAULT_WIDTH = 10;
 
     public Configuration(){
         myBackgroundColor = Color.WHITE;
@@ -23,6 +26,7 @@ public class Configuration {
         myTurtleImage = new Image(turtleFile.toURI().toString());
         myPenColor = Color.BLACK;
         myLanguage = ENGLISH;
+        myPenWidth = DEFAULT_WIDTH;
     }
 
     public Image getTurtleImage(){
@@ -55,6 +59,14 @@ public class Configuration {
 
     public Color getPenColor(){
         return myPenColor;
+    }
+
+    public void setPenWidth(double penWidth){
+        myPenWidth = penWidth;
+    }
+
+    public double getPenWidth(){
+        return myPenWidth;
     }
 //    /**
 //     * Get the current color of the turtle
