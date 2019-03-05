@@ -20,7 +20,7 @@ public class Sum extends Expression{
     }
 
     @Override
-    public int evaluate() throws UninitializedExpressionException {
+    public double evaluate() throws UninitializedExpressionException {
         checkInitialization();
         return augend.evaluate() + addend.evaluate();
     }
