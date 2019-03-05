@@ -15,11 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.*;
 
 // TODO What to do with exceptions that should never be thrown?
-public class Parser {
+public class Parser implements Parsing {
 
     private final Properties expressionClasses = new Properties();
     private final Properties syntax = new Properties();
@@ -42,9 +41,15 @@ public class Parser {
         }
     }
 
-    public Result execute(String commands, String language) throws ParsingException, ClassNotFoundException, UninitializedExpressionException {
+    public Result execute(String commands, String language) throws ParsingException {
         String[] translatedCommands = translate(commands, language);
-        return parse(translatedCommands);
+        try {
+            return parse(translatedCommands);
+        }
+        catch (ClassNotFoundException | UninitializedExpressionException e) {
+            // TODO What to do with these exceptions that are never thrown?
+            e.printStackTrace();
+        }
     }
 
     private String[] translate(String commands, String language) {
