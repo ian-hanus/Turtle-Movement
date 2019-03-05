@@ -1,10 +1,10 @@
 package Model;
 
-import Model.Exceptions.*;
 import Model.Exceptions.Parsing.ImproperBracketsException;
 import Model.Exceptions.Parsing.IncorrectArgTypeException;
 import Model.Exceptions.Parsing.IncorrectNumArgsException;
 import Model.Exceptions.Parsing.ParsingException;
+import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Controls.Make;
 import Model.Expressions.Controls.To;
@@ -15,8 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.*;
 
+// TODO What to do with exceptions that should never be thrown?
 public class Parser {
 
     private final Properties expressionClasses = new Properties();
@@ -40,16 +42,17 @@ public class Parser {
         }
     }
 
-    public Result execute(String commands, String language) throws ClassNotFoundException, UninitializedExpressionException {
+    public Result execute(String commands, String language) throws ParsingException, ClassNotFoundException, UninitializedExpressionException {
         String[] translatedCommands = translate(commands, language);
         return parse(translatedCommands);
     }
 
     private String[] translate(String commands, String language) {
+        // TODO Translate commands from given language to English shorthand (lower-case)
         return commands.split(" ");
-        // TODO Translate commands from given language to English shorthand
     }
 
+    // TODO Refactor this lol
     private Result parse(String[] commandStrings) throws ParsingException, ClassNotFoundException, UninitializedExpressionException {
         Stack<Expression> superExpressions = new Stack<>();
         Deque<Object> currExpressions = new ArrayDeque<>();
@@ -96,23 +99,24 @@ public class Parser {
                 int numParams = exprParams.length;
                 Expression currCommand = null;
 
-                // TODO Find a better way to determine when to push to superExpressions
                 try {
-                    if (exprParams[numParams - 1].equals(Deque.class)) {
-                        if (numParams > currExpressions.size() + 1) {
-                            superExpressions.push((Expression) currExpressions.getLast());
-                            expressionTypes.getLast();
-                        }
-                        currExpressions.addLast(turtleChanges);
-                        expressionTypes.addLast(Deque.class);
-                    } else {
-                        if (numParams > currExpressions.size()) {
-                            superExpressions.push((Expression) currExpressions.getLast());
-                            expressionTypes.getLast();
-                        }
+                    Method getNumCommandArgs = expressionClass.getDeclaredMethod("getNumCommandArgs");
+                    int numCommandArgs = getNumCommandArgs.invoke(expressionClass.getConstructor().newInstance())
+                    if (currExpressions.size() > numCommandArgs) {
+                        superExpressions.push((Expression) currExpressions.getLast());
+                        expressionTypes.getLast();
                     }
-                } catch (ClassCastException e) {
-                    throw new IncorrectNumArgsException();
+                }
+                catch(ClassCastException e) {
+                    throw new IncorrectArgTypeException();
+                }
+                catch(Exception e) {
+                    // TODO What to do with reflection errors that should never be thrown?
+                }
+
+                if (exprParams[numParams - 1].equals(Deque.class)) {
+                    currExpressions.addLast(turtleChanges);
+                    expressionTypes.addLast(Deque.class);
                 }
 
                 if (expressionClass.equals(Make.class)) {
@@ -139,7 +143,8 @@ public class Parser {
                 } catch (NoSuchMethodException e) {
                     throw new IncorrectArgTypeException();
                 } catch (Exception e) {
-                    // TODO What to do with other java exceptions?
+                    // TODO What to do with reflection errors that should never be thrown?
+                    e.printStackTrace();
                 }
                 if (makingList) {
                     currList.addFirst(currCommand);
