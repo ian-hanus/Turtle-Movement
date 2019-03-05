@@ -2,8 +2,11 @@ package Model;
 
 import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
+import Model.Expressions.Controls.Make;
+import Model.Expressions.Controls.To;
 import Model.Expressions.Expression;
 import frontend.TurtleState;
+import frontend.Variable;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -15,11 +18,13 @@ public class Parser {
     private static final String CLOSE_BRACKET = "]";
 
     private Map<String, String> expressionClasses;
+    private Map<String, Constant> variables;
 
     public Parser() {
         // TODO Initialize maps (read from properties files)
 
         expressionClasses = mapExpressionClasses();
+        variables = new HashMap<>();
     }
 
     private Map<String, String> mapExpressionClasses() {
@@ -28,7 +33,7 @@ public class Parser {
         return null;
     }
 
-    public Result execute(String commands, String language) {
+    public Result execute(String commands, String language) throws ClassNotFoundException, UninitializedExpressionException {
         String[] translatedCommands = translate(commands, language);
         return parse(translatedCommands);
     }
@@ -45,7 +50,7 @@ public class Parser {
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
         int numEndBrackets = 0;
         boolean makingList = false;
-        Deque<Object> currList = new ArrayDeque<>();
+        Deque<Expression> currList = new ArrayDeque<>();
 
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
@@ -63,6 +68,13 @@ public class Parser {
                 makingList = false;
                 currExpressions.addFirst(currList.toArray());
                 continue;
+            }
+
+            if (currString.substring(0,1).equals(":")) {
+                 if (!variables.containsKey(currString)) {
+                     variables.put(currString, new Constant(0));
+                 }
+                 currExpressions.addFirst(variables.get(currString));
             }
 
             try {
@@ -94,6 +106,15 @@ public class Parser {
                     }
                 } catch (ClassCastException e) {
                     // TODO Throw exception for incorrect number of arguments
+                }
+
+                if (expressionClass.equals(Make.class)) {
+                    currExpressions.addLast(variables);
+                    expressionTypes.addLast(Map.class);
+                }
+                if (expressionClass.equals(To.class)) {
+                    currExpressions.addLast(expressionClasses);
+                    expressionTypes.addLast(Map.class);
                 }
 
                 try {
