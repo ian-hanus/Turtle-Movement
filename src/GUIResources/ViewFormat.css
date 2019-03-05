@@ -17,17 +17,49 @@
     -fx-border-radius: 0;
     -fx-border-style: solid;
     -fx-border-width: 5;
-    -fx-min-width: 300;
-    -fx-max-width: 300;
-    -fx-pref-height: 120;
-    -fx-translate-y: -10;
-    -fx-focus-color: transparent;
+    -fx-pref-width: 300;
+    -fx-min-height: 150;
+    -fx-translate-y: 0;
+    -fx-focus-color: white;
     -fx-hgap: 20;
 }
 
+.borderless-right{
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-border-color: rgb(0,50,0);
+    -fx-border-width: 0;
+    -fx-spacing: 2;
+    -fx-padding: 2;
+    -fx-border-radius: 0;
+    -fx-border-style: solid;
+    -fx-pref-width: 300;
+    -fx-min-height: 150;
+    -fx-translate-y: 0;
+    -fx-focus-color: white;
+    -fx-hgap: 20;
+}
+
+.scroll-panes{
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-border-color: rgb(0,50,0);
+    -fx-spacing: 2;
+    -fx-padding: 2;
+    -fx-border-radius: 0;
+    -fx-border-style: solid;
+    -fx-border-width: 5;
+    -fx-min-width: 300;
+    -fx-max-width: 300;
+    -fx-min-height: 120;
+    -fx-translate-y: 0;
+    -fx-focus-color: white;
+    -fx-vgap: 20;
+    -fx-hgap: 20;
+    -fx-vmax: 10000;
+}
+
 .box-right .content{
-    -fx-focus-color: transparent;
-    -fx-border-color: transparent;
+    -fx-focus-color: white;
+    -fx-border-color: white;
     -fx-background-color: rgb(255, 255, 255);
 }
 
@@ -49,7 +81,8 @@
     -fx-max-height: 135;
     -fx-min-width: 1180;
     -fx-max-width: 1180;
-    -fx-translate-y: -15;
+    -fx-translate-y: -10;
+    -fx-translate-x: 10;
 }
 
 .text-area-terminal{
@@ -62,18 +95,8 @@
     -fx-min-height: 90;
     -fx-max-height: 90;
     -fx-translate-x: 2;
-}
-
-.text-right{
-    -fx-text-box-border: transparent;
-    -fx-focus-color: transparent;
-    -fx-background-color: rgb(255, 255, 255);
-    -fx-spacing: 0;
-    -fx-min-width: 270;
-    -fx-max-width: 280;
-    -fx-max-height: 100;
-    -fx-min-height: 100;
-    -fx-translate-y: -10;
+    -fx-border-width: 0;
+    -fx-border-color: white;
 }
 
 .text-area .content {
@@ -93,8 +116,8 @@
     -fx-border-style: solid;
     -fx-border-width: 5;
     -fx-spacing: 10;
-    -fx-translate-y: -10;
-    -fx-translate-x: 10
+    -fx-translate-y: 0;
+    -fx-translate-x: 10;
 }
 
 .title {
@@ -210,4 +233,13 @@
 .slider-label{
     -fx-font-size: 10;
     -fx-translate-x: 20;
+}
+
+.param{
+    -fx-padding: 5;
+    -fx-spacing: 15;
+    -fx-font-family: Verdana;
+    -fx-font-size: 14;
+    -fx-font-weight: normal;
+    -fx-border-color: rgb(0,50,0);
 }
