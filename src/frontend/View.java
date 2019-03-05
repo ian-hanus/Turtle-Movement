@@ -87,6 +87,8 @@ public class View {
         myTerminalPane.getChildren().add(runButton);
         Button helpButton = new Button("Help");
         helpButton.getStyleClass().add("run-button");
+        Button loadButton = new Button("Load");
+        loadButton.getStyleClass().add("run-button");
         myTerminalPane.getChildren().add(helpButton);
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
