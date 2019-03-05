@@ -41,6 +41,7 @@ public class SLogoMain extends Application {
         return new Image(imageFile.toURI().toString());
     }
 
+
     public static void main (String[] args) {
         launch(args);
     }

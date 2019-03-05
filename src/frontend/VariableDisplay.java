@@ -23,6 +23,10 @@ public class VariableDisplay {
         return myVariableHistory.get(myKeyOrder.get(index));
     }
 
+    public Map<String, String> getVariables(){
+        return myVariableHistory;
+    }
+
     public int getSize(){
         return myKeyOrder.size();
     }
