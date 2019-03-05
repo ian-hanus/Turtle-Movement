@@ -1,9 +1,6 @@
 package Model;
 
-import Model.Exceptions.Parsing.ImproperBracketsException;
-import Model.Exceptions.Parsing.IncorrectArgTypeException;
-import Model.Exceptions.Parsing.IncorrectNumArgsException;
-import Model.Exceptions.Parsing.ParsingException;
+import Model.Exceptions.Parsing.*;
 import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Controls.Make;
@@ -45,8 +42,7 @@ public class Parser implements Parsing {
         String[] translatedCommands = translate(commands, language);
         try {
             return parse(translatedCommands);
-        }
-        catch (ClassNotFoundException | UninitializedExpressionException e) {
+        } catch (ClassNotFoundException | UninitializedExpressionException e) {
             // TODO What to do with these exceptions that are never thrown?
             e.printStackTrace();
         }
@@ -101,11 +97,16 @@ public class Parser implements Parsing {
                 currExpressions.push(new Constant(constant));
                 currExpressions.push(Constant.class);
             } catch (NumberFormatException notConstant) {
+                String expressionClassName = expressionClasses.getProperty(currString);
+                if (expressionClassName == null) {
+                    throw new CommandNotFoundException();
+                }
                 var expressionClass = Class.forName(expressionClasses.getProperty(currString));
                 Constructor[] exprConstructors = expressionClass.getConstructors();
                 Constructor exprConstructor = exprConstructors[exprConstructors.length - 1];
                 Class[] exprParams = exprConstructor.getParameterTypes();
                 int numParams = exprParams.length;
+                
                 Expression currCommand = null;
 
                 // TODO Uncomment this after Sachal implements getNumCommandArgs() method
