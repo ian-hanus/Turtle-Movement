@@ -1,36 +1,39 @@
 package Model;
 
-import Model.Exceptions.UninitializedExpressionException;
+import Model.Exceptions.*;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Controls.Make;
 import Model.Expressions.Controls.To;
 import Model.Expressions.Expression;
 import frontend.TurtleState;
-import frontend.Variable;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class Parser {
 
-    // TODO Move these to a properties file
-    private static final String OPEN_BRACKET = "[";
-    private static final String CLOSE_BRACKET = "]";
+    private final Properties expressionClasses = new Properties();
+    private final Properties syntax = new Properties();
 
-    private Map<String, String> expressionClasses;
+
     private Map<String, Constant> variables;
 
-    public Parser() {
-        // TODO Initialize maps (read from properties files)
-
-        expressionClasses = mapExpressionClasses();
+    public Parser() throws IOException {
+        readProperties(expressionClasses, "ExpressionClasses.properties");
+        readProperties(syntax, "Syntax.properties");
         variables = new HashMap<>();
     }
 
-    private Map<String, String> mapExpressionClasses() {
-        // TODO Read Expression classes from properties file
-
-        return null;
+    private void readProperties(Properties prop, String fileName) throws IOException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+        if (inputStream != null) {
+            prop.load(inputStream);
+        } else {
+            throw new FileNotFoundException();
+        }
     }
 
     public Result execute(String commands, String language) throws ClassNotFoundException, UninitializedExpressionException {
@@ -43,7 +46,7 @@ public class Parser {
         // TODO Translate commands from given language to English shorthand
     }
 
-    private Result parse(String[] commandStrings) throws ClassNotFoundException, UninitializedExpressionException {
+    private Result parse(String[] commandStrings) throws ParsingException, ClassNotFoundException, UninitializedExpressionException {
         Stack<Expression> superExpressions = new Stack<>();
         Deque<Object> currExpressions = new ArrayDeque<>();
         Deque<Class> expressionTypes = new ArrayDeque<>();
@@ -55,26 +58,26 @@ public class Parser {
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
 
-            if (currString.equals(CLOSE_BRACKET)) {
+            if (currString.equals(syntax.getProperty("listClose"))) {
                 numEndBrackets++;
                 makingList = true;
                 continue;
             }
-            if (currString.equals(OPEN_BRACKET)) {
+            if (currString.equals(syntax.getProperty("listOpen"))) {
                 numEndBrackets--;
                 if (numEndBrackets < 0) {
-                    // TODO Throw error for incorrect brackets
+                    throw new ImproperBracketsException();
                 }
                 makingList = false;
                 currExpressions.addFirst(currList.toArray());
                 continue;
             }
 
-            if (currString.substring(0,1).equals(":")) {
-                 if (!variables.containsKey(currString)) {
-                     variables.put(currString, new Constant(0));
-                 }
-                 currExpressions.addFirst(variables.get(currString));
+            if (currString.substring(0, 1).equals(syntax.getProperty("var"))) {
+                if (!variables.containsKey(currString)) {
+                    variables.put(currString, new Constant(0));
+                }
+                currExpressions.addFirst(variables.get(currString));
             }
 
             try {
@@ -82,7 +85,7 @@ public class Parser {
                 currExpressions.push(new Constant(constant));
                 currExpressions.push(Constant.class);
             } catch (NumberFormatException notConstant) {
-                var expressionClass = Class.forName(expressionClasses.get(currString));
+                var expressionClass = Class.forName(expressionClasses.getProperty(currString));
                 Constructor[] exprConstructors = expressionClass.getConstructors();
                 Constructor exprConstructor = exprConstructors[exprConstructors.length - 1];
                 Class[] exprParams = exprConstructor.getParameterTypes();
@@ -105,7 +108,7 @@ public class Parser {
                         }
                     }
                 } catch (ClassCastException e) {
-                    // TODO Throw exception for incorrect number of arguments
+                    throw new IncorrectNumArgsException();
                 }
 
                 if (expressionClass.equals(Make.class)) {
@@ -114,7 +117,7 @@ public class Parser {
                 }
                 if (expressionClass.equals(To.class)) {
                     currExpressions.addLast(expressionClasses);
-                    expressionTypes.addLast(Map.class);
+                    expressionTypes.addLast(Properties.class);
                 }
 
                 try {
@@ -128,9 +131,9 @@ public class Parser {
                         currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst(), expressionTypes.getFirst(), expressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst(), currExpressions.getFirst());
                     }
                 } catch (EmptyStackException e) {
-                    // TODO Throw exception for incorrect number of args
+                    throw new IncorrectNumArgsException();
                 } catch (NoSuchMethodException e) {
-                    // TODO Throw exception for incorrect type of args
+                    throw new IncorrectArgTypeException();
                 } catch (Exception e) {
                     // TODO What to do with other java exceptions?
                 }
