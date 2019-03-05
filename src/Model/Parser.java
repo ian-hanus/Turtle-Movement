@@ -20,13 +20,14 @@ public class Parser implements Parsing {
 
     private final Properties expressionClasses = new Properties();
     private final  Map<String, Properties> languages = new HashMap<>();
+    private final Map<String, Constant> variables = new HashMap<>();
 
-    private Map<String, Constant> variables;
+    private TurtleState mostRecentTurtleState;
 
     public Parser() {
         readLanguages();
         readProperties(expressionClasses, "./src/ExpressionClasses.properties");
-        variables = new HashMap<>();
+        mostRecentTurtleState = new TurtleState(0, 0, 0, true, true);
     }
 
     private void readLanguages() {
@@ -106,7 +107,7 @@ public class Parser implements Parsing {
         Deque<Expression> currList = new ArrayDeque<>();
 
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
-        turtleChanges.push(new TurtleState(0, 0, 0, true, true));
+        turtleChanges.addFirst(mostRecentTurtleState);
 
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
@@ -123,6 +124,7 @@ public class Parser implements Parsing {
                 }
                 makingList = false;
                 currExpressions.addFirst(currList.toArray());
+                currExpressionTypes.addFirst(Array.class);
                 continue;
             }
 
@@ -213,6 +215,8 @@ public class Parser implements Parsing {
         while (!superExpressions.empty()) {
             returnValue = superExpressions.pop().evaluate();
         }
+
+        mostRecentTurtleState = turtleChanges.getLast();
 
         return new Result(returnValue, turtleChanges);
     }
