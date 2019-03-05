@@ -40,7 +40,6 @@ public class Parser implements Parsing {
     }
 
     private void readProperties(Properties prop, String fileName) {
-        System.out.println(fileName);
         try {
             InputStream inputStream = new FileInputStream(fileName);
             prop.load(inputStream);
