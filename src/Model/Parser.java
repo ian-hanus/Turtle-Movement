@@ -1,9 +1,6 @@
 package Model;
 
-import Model.Exceptions.Parsing.ImproperBracketsException;
-import Model.Exceptions.Parsing.IncorrectArgTypeException;
-import Model.Exceptions.Parsing.IncorrectNumArgsException;
-import Model.Exceptions.Parsing.ParsingException;
+import Model.Exceptions.Parsing.*;
 import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Controls.Make;
@@ -45,8 +42,7 @@ public class Parser implements Parsing {
         String[] translatedCommands = translate(commands, language);
         try {
             return parse(translatedCommands);
-        }
-        catch (ClassNotFoundException | UninitializedExpressionException e) {
+        } catch (ClassNotFoundException | UninitializedExpressionException e) {
             // TODO What to do with these exceptions that are never thrown?
             e.printStackTrace();
         }
@@ -63,11 +59,13 @@ public class Parser implements Parsing {
     private Result parse(String[] commandStrings) throws ParsingException, ClassNotFoundException, UninitializedExpressionException {
         Stack<Expression> superExpressions = new Stack<>();
         Deque<Object> currExpressions = new ArrayDeque<>();
-        Deque<Class> expressionTypes = new ArrayDeque<>();
-        Deque<TurtleState> turtleChanges = new ArrayDeque<>();
+        Deque<Class> currExpressionTypes = new ArrayDeque<>();
+
         int numEndBrackets = 0;
         boolean makingList = false;
         Deque<Expression> currList = new ArrayDeque<>();
+
+        Deque<TurtleState> turtleChanges = new ArrayDeque<>();
 
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
@@ -99,11 +97,16 @@ public class Parser implements Parsing {
                 currExpressions.push(new Constant(constant));
                 currExpressions.push(Constant.class);
             } catch (NumberFormatException notConstant) {
+                String expressionClassName = expressionClasses.getProperty(currString);
+                if (expressionClassName == null) {
+                    throw new CommandNotFoundException();
+                }
                 var expressionClass = Class.forName(expressionClasses.getProperty(currString));
                 Constructor[] exprConstructors = expressionClass.getConstructors();
                 Constructor exprConstructor = exprConstructors[exprConstructors.length - 1];
                 Class[] exprParams = exprConstructor.getParameterTypes();
                 int numParams = exprParams.length;
+                
                 Expression currCommand = null;
 
                 // TODO Uncomment this after Sachal implements getNumCommandArgs() method
@@ -113,7 +116,7 @@ public class Parser implements Parsing {
                     int numCommandArgs = (Integer)getNumCommandArgs.invoke(expressionClass.getConstructor().newInstance());
                     if (currExpressions.size() > numCommandArgs) {
                         superExpressions.push((Expression) currExpressions.getLast());
-                        expressionTypes.getLast();
+                        currExpressionTypes.getLast();
                     }
                 }
                 catch(ClassCastException e) {
@@ -126,27 +129,27 @@ public class Parser implements Parsing {
 
                 if (exprParams[numParams - 1].equals(Deque.class)) {
                     currExpressions.addLast(turtleChanges);
-                    expressionTypes.addLast(Deque.class);
+                    currExpressionTypes.addLast(Deque.class);
                 }
 
                 if (expressionClass.equals(Make.class)) {
                     currExpressions.addLast(variables);
-                    expressionTypes.addLast(Map.class);
+                    currExpressionTypes.addLast(Map.class);
                 }
                 if (expressionClass.equals(To.class)) {
                     currExpressions.addLast(expressionClasses);
-                    expressionTypes.addLast(Properties.class);
+                    currExpressionTypes.addLast(Properties.class);
                 }
 
                 try {
                     if (numParams == 0) {
                         currCommand = (Expression) expressionClass.getDeclaredConstructor().newInstance();
                     } else if (numParams == 1) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst()).newInstance(currExpressions.getFirst());
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.getFirst()).newInstance(currExpressions.getFirst());
                     } else if (numParams == 2) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst(), expressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst());
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.getFirst(), currExpressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst());
                     } else {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst(), expressionTypes.getFirst(), expressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst(), currExpressions.getFirst());
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.getFirst(), currExpressionTypes.getFirst(), currExpressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst(), currExpressions.getFirst());
                     }
                 } catch (EmptyStackException e) {
                     throw new IncorrectNumArgsException();
