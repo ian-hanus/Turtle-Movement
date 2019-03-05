@@ -1,10 +1,11 @@
 package Model;
 
+import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Expression;
-import backend.Result;
 import frontend.TurtleState;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class Parser {
@@ -37,12 +38,14 @@ public class Parser {
         // TODO Translate commands from given language to English shorthand
     }
 
-    private Result parse(String[] commandStrings) {
-        Stack<Object> expressions = new Stack<>();
+    private Result parse(String[] commandStrings) throws ClassNotFoundException, UninitializedExpressionException {
+        Stack<Expression> superExpressions = new Stack<>();
+        Deque<Object> currExpressions = new ArrayDeque<>();
+        Deque<Class> expressionTypes = new ArrayDeque<>();
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
-        boolean makingList = false;
-        Stack<Expression> currList = new Stack<>();
         int numEndBrackets = 0;
+        boolean makingList = false;
+        Deque<Object> currList = new ArrayDeque<>();
 
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
@@ -57,63 +60,72 @@ public class Parser {
                 if (numEndBrackets < 0) {
                     // TODO Throw error for incorrect brackets
                 }
-
-                expressions.push(currList.toArray());
-
                 makingList = false;
+                currExpressions.addFirst(currList.toArray());
                 continue;
             }
 
             try {
                 double constant = Double.parseDouble(currString);
-                expressions.push(new Constant(constant));
-            }
-            catch (NumberFormatException notConstant) {
-                if (expressionClasses.containsKey(currString)) {
-                    try {
-                        var expressionClazz = Class.forName(expressionClasses.get(currString));
-                        Expression currCommand = (Expression)expressionClazz.getDeclaredConstructor().newInstance();
-                        Class[] argTypes = currCommand.getArgumentTypes();
-                        Object[] args = new Object[argTypes.length];
-                        boolean isTurtleCommand = false;
+                currExpressions.push(new Constant(constant));
+                currExpressions.push(Constant.class);
+            } catch (NumberFormatException notConstant) {
+                var expressionClass = Class.forName(expressionClasses.get(currString));
+                Constructor[] exprConstructors = expressionClass.getConstructors();
+                Constructor exprConstructor = exprConstructors[exprConstructors.length - 1];
+                Class[] exprParams = exprConstructor.getParameterTypes();
+                int numParams = exprParams.length;
+                Expression currCommand = null;
 
-                        if (argTypes[argTypes.length - 1].equals(java.util.Deque.class)) {
-                            isTurtleCommand = true;
-                            args = new Expression[args.length - 1];
+                // TODO Find a better way to determine when to push to superExpressions
+                try {
+                    if (exprParams[numParams - 1].equals(Deque.class)) {
+                        if (numParams > currExpressions.size() + 1) {
+                            superExpressions.push((Expression) currExpressions.getLast());
+                            expressionTypes.getLast();
                         }
-
-                        for (int j = args.length - 1; j >= 0; j--) {
-                            try {
-                                Object currArg = expressions.pop();
-                                /*if (!currArg.getType().equals(argTypes[j])) {
-                                    // TODO throw exception for incorrect argument type
-                                }*/
-                                args[j] = currArg;
-                            }
-                            catch (EmptyStackException incorrectArgs) {
-                                // TODO Throw exception for incorrect argument number
-                            }
-                        }
-
-                        if (isTurtleCommand) {
-                            currCommand.setArguments(args, turtleChanges);
-                        }
-                        else {
-                            currCommand.setArguments(args);
-                        }
-                        if (makingList) {
-                            currList.push(currCommand);
-                        }
-                        else {
-                            expressions.push(currCommand);
+                        currExpressions.addLast(turtleChanges);
+                        expressionTypes.addLast(Deque.class);
+                    } else {
+                        if (numParams > currExpressions.size()) {
+                            superExpressions.push((Expression) currExpressions.getLast());
+                            expressionTypes.getLast();
                         }
                     }
-                    catch (Exception reflectionException) {
-                        // TODO Do something if ClassNotFoundException or NoSuchMethodException
+                } catch (ClassCastException e) {
+                    // TODO Throw exception for incorrect number of arguments
+                }
+
+                try {
+                    if (numParams == 0) {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor().newInstance();
+                    } else if (numParams == 1) {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst()).newInstance(currExpressions.getFirst());
+                    } else if (numParams == 2) {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst(), expressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst());
+                    } else {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(expressionTypes.getFirst(), expressionTypes.getFirst(), expressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst(), currExpressions.getFirst());
                     }
+                } catch (EmptyStackException e) {
+                    // TODO Throw exception for incorrect number of args
+                } catch (NoSuchMethodException e) {
+                    // TODO Throw exception for incorrect type of args
+                } catch (Exception e) {
+                    // TODO What to do with other java exceptions?
+                }
+                if (makingList) {
+                    currList.addFirst(currCommand);
+                } else {
+                    currExpressions.addFirst(currCommand);
                 }
             }
-
         }
+
+        double returnValue = 0;
+        while (!superExpressions.empty()) {
+            returnValue = superExpressions.pop().evaluate();
+        }
+
+        return new Result(returnValue, turtleChanges);
     }
 }
