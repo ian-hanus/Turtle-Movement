@@ -7,7 +7,7 @@ import java.lang.Math;
 public class Pi extends Expression {
 
 
-    public Pi(Expression input) throws AlteringExpressionException
+    public Pi() throws AlteringExpressionException
     {
         setArguments();
     }

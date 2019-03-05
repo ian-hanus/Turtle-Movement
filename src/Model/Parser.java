@@ -1,5 +1,6 @@
 package Model;
 
+import Model.Expressions.TurtleCommands.Forward;
 import Model.Exceptions.Parsing.*;
 import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
@@ -9,6 +10,7 @@ import Model.Expressions.Expression;
 import frontend.TurtleState;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -28,13 +30,13 @@ public class Parser implements Parsing {
     }
 
     private void readLanguages() {
-        File langDir = new File("./src/resources.languages");
+        File langDir = new File("./src/resources/languages");
         File[] langFiles = langDir.listFiles();
         if (langFiles != null) {
             for (File langF : langFiles) {
                 String langName = langF.getName().toLowerCase().split("\\.")[0];
                 languages.put(langName, new Properties());
-                readProperties(languages.get(langName), "./src/resources.languages/" + langF.getName());
+                readProperties(languages.get(langName), langF.getPath());
             }
         }
     }
@@ -63,21 +65,21 @@ public class Parser implements Parsing {
     }
 
     private String[] translate(String commands, String language) throws CommandNotFoundException {
-        Properties inputLanguage = languages.get(language);
+        Properties inputLanguage = languages.get(language.toLowerCase());
         String[] commandStrings = commands.toLowerCase().split(" ");
         for (int i = 0; i < commandStrings.length; i++) {
             boolean commandFound = false;
             for (String name : inputLanguage.stringPropertyNames()) {
-                Pattern regex = Pattern.compile(name);
+                Pattern regex = Pattern.compile(inputLanguage.getProperty(name));
                 if (regex.matcher(commandStrings[i]).find()) {
-                    String[] commandOptions = languages.get("english").getProperty(name).split("|");
+                    String[] commandOptions = languages.get("english").getProperty(name).split("\\|");
                     commandStrings[i] = commandOptions[commandOptions.length - 1].replace("\\", "");
                     commandFound = true;
                 }
             }
             if (!commandFound) {
                 for (String name : languages.get("syntax").stringPropertyNames()) {
-                    Pattern regex = Pattern.compile(name);
+                    Pattern regex = Pattern.compile(languages.get("syntax").getProperty(name));
                     if (regex.matcher(commandStrings[i]).find()) {
                         commandFound = true;
                     }
@@ -104,6 +106,7 @@ public class Parser implements Parsing {
         Deque<Expression> currList = new ArrayDeque<>();
 
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
+        turtleChanges.push(new TurtleState(0, 0, 0, true, true));
 
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
@@ -133,7 +136,7 @@ public class Parser implements Parsing {
             try {
                 double constant = Double.parseDouble(currString);
                 currExpressions.push(new Constant(constant));
-                currExpressions.push(Constant.class);
+                currExpressionTypes.push(Expression.class);
             } catch (NumberFormatException notConstant) {
                 // TODO Implement user-defined procedures
                 var expressionClass = Class.forName(expressionClasses.getProperty(currString));
@@ -161,10 +164,14 @@ public class Parser implements Parsing {
                     // TODO What to do with reflection errors that should never be thrown?
                 }
                 */
-
-                if (exprParams[numParams - 1].equals(Deque.class)) {
-                    currExpressions.addLast(turtleChanges);
-                    currExpressionTypes.addLast(Deque.class);
+                try {
+                    if (exprParams[numParams - 1].equals(Deque.class)) {
+                        currExpressions.addLast(turtleChanges);
+                        currExpressionTypes.addLast(Deque.class);
+                    }
+                }
+                catch (ArrayIndexOutOfBoundsException e) {
+                    // Do nothing TODO Explain
                 }
 
                 if (expressionClass.equals(Make.class)) {
@@ -175,16 +182,15 @@ public class Parser implements Parsing {
                     currExpressions.addLast(expressionClasses);
                     currExpressionTypes.addLast(Properties.class);
                 }
-
                 try {
                     if (numParams == 0) {
                         currCommand = (Expression) expressionClass.getDeclaredConstructor().newInstance();
                     } else if (numParams == 1) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.getFirst()).newInstance(currExpressions.getFirst());
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.pop()).newInstance(currExpressions.pop());
                     } else if (numParams == 2) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.getFirst(), currExpressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst());
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.pop(), currExpressionTypes.pop()).newInstance(currExpressions.pop(), currExpressions.pop());
                     } else {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.getFirst(), currExpressionTypes.getFirst(), currExpressionTypes.getFirst()).newInstance(currExpressions.getFirst(), currExpressions.getFirst(), currExpressions.getFirst());
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.pop(), currExpressionTypes.pop(), currExpressionTypes.pop()).newInstance(currExpressions.pop(), currExpressions.pop(), currExpressions.pop());
                     }
                 } catch (EmptyStackException e) {
                     throw new IncorrectNumArgsException();
@@ -198,6 +204,7 @@ public class Parser implements Parsing {
                     currList.addFirst(currCommand);
                 } else {
                     currExpressions.addFirst(currCommand);
+                    currExpressionTypes.addFirst(Expression.class);
                 }
             }
         }
