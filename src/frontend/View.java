@@ -1,5 +1,10 @@
 package frontend;
 
+import Model.Exceptions.Parsing.ParsingException;
+import Model.Exceptions.UninitializedExpressionException;
+import Model.Parser;
+import Model.Parsing;
+import Model.Result;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,8 +19,11 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.awt.Dimension;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.Deque;
+import java.util.List;
 
 import static javafx.scene.paint.Color.BLACK;
 
@@ -36,6 +44,7 @@ public class View {
     private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Slider myPenSlider;
     private Palette myPalette;
+    private Parsing myParser;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -58,6 +67,11 @@ public class View {
         myVariableDisplay = variableDisplay;
         myBackgroundColorPicker = new ColorPicker();
         myPenColorPicker = new ColorPicker();
+        try {
+            myParser = new Parser();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         resetGUI();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
@@ -94,12 +108,20 @@ public class View {
             @Override public void handle(ActionEvent e) {
                 myConfiguration.setPenWidth(myPenSlider.getValue());
                 myTerminal.setInput(myTerminal.getTextArea().getText());
+                Result currentResults = null;
+                try {
+                     currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+                } catch (ParsingException e1) {
+                    e1.printStackTrace();
+                }
                 myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
-                ArrayList<TurtleState> testStates = new ArrayList<>();
+                Deque<TurtleState> currentStates = currentResults.getTurtleStates();
+                List<TurtleState> currentListStates = new ArrayList<>();
+                currentListStates.addAll(currentStates);
                 myTerminal.getTextArea().setText("");
-                myCanvas.updateCanvas(testStates);
+                myCanvas.updateCanvas(currentListStates);
             }
         });
         return myTerminalPane;
