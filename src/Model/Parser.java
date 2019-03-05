@@ -23,18 +23,18 @@ public class Parser implements Parsing {
 
     public Parser() {
         readLanguages();
-        readProperties(expressionClasses, "resources/ExpressionClasses.properties");
+        readProperties(expressionClasses, "./src/ExpressionClasses.properties");
         variables = new HashMap<>();
     }
 
     private void readLanguages() {
-        File langDir = new File("resources/languages");
+        File langDir = new File("./src/resources.languages");
         File[] langFiles = langDir.listFiles();
         if (langFiles != null) {
             for (File langF : langFiles) {
                 String langName = langF.getName().toLowerCase().split("\\.")[0];
                 languages.put(langName, new Properties());
-                readProperties(languages.get(langName), "resources/languages/" + langF.getName());
+                readProperties(languages.get(langName), "./src/resources.languages/" + langF.getName());
             }
         }
     }
