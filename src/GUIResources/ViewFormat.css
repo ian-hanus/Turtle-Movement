@@ -108,8 +108,8 @@
 }
 
 .canvas{
-    -fx-max-height: 404;
-    -fx-min-height: 404;
+    -fx-max-height: 410;
+    -fx-min-height: 410;
     -fx-pref-width: 10;
     -fx-background-color: rgb(255, 255, 255);
     -fx-border-color: rgb(0,50,0);

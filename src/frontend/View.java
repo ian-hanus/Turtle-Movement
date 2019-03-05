@@ -1,5 +1,8 @@
 package frontend;
 
+import Model.Exceptions.UninitializedExpressionException;
+import Model.Parser;
+import Model.Result;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,6 +39,7 @@ public class View {
     private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Slider myPenSlider;
     private Palette myPalette;
+    private Parser myParser;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -61,6 +65,7 @@ public class View {
         resetGUI();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
+        myParser = new Parser();
     }
 
     private void resetGUI(){
@@ -94,6 +99,13 @@ public class View {
             @Override public void handle(ActionEvent e) {
                 myConfiguration.setPenWidth(myPenSlider.getValue());
                 myTerminal.setInput(myTerminal.getTextArea().getText());
+                try {
+                    Result currentResults = myParser.execute(myTerminal.getInput(), myConfiguration.getLanguage().toString());
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (UninitializedExpressionException e1) {
+                    e1.printStackTrace();
+                }
                 myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
