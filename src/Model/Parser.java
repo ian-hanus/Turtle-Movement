@@ -50,6 +50,8 @@ public class Parser implements Parsing {
             // TODO What to do with these exceptions that are never thrown?
             e.printStackTrace();
         }
+
+        return null;
     }
 
     private String[] translate(String commands, String language) {
