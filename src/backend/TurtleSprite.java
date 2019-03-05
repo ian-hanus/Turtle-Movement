@@ -11,7 +11,6 @@ import java.util.List;
 public class TurtleSprite extends ImageView {
     private List<Line> myLines;
     private final double TURTLE_SIZE = 30;
-    private boolean isActive;
     TurtleState currState;
     Image activeImage;
 
