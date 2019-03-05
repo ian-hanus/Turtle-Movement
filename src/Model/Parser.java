@@ -129,10 +129,7 @@ import Model.Expressions.Controls.To;
 import Model.Expressions.Expression;
 import frontend.TurtleState;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -147,30 +144,27 @@ public class Parser implements Parsing {
 
     public Parser() {
         readLanguages();
-        readProperties(expressionClasses, "src/Model/ExpressionClasses.properties");
+        readProperties(expressionClasses, "resources/ExpressionClasses.properties");
         variables = new HashMap<>();
     }
 
     private void readLanguages() {
-        File langDir = new File("src/resources.languages");
+        File langDir = new File("resources/languages");
         File[] langFiles = langDir.listFiles();
         if (langFiles != null) {
             for (File langF : langFiles) {
-                String langName = langF.getName().toLowerCase().split(".")[0];
+                String langName = langF.getName().toLowerCase().split("\\.")[0];
                 languages.put(langName, new Properties());
-                readProperties(languages.get(langName), langF.getName());
+                readProperties(languages.get(langName), "resources/languages/" + langF.getName());
             }
         }
     }
 
     private void readProperties(Properties prop, String fileName) {
+        System.out.println(fileName);
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException();
-            }
+            InputStream inputStream = new FileInputStream(fileName);
+            prop.load(inputStream);
         }
         catch (IOException e) {
             // TODO What to do with this exception that should never be thrown?

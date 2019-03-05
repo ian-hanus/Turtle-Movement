@@ -67,11 +67,7 @@ public class View {
         myVariableDisplay = variableDisplay;
         myBackgroundColorPicker = new ColorPicker();
         myPenColorPicker = new ColorPicker();
-        try {
-            myParser = new Parser();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        myParser = new Parser();
         resetGUI();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
