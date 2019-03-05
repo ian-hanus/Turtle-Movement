@@ -1,6 +1,5 @@
 package Model;
 
-import Model.Expressions.TurtleCommands.Forward;
 import Model.Exceptions.Parsing.*;
 import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
@@ -211,7 +210,12 @@ public class Parser implements Parsing {
             }
         }
 
+        while (!currExpressions.isEmpty()) {
+            superExpressions.push((Expression)currExpressions.pop());
+        }
+
         double returnValue = 0;
+        // TODO Delete this later
         while (!superExpressions.empty()) {
             returnValue = superExpressions.pop().evaluate();
         }
