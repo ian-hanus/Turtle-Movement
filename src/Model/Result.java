@@ -1,31 +1,24 @@
-package backend;
+package Model;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import frontend.TurtleState;
+
+import java.util.Deque;
 
 public class Result {
 
-    private int returnValue;
-    private Queue<Turtle> turtleStates;
+    private double returnValue;
+    private Deque<TurtleState> turtleStates;
 
-    public Result() {
-        returnValue = 0;
-        turtleStates = new LinkedList<>();
+    public Result(double val, Deque<TurtleState> states) {
+        returnValue = val;
+        turtleStates = states;
     }
 
-    public void setReturnValue(int value) {
-        returnValue = value;
-    }
-
-    public int getReturnValue() {
+    public double getReturnValue() {
         return returnValue;
     }
 
-    public void addTurtleState(Turtle state) {
-        turtleStates.add(state);
-    }
-
-    public Queue<Turtle> getTurtleStates() {
+    public Deque<TurtleState> getTurtleStates() {
         return turtleStates;
     }
 }
