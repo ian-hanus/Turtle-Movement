@@ -1,6 +1,10 @@
 package Model;
 
 import Model.Exceptions.*;
+import Model.Exceptions.Parsing.ImproperBracketsException;
+import Model.Exceptions.Parsing.IncorrectArgTypeException;
+import Model.Exceptions.Parsing.IncorrectNumArgsException;
+import Model.Exceptions.Parsing.ParsingException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Controls.Make;
 import Model.Expressions.Controls.To;
