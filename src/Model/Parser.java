@@ -8,33 +8,52 @@ import Model.Expressions.Controls.To;
 import Model.Expressions.Expression;
 import frontend.TurtleState;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.regex.Pattern;
 
 // TODO What to do with exceptions that should never be thrown?
 public class Parser implements Parsing {
 
     private final Properties expressionClasses = new Properties();
-    private final Properties syntax = new Properties();
-
+    private final  Map<String, Properties> languages = new HashMap<>();
 
     private Map<String, Constant> variables;
 
-    public Parser() throws IOException {
-        readProperties(expressionClasses, "ExpressionClasses.properties");
-        readProperties(syntax, "Syntax.properties");
+    public Parser() {
+        readLanguages();
+        readProperties(expressionClasses, "src/Model/ExpressionClasses.properties");
         variables = new HashMap<>();
     }
 
-    private void readProperties(Properties prop, String fileName) throws IOException {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (inputStream != null) {
-            prop.load(inputStream);
-        } else {
-            throw new FileNotFoundException();
+    private void readLanguages() {
+        File langDir = new File("src/resources.languages");
+        File[] langFiles = langDir.listFiles();
+        if (langFiles != null) {
+            for (File langF : langFiles) {
+                String langName = langF.getName().toLowerCase().split(".")[0];
+                languages.put(langName, new Properties());
+                readProperties(languages.get(langName), langF.getName());
+            }
+        }
+    }
+
+    private void readProperties(Properties prop, String fileName) {
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+            if (inputStream != null) {
+                prop.load(inputStream);
+            } else {
+                throw new FileNotFoundException();
+            }
+        }
+        catch (IOException e) {
+            // TODO What to do with this exception that should never be thrown?
+            e.printStackTrace();
         }
     }
 
@@ -50,9 +69,33 @@ public class Parser implements Parsing {
         return null;
     }
 
-    private String[] translate(String commands, String language) {
+    private String[] translate(String commands, String language) throws CommandNotFoundException {
         // TODO Translate commands from given language to English shorthand (lower-case)
-        return commands.split(" ");
+        Properties inputLanguage = languages.get(language);
+        String[] commandStrings = commands.toLowerCase().split(" ");
+        for (int i = 0; i < commandStrings.length; i++) {
+            boolean commandFound = false;
+            for (String name : inputLanguage.stringPropertyNames()) {
+                Pattern regex = Pattern.compile(name);
+                if (regex.matcher(commandStrings[i]).find()) {
+                    String[] commandOptions = languages.get("english").getProperty(name).split("|");
+                    commandStrings[i] = commandOptions[commandOptions.length - 1].replace("\\", "");
+                    commandFound = true;
+                }
+            }
+            if (!commandFound) {
+                for (String name : languages.get("syntax").stringPropertyNames()) {
+                    Pattern regex = Pattern.compile(name);
+                    if (regex.matcher(commandStrings[i]).find()) {
+                        commandFound = true;
+                    }
+                }
+            }
+            if (!commandFound) {
+                throw new CommandNotFoundException();
+            }
+        }
+        return commandStrings;
     }
 
     // TODO Refactor this lol
@@ -60,6 +103,9 @@ public class Parser implements Parsing {
         Stack<Expression> superExpressions = new Stack<>();
         Deque<Object> currExpressions = new ArrayDeque<>();
         Deque<Class> currExpressionTypes = new ArrayDeque<>();
+
+        Properties syntax = languages.get("syntax");
+        Pattern variableRegex = Pattern.compile(syntax.getProperty("Variable"));
 
         int numEndBrackets = 0;
         boolean makingList = false;
@@ -70,12 +116,12 @@ public class Parser implements Parsing {
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
 
-            if (currString.equals(syntax.getProperty("listClose"))) {
+            if (currString.equals(syntax.getProperty("ListEnd").replace("\\", ""))) {
                 numEndBrackets++;
                 makingList = true;
                 continue;
             }
-            if (currString.equals(syntax.getProperty("listOpen"))) {
+            if (currString.equals(syntax.getProperty("ListStart").replace("\\", ""))) {
                 numEndBrackets--;
                 if (numEndBrackets < 0) {
                     throw new ImproperBracketsException();
@@ -85,7 +131,7 @@ public class Parser implements Parsing {
                 continue;
             }
 
-            if (currString.substring(0, 1).equals(syntax.getProperty("var"))) {
+            if (variableRegex.matcher(currString).find()) {
                 if (!variables.containsKey(currString)) {
                     variables.put(currString, new Constant(0));
                 }
@@ -97,16 +143,13 @@ public class Parser implements Parsing {
                 currExpressions.push(new Constant(constant));
                 currExpressions.push(Constant.class);
             } catch (NumberFormatException notConstant) {
-                String expressionClassName = expressionClasses.getProperty(currString);
-                if (expressionClassName == null) {
-                    throw new CommandNotFoundException();
-                }
+                // TODO Implement user-defined procedures
                 var expressionClass = Class.forName(expressionClasses.getProperty(currString));
                 Constructor[] exprConstructors = expressionClass.getConstructors();
                 Constructor exprConstructor = exprConstructors[exprConstructors.length - 1];
                 Class[] exprParams = exprConstructor.getParameterTypes();
                 int numParams = exprParams.length;
-                
+
                 Expression currCommand = null;
 
                 // TODO Uncomment this after Sachal implements getNumCommandArgs() method
