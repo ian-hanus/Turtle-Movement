@@ -99,9 +99,11 @@ public class Parser {
                 int numParams = exprParams.length;
                 Expression currCommand = null;
 
+                // TODO Uncomment this after Sachal implements getNumCommandArgs() method
+                /*
                 try {
                     Method getNumCommandArgs = expressionClass.getDeclaredMethod("getNumCommandArgs");
-                    int numCommandArgs = getNumCommandArgs.invoke(expressionClass.getConstructor().newInstance())
+                    int numCommandArgs = (Integer)getNumCommandArgs.invoke(expressionClass.getConstructor().newInstance());
                     if (currExpressions.size() > numCommandArgs) {
                         superExpressions.push((Expression) currExpressions.getLast());
                         expressionTypes.getLast();
@@ -113,6 +115,7 @@ public class Parser {
                 catch(Exception e) {
                     // TODO What to do with reflection errors that should never be thrown?
                 }
+                */
 
                 if (exprParams[numParams - 1].equals(Deque.class)) {
                     currExpressions.addLast(turtleChanges);
