@@ -70,7 +70,6 @@ public class Parser implements Parsing {
     }
 
     private String[] translate(String commands, String language) throws CommandNotFoundException {
-        // TODO Translate commands from given language to English shorthand (lower-case)
         Properties inputLanguage = languages.get(language);
         String[] commandStrings = commands.toLowerCase().split(" ");
         for (int i = 0; i < commandStrings.length; i++) {
