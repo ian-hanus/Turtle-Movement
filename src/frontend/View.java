@@ -1,42 +1,50 @@
 package frontend;
 
+import Model.Exceptions.Parsing.ParsingException;
+import Model.Exceptions.UninitializedExpressionException;
+import Model.Parser;
+import Model.Parsing;
+import Model.Result;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.awt.Dimension;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.Deque;
 import java.util.List;
+
+import static javafx.scene.paint.Color.BLACK;
 
 public class View {
     private Scene myScene;
     private BorderPane myBorderPane;
+    private SLogoMain myMain;
     private GridPane myRightPane;
     private HBox myTitlePane;
     private Canvas myCanvas;
-    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus, myPalette, myResults;
-    private TextArea myTerminalText;
-    private ColorPicker myBackgroundColorPicker, myPenColorPicker;
+    private VBox myHistoryBox, myVariableBox, myConfigBox, myTurtleStatus, myPaletteBox, myResults;
     private Terminal myTerminal;
     private FlowPane myTerminalPane;
     private Configuration myConfiguration;
     private Image myTurtleImage;
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableDisplay;
-    private SLogoMain myMain;
+    private ColorPicker myBackgroundColorPicker, myPenColorPicker;
     private Slider myPenSlider;
+    private Palette myPalette;
+    private Parsing myParser;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
@@ -49,9 +57,9 @@ public class View {
         myBorderPane = new BorderPane();
         myTerminalPane = new FlowPane();
         myTerminal = new Terminal();
+        myPalette = new Palette();
         myRightPane = new GridPane();
         myBorderPane.setTop(myTitlePane);
-        myRightPane.setAlignment(Pos.TOP_LEFT);
         myBorderPane.setRight(myRightPane);
         myBorderPane.setBottom(drawTerminal());
         myBorderPane.setCenter(drawCanvas());
@@ -59,6 +67,11 @@ public class View {
         myVariableDisplay = variableDisplay;
         myBackgroundColorPicker = new ColorPicker();
         myPenColorPicker = new ColorPicker();
+        try {
+            myParser = new Parser();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         resetGUI();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
@@ -82,30 +95,33 @@ public class View {
 
     private Node drawTerminal(){
         myTerminalPane.getStyleClass().add("box-bot");
-        myTerminalPane.setMaxWidth(880);
-        myTerminalPane.setTranslateX(10);
-        myTerminalPane.setTranslateY(-10);
-        myTerminalPane.getChildren().add(new Label("Terminal"));
-        myTerminalText = new TextArea();
-        myTerminalText.getStyleClass().add("text-area-terminal");
-        myTerminalPane.getChildren().add(myTerminalText);
+        myTerminalPane.getChildren().addAll(new Label("Terminal"), myTerminal.getTextArea());
         Button runButton = new Button("Run");
         runButton.getStyleClass().add("run-button");
         myTerminalPane.getChildren().add(runButton);
         Button helpButton = new Button("Help");
         helpButton.getStyleClass().add("run-button");
+        Button loadButton = new Button("Load");
+        loadButton.getStyleClass().add("run-button");
         myTerminalPane.getChildren().add(helpButton);
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 myConfiguration.setPenWidth(myPenSlider.getValue());
-                myTerminal.setInput(myTerminalText.getText());
-                myCommandHistory.addHistory(myTerminalText.getText().split("\n"));
+                myTerminal.setInput(myTerminal.getTextArea().getText());
+                Result currentResults = null;
+                try {
+                     currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+                } catch (ParsingException e1) {
+                    e1.printStackTrace();
+                }
+                myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
                 updateCommandHistory();
                 updateVariableDisplay();
-                //TESTING
-                ArrayList<TurtleState> testStates = new ArrayList<>();
-                myTerminalText.setText("");
-                myCanvas.updateCanvas(testStates);
+                Deque<TurtleState> currentStates = currentResults.getTurtleStates();
+                List<TurtleState> currentListStates = new ArrayList<>();
+                currentListStates.addAll(currentStates);
+                myTerminal.getTextArea().setText("");
+                myCanvas.updateCanvas(currentListStates);
             }
         });
         return myTerminalPane;
@@ -113,13 +129,14 @@ public class View {
 
     private void drawResults(){
         myResults = drawRightBox("Results");
-        myRightPane.add(myResults, 1, 2);
+        myResults.getStyleClass().add("borderless-right");
+        ScrollPane sp = new ScrollPane(myResults);
+        sp.getStyleClass().add("scroll-panes");
+        myRightPane.add(sp, 1, 2);
     }
 
     private void drawConfig(){
         myConfigBox = drawRightBox("Configuration");
-        myConfigBox.setMaxHeight(150);
-        myConfigBox.setMinHeight(150);
         createLoadButton(myConfigBox);
         createBackgroundPicker(myConfigBox);
         createPenPicker(myConfigBox);
@@ -130,9 +147,36 @@ public class View {
     }
 
     private void drawPalette(){
-        myPalette = drawRightBox("Palette");
-        myPalette.getStyleClass().add("right-box");
-        myRightPane.add(myPalette, 1, 1);
+        myPaletteBox = drawRightBox("Palette");
+        myPaletteBox.getStyleClass().add("borderless-right");
+        ScrollPane sp = new ScrollPane(myPaletteBox);
+        sp.getStyleClass().add("scroll-panes");
+        myRightPane.add(sp, 1, 1);
+        for(Integer i:myPalette.getColorMap().keySet()){
+            paletteRow(i, myPalette.getColorMap().get(i));
+        }
+        for(Integer i:myPalette.getShapeMap().keySet()){
+            paletteRow(i, myPalette.getShapeMap().get(i));
+        }
+    }
+
+    private void paletteRow(int index, Color color){
+        HBox colorRow = new HBox();
+        colorRow.getStyleClass().add("color-picker-row");
+        Text indexTest = new Text(index + " - Color: ");
+        Rectangle colorSample = new Rectangle(15, 15);
+        colorSample.setFill(color);
+        colorRow.getChildren().addAll(indexTest, colorSample);
+        myPaletteBox.getChildren().add(colorRow);
+    }
+
+    private void paletteRow(int index, Shape shape){
+        HBox shapeRow = new HBox();
+        shapeRow.getStyleClass().add("color-picker-row");
+        Text indexTest = new Text(index + " - Shape: ");
+        shape.setFill(BLACK);
+        shapeRow.getChildren().addAll(indexTest, shape);
+        myPaletteBox.getChildren().add(shapeRow);
     }
 
     private void createSlider(VBox configBox){
@@ -151,41 +195,31 @@ public class View {
         loadImageButton.setText("Load New Turtle Image");
         loadImageButton.getStyleClass().add("load-button");
         myConfigBox.getChildren().add(loadImageButton);
-        loadImageButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                try {
-                    myTurtleImage = myMain.loadTurtleImage();
-                }
-                catch(NullPointerException x){
-                    ErrorDisplay invalidFile = new ErrorDisplay("Image Loader", "Invalid file");
-                    invalidFile.display();
-                }
-                myConfiguration.setTurtleImage(myTurtleImage);
-                myCanvas.setTurtleImage(myCanvas.getTurtleSprite(), myTurtleImage);
-            }
-        });
+        loadImageButton.setOnAction(e -> loadImage());
+    }
+
+    private void loadImage(){
+        try {
+            myTurtleImage = myMain.loadTurtleImage();
+        }
+        catch(NullPointerException x){
+            ErrorDisplay invalidFile = new ErrorDisplay("Image Loader", "Invalid file");
+            invalidFile.display();
+        }
+        myConfiguration.setTurtleImage(myTurtleImage);
+        //myCanvas.setTurtleImage(myCanvas.getTurtleSprite(), myTurtleImage);
     }
 
     private void createBackgroundPicker(VBox configBox){
         HBox colorRow = createColorRow(myBackgroundColorPicker, "Background Color");
         configBox.getChildren().add(colorRow);
-        myBackgroundColorPicker.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                myConfiguration.setBackgroundColor(myBackgroundColorPicker.getValue());
-                setCanvasBackground(myConfiguration.getBackgroundColor());
-            }
-        });
+        myBackgroundColorPicker.setOnAction(e -> myCanvas.setBackground(new Background(new BackgroundFill(myBackgroundColorPicker.getValue(), CornerRadii.EMPTY, Insets.EMPTY))));
     }
 
     private void createPenPicker(VBox configBox){
         HBox colorRow = createColorRow(myPenColorPicker, "Pen Color");
         configBox.getChildren().add(colorRow);
-        myPenColorPicker.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                myConfiguration.setPenColor(myPenColorPicker.getValue());
-                myCanvas.setPenColor(myConfiguration.getPenColor());
-            }
-        });
+        myPenColorPicker.setOnAction(e -> myConfiguration.setPenColor(myPenColorPicker.getValue()));
     }
 
     private HBox createColorRow(ColorPicker colorPicker, String labelString){
@@ -203,20 +237,17 @@ public class View {
         languageBox.setItems(FXCollections.observableArrayList(Language.values()));
         languageBox.setPromptText("Language");
         languageBox.getStyleClass().add("load-button");
-        myConfigBox.getChildren().add(languageBox);
-        languageBox.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                myConfiguration.setLanguage((Language)languageBox.getValue());
-            }
-        });
+        configBox.getChildren().add(languageBox);
+        languageBox.setOnAction(e -> myConfiguration.setLanguage((Language)languageBox.getValue()));
     }
 
     private void drawHistory(){
         myHistoryBox = drawRightBox("Command History");
-        myHistoryBox.setMinWidth(400);
-        myHistoryBox.setMaxWidth(400);
+        myHistoryBox.getStyleClass().add("borderless-right");
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myHistoryBox, 0, 2);
+        ScrollPane sp = new ScrollPane(myHistoryBox);
+        sp.getStyleClass().add("scroll-panes");
+        myRightPane.add(sp, 0, 2);
     }
 
     private void drawTurtleStatus(){
@@ -229,8 +260,11 @@ public class View {
 
     private void drawVariables(){
         myVariableBox = drawRightBox("Current Variables");
+        myVariableBox.getStyleClass().add("borderless-right");
         myRightPane.getStyleClass().add("pane-right");
-        myRightPane.add(myVariableBox, 0, 1);
+        ScrollPane sp = new ScrollPane(myVariableBox);
+        sp.getStyleClass().add("scroll-panes");
+        myRightPane.add(sp, 0, 1);
     }
 
     private VBox drawRightBox(String title){
@@ -247,34 +281,36 @@ public class View {
         Text titleText = new Text("SLogo: Team 1");
         titleText.setFill(Color.WHITE);
         title.getChildren().add(titleText);
-        Button newSlogo = new Button("New Window");
-        newSlogo.setOnAction(e -> myMain.start(new Stage()));
-        newSlogo.getStyleClass().add("new-sim-button");
-        myTitlePane.getChildren().addAll(title, newSlogo);
+        Button newWindowButton = new Button("New Window");
+        newWindowButton.setOnAction(e -> myMain.start(new Stage()));
+        newWindowButton.getStyleClass().add("new-sim-button");
+        myTitlePane.getChildren().addAll(title, newWindowButton);
     }
 
     public void updateCommandHistory(){
         drawHistory();
-        for(int k = 4; k >= 0; k--){
-            if(myCommandHistory.getSize() - k > 0) {
-                Button commandButton = new Button(myCommandHistory.getCommandString(myCommandHistory.getSize() - k - 1));
-                myHistoryBox.getChildren().add(commandButton);
-                commandButton.setOnAction(e -> myTerminalText.setText(commandButton.getText()));
-            }
+        for(String s:myCommandHistory.getCommandHistory()) {
+            Button commandButton = new Button(s);
+            myHistoryBox.getChildren().add(commandButton);
+            commandButton.setOnAction(e -> openParams());
         }
-    }
-
-    private void setCanvasBackground(Color color){
-        myCanvas.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     public void updateVariableDisplay(){
         drawVariables();
-        for(int k = 4; k >= 0; k--){
-            if(myVariableDisplay.getSize() - k > 0){
-                myVariableBox.getChildren().add(new Button(myVariableDisplay.getVariableString(myVariableDisplay.getSize() - k - 1)));
-            }
+        for(String s:myVariableDisplay.getVariables().keySet()){
+            Button variableButton = new Button(s + " " + myVariableDisplay.getVariables().get(s));
+            myVariableBox.getChildren().add(variableButton);
+            variableButton.setOnAction(e -> openVariable(myVariableDisplay, myVariableDisplay.getVariables().get(s)));
         }
+    }
+
+    public void openParams(){
+        ParameterWindow pw = new ParameterWindow();
+    }
+
+    public void openVariable(VariableDisplay variableDisplay, String variable){
+        VariableWindow vw = new VariableWindow(variableDisplay, variable);
     }
 
     public Scene getScene(){
