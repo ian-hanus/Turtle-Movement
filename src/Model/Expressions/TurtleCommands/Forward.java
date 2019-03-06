@@ -28,8 +28,8 @@ public class Forward extends Expression {
         double distanceAmount = distance.evaluate();
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle()*Math.PI/180;
-        double newX = copy.getX()+distanceAmount*Math.cos(heading);
-        double newY= copy.getY()+distanceAmount*Math.sin(heading);
+        double newX = copy.getX()+distanceAmount*Math.sin(heading);
+        double newY= copy.getY()+distanceAmount*Math.cos(heading);
         copy.setX(newX);
         copy.setY(newY);
         queue.addLast(copy);
