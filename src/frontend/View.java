@@ -2,10 +2,6 @@ package frontend;
 
 import Model.Parser;
 import Model.Result;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,14 +21,11 @@ public class View {
     private SLogoMain myMain;
     private GridPane myRightPane;
     private Canvas myCanvas;
-    private VBox myConfigBox, myTurtleStatus, myResults;
+    private VBox myTurtleStatus, myResults;
     private Terminal myTerminal;
-    private FlowPane myTerminalPane;
     private Configuration myConfiguration;
-    private Image myTurtleImage;
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableDisplay;
-    private Slider myPenSlider;
     private Palette myPalette;
 
     private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
@@ -48,13 +41,13 @@ public class View {
         myVariableDisplay = variableDisplay;
 
         BorderPane borderPane = new BorderPane();
-        myTerminalPane = new FlowPane();
+        FlowPane terminalPane = new FlowPane();
         myRightPane = new GridPane();
         myRightPane.getStyleClass().add("pane-right");
 
         borderPane.setTop(drawTitle());
         borderPane.setRight(myRightPane);
-        borderPane.setBottom(drawTerminal());
+        borderPane.setBottom(myTerminal.drawTerminal(terminalPane, this));
         borderPane.setCenter(drawCanvas());
 
         resetGUI();
@@ -77,45 +70,30 @@ public class View {
         return myCanvas;
     }
 
-    private Node drawTerminal(){
-        myTerminalPane.getStyleClass().add("box-bot");
-        myTerminalPane.getChildren().addAll(new Label("Terminal"), myTerminal.getTextArea());
-        Button runButton = new Button("Run");
-        runButton.getStyleClass().add("run-button");
-        myTerminalPane.getChildren().add(runButton);
-        Button helpButton = new Button("Help");
-        helpButton.getStyleClass().add("run-button");
-        Button loadButton = new Button("Load");
-        loadButton.getStyleClass().add("run-button");
-        myTerminalPane.getChildren().add(helpButton);
-        runButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                myTerminal.setInput(myTerminal.getTextArea().getText());
-                Result currentResults = null;
-                myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
-                myCommandHistory.updateCommandHistory(myRightPane);
-                myVariableDisplay.updateVariableDisplay(myRightPane);
-                try {
-                    Parser parser = new Parser();
-                    currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
-                    Deque<TurtleState> currentStates = currentResults.getTurtleStates();
-                    for(TurtleState ts:currentStates){
-                        System.out.println(ts.getY());
-                    }
-                    List<TurtleState> currentListStates = new ArrayList<>();
-                    currentListStates.addAll(currentStates);
-                    myCanvas.updateCanvas(currentListStates);
-                    myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
-                }
-                catch(Exception e1){
-                    ErrorDisplay commandError = new ErrorDisplay("Parse Error", "Invalid Command");
-                    commandError.display();
-                }
-                myTerminal.getTextArea().setText("");
-                myResults.getChildren().removeAll();
+    public void runCommands(){
+        myTerminal.setInput(myTerminal.getTextArea().getText());
+        Result currentResults = null;
+        myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
+        myCommandHistory.updateCommandHistory(myRightPane);
+        myVariableDisplay.updateVariableDisplay(myRightPane);
+        try {
+            Parser parser = new Parser();
+            currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+            Deque<TurtleState> currentStates = currentResults.getTurtleStates();
+            for(TurtleState ts:currentStates){
+                System.out.println(ts.getY());
             }
-        });
-        return myTerminalPane;
+            List<TurtleState> currentListStates = new ArrayList<>();
+            currentListStates.addAll(currentStates);
+            myCanvas.updateCanvas(currentListStates);
+            myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
+        }
+        catch(Exception e1){
+            ErrorDisplay commandError = new ErrorDisplay("Parse Error", "Invalid Command");
+            commandError.display();
+        }
+        myTerminal.getTextArea().setText("");
+        myResults.getChildren().removeAll();
     }
 
     private void drawResults(){
