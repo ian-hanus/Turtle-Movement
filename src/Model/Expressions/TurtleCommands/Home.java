@@ -30,7 +30,7 @@ public class Home extends Expression {
         double newY = 0;
         copy.setX(newX);
         copy.setY(newY);
-        queue.push(copy);
+        queue.addLast(copy);
         double distance = Math.sqrt(Math.pow(oldX-newX,2)+ Math.pow(oldY-newY,2));
         return distance;
     }

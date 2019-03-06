@@ -25,7 +25,7 @@ public class ShowTurtle extends Expression {
         checkInitialization();
         TurtleState copy = new TurtleState(queue.getLast());
         copy.setVisibility(true);
-        queue.push(copy);
+        queue.addLast(copy);
         return 1;
     }
 

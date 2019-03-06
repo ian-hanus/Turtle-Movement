@@ -26,7 +26,7 @@ public class ClearScreen extends Expression {
         checkInitialization();
         TurtleState copy = new TurtleState(queue.getLast());
         copy.setShouldReset(true);
-        queue.push(copy);
+        queue.addLast(copy);
         return 1;
     }
 
