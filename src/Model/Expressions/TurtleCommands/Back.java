@@ -8,7 +8,7 @@ import java.util.Deque;
 public class Back implements Expression, VariableArgumentTaker {
 
     private Expression[] inputs;
-    Deque<TurtleState> queue;
+    private Deque<TurtleState> queue;
 
     public Back(Deque<TurtleState> queue, Expression[] inputs) {
         if(inputs.length < getDefaultNumExpressions()){
@@ -29,7 +29,7 @@ public class Back implements Expression, VariableArgumentTaker {
         double newY= copy.getY()-distance*Math.sin(heading);
         copy.setX(newX);
         copy.setY(newY);
-        queue.push(copy);
+        queue.addLast(copy);
         return distance;
     }
 

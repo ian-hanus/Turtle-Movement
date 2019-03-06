@@ -1,45 +1,38 @@
 package Model.Expressions.TurtleCommands;
 import Model.Expressions.Interfaces.Expression;
-
-import java.lang.Math;
-import java.util.Deque;
+import Model.Expressions.Interfaces.ExpressionTaker;
 import frontend.TurtleState;
+import java.util.Deque;
 
-public class Towards extends Expression {
+public class Towards implements Expression, ExpressionTaker {
 
-    private Expression x;
-    private Expression y;
-
+    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public Towards(Expression x, Expression y, Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(x,y,queue);
-    }
-
-    public void setArguments(Expression x, Expression y, Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.x = x;
-        this.y = y;
-        this.queue = queue;
+    public Towards(Deque<TurtleState> queue, Expression[] inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
+    public double evaluate() {
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle();
-        double vecX = x.evaluate() - copy.getX();
-        double vecY = y.evaluate() - copy.getY();
+        double vecX = inputs[0].evaluate() - copy.getX();
+        double vecY = inputs[1].evaluate() - copy.getY();
         double newAngle = Math.atan(vecY/vecX); //TODO:FIX
         copy.setAngle(newAngle);
-        queue.push(copy);
+        queue.addLast(copy);
         return Math.abs(newAngle-heading);
+
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression, java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 2;
     }
+
 }
+

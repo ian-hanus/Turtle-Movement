@@ -1,34 +1,31 @@
 package Model.Expressions.TurtleCommands;
 import Model.Expressions.Interfaces.Expression;
-
-import java.util.Deque;
+import Model.Expressions.Interfaces.ExpressionTaker;
 import frontend.TurtleState;
+import java.util.Deque;
 
-public class PenUp extends Expression {
+public class PenUp implements Expression, ExpressionTaker {
 
+    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public PenUp(Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(queue);
-    }
-
-    public void setArguments(Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.queue = queue;
+    public PenUp(Deque<TurtleState> queue, Expression[] inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
+    public double evaluate() {
         TurtleState copy = new TurtleState(queue.getLast());
         copy.setDown(false);
-        queue.push(copy);
-        return 0;
+        queue.addLast(copy);
+        return 1;
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 0;
     }
 }

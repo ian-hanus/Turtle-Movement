@@ -1,39 +1,37 @@
 package Model.Expressions.TurtleCommands;
 import Model.Expressions.Interfaces.Expression;
-
-import java.util.Deque;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 import frontend.TurtleState;
+import java.util.Arrays;
+import java.util.Deque;
 
-public class Right extends Expression {
+public class Right implements Expression, VariableArgumentTaker {
 
-    private Expression rotation;
+    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public Right(Expression distance, Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(distance, queue);
-    }
-
-    public void setArguments(Expression rotation, Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.rotation = rotation;
-        this.queue = queue;
+    public Right(Deque<TurtleState> queue, Expression[] inputs) {
+        if(inputs.length < getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        double distanceAmount = rotation.evaluate();
+    public double evaluate() {
+        double distance = Arrays.stream(inputs)
+                .map(expression -> expression.evaluate())
+                .reduce(0.0, (a,b) -> a+b);
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle();
-        copy.setAngle(heading+distanceAmount);
-        queue.push(copy);
-        return distanceAmount;
+        copy.setAngle(heading+distance);
+        queue.addLast(copy);
+        return distance;
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 1;
     }
+
 }
