@@ -29,14 +29,17 @@ public class Terminal {
         pane.getChildren().addAll(new Label("Terminal"), this.getTextArea());
         Button runButton = new Button("Run");
         runButton.getStyleClass().add("run-button");
-        pane.getChildren().add(runButton);
         Button helpButton = new Button("Help");
         helpButton.getStyleClass().add("run-button");
         Button loadButton = new Button("Load");
         loadButton.getStyleClass().add("run-button");
-        pane.getChildren().add(helpButton);
+        pane.getChildren().addAll(runButton, helpButton, loadButton);
         runButton.setOnAction(e -> view.runCommands());
+        loadButton.setOnAction(e -> runProgram(view));
         return pane;
+    }
+
+    private void runProgram(View view){
     }
 
     public void setInput(String input) {
