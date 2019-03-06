@@ -1,6 +1,5 @@
 package frontend;
 
-import backend.TurtleSprite;
 import javafx.scene.control.TableView;
 
 public class StatesDisplay {

@@ -1,8 +1,5 @@
 package frontend;
 
-import backend.Turtle;
-import backend.TurtleSprite;
-import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -13,7 +10,7 @@ import java.io.File;
 import java.util.*;
 
 public class Canvas extends Pane {
-    private final int STARTING_ANGLE = 90;
+    private final double STARTING_ANGLE = 90;
 
     private final TurtleState STARTING_STATE =  new TurtleState(0, 0, STARTING_ANGLE, true, true);
     private final Color DEFAULT_PENCOLOR = Color.BLACK;
@@ -39,15 +36,11 @@ public class Canvas extends Pane {
    }
 
 
-    public void updateCanvas(List<TurtleState> states){
+    public void updateCanvas(Deque<TurtleState> states){
         while (!states.isEmpty()){
-            if(currState.isDown()){
-                drawLine(currState, states.get(0), penColor);
-            }
-            currState = states.remove(0);
+            TurtleState nextState = states.pop();
+            turtles.get(nextState.getID()).setTurtle(nextState, getHeight(), getWidth());
         }
-        setTurtle(turtleSprite, currState);
-
     }
 
 
