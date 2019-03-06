@@ -1,22 +1,15 @@
 package Model.Expressions.Basic;
 
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
 
 import java.util.Map;
 
-public class Variable extends Expression{
-
+public class Variable implements Expression{
 
     private String name;
     private Map<String, Double> variableMap;
 
-    public Variable(String name, Map<String, Double> map) throws AlteringExpressionException{
-        setArguments(name,map);
-    }
-
-
-    public void setArguments(String name, Map<String, Double> map) throws AlteringExpressionException {
-        finalizeStates();
+    public Variable(String name, Map<String, Double> map) {
         this.name = name;
         this.variableMap = map;
     }
@@ -25,12 +18,6 @@ public class Variable extends Expression{
     public double evaluate(){
         return variableMap.get(name);
     }
-
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{Integer.TYPE};
-    }
-
 
 }
 

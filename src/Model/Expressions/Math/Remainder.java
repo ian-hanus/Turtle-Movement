@@ -1,5 +1,5 @@
 package Model.Expressions.Math;
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
 
 public class Remainder extends Expression{
 

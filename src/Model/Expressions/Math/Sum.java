@@ -1,5 +1,5 @@
 package Model.Expressions.Math;
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
 import Model.Exceptions.AlteringExpressionException;
 
 public class Sum extends Expression{

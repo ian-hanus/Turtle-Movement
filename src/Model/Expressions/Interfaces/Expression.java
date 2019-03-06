@@ -1,4 +1,4 @@
-package Model.Expressions;
+package Model.Expressions.Interfaces;
 
 import java.lang.Class;
 
@@ -13,4 +13,5 @@ public interface Expression{
      * @return the result of the command being run
      */
     public abstract double evaluate();
+
 }

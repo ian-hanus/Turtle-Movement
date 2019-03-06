@@ -1,29 +1,19 @@
 package Model.Expressions.Basic;
 
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
 
-public class Constant extends Expression{
+public class Constant implements Expression{
 
 
     private double constant;
 
-    public Constant(double constant) throws AlteringExpressionException{
-        setArguments(constant);
-    }
-
-    public void setArguments(double constant) throws AlteringExpressionException {
-        finalizeStates();
+    public Constant(double constant){
         this.constant = constant;
     }
 
     @Override
     public double evaluate(){
         return constant;
-    }
-
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{Integer.TYPE};
     }
 
 

@@ -1,31 +1,28 @@
 package Model.Expressions.Boolean;
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 
-public class Or extends Expression{
+import java.util.Arrays;
 
-    private Expression input1;
-    private Expression input2;
+public class Or implements Expression, VariableArgumentTaker {
 
-    public Or(Expression input1, Expression input2) throws AlteringExpressionException
-    {
-        setArguments(input1, input2);
-    }
+    private Expression[] inputs;
 
-    public void setArguments(Expression input1, Expression input2) throws AlteringExpressionException{
-        finalizeStates();
-        this.input1 = input1;
-        this.input2 = input2;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return (input1.evaluate() !=0 || input2.evaluate() !=0) ? 1 : 0;
+    public Or(Expression... inputs) {
+        if(inputs.length == 0){
+            throw new IllegalArgumentException(String.format("Insufficient Expressions input, at least %d expected", getDefaultNumExpressions()));
+        }
+        this.inputs = inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public double evaluate() {
+        boolean result = Arrays.stream(inputs)
+                .map(expression -> expression.evaluate())
+                .anyMatch(in -> in!=0);
+        return result ? 1 : 0;
+    }
+    public int getDefaultNumExpressions(){
+        return 2;
     }
 }
