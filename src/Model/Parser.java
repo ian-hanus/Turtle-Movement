@@ -106,7 +106,7 @@ public class Parser implements Parsing {
         Deque<Expression> currList = new ArrayDeque<>();
 
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
-        turtleChanges.addFirst(mostRecentTurtleState);
+        turtleChanges.addLast(mostRecentTurtleState);
 
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
@@ -122,8 +122,8 @@ public class Parser implements Parsing {
                     throw new ImproperBracketsException();
                 }
                 makingList = false;
-                currExpressions.addFirst(currList.toArray());
-                currExpressionTypes.addFirst(Array.class);
+                currExpressions.push(currList.toArray());
+                currExpressionTypes.push(Array.class);
                 continue;
             }
 
@@ -131,7 +131,7 @@ public class Parser implements Parsing {
                 if (!variables.containsKey(currString)) {
                     variables.put(currString, new Constant(0));
                 }
-                currExpressions.addFirst(variables.get(currString));
+                currExpressions.push(variables.get(currString));
             }
 
             try {
@@ -154,8 +154,8 @@ public class Parser implements Parsing {
                     Method getNumCommandArgs = expressionClass.getDeclaredMethod("getNumCommandArgs");
                     int numCommandArgs = (Integer)getNumCommandArgs.invoke(expressionClass.getConstructor().newInstance());
                     if (currExpressions.size() > numCommandArgs) {
-                        superExpressions.push((Expression) currExpressions.getLast());
-                        currExpressionTypes.getLast();
+                        superExpressions.push((Expression) currExpressions.pop());
+                        currExpressionTypes.pop();
                     }
                 }
                 catch(ClassCastException e) {
@@ -202,15 +202,16 @@ public class Parser implements Parsing {
                     e.printStackTrace();
                 }
                 if (makingList) {
-                    currList.addFirst(currCommand);
+                    currList.push(currCommand);
                 } else {
-                    currExpressions.addFirst(currCommand);
-                    currExpressionTypes.addFirst(Expression.class);
+                    currExpressions.push(currCommand);
+                    currExpressionTypes.push(Expression.class);
                 }
             }
         }
 
         while (!currExpressions.isEmpty()) {
+            // TODO I don't think this is right
             superExpressions.push((Expression)currExpressions.pop());
         }
 
@@ -220,8 +221,7 @@ public class Parser implements Parsing {
             returnValue = superExpressions.pop().evaluate();
         }
 
-        mostRecentTurtleState = turtleChanges.getLast();
-        turtleChanges.removeLast();
+        mostRecentTurtleState = turtleChanges.pop();
 
         return new Result(returnValue, turtleChanges);
     }
