@@ -1,10 +1,21 @@
 package frontend;
 
+import Model.Parser;
+import Model.Parsing;
+import Model.Result;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import org.w3c.dom.Text;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -15,21 +26,21 @@ public class Terminal {
     private List<String> myValidCommands;
     private TextArea myTextArea;
 
-    public Terminal(){
+    public Terminal() {
         myValidCommands = new ArrayList<>();
         myTextArea = new TextArea();
         myTextArea.getStyleClass().add("text-area-terminal");
     }
 
-    public void setInput(String input){
+    public void setInput(String input) {
         myInput = input;
     }
 
-    public String getInput(){
+    public String getInput() {
         return myInput;
     }
 
-    public TextArea getTextArea(){
+    public TextArea getTextArea() {
         return myTextArea;
     }
 }
