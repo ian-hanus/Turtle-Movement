@@ -89,11 +89,12 @@ public class View {
             myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
         }
         catch(Exception e1){
-            ErrorDisplay commandError = new ErrorDisplay("Parse Error", "Invalid Command");
+            ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
             commandError.display();
         }
         myTerminal.getTextArea().setText("");
         myResults.getChildren().removeAll();
+        myPalette.drawPalette(myRightPane);
     }
 
     private void drawResults(){
