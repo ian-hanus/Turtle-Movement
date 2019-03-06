@@ -1,28 +1,23 @@
 package Model.Expressions.Math;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-import java.lang.Math;
+public class Pi implements Expression, ExpressionTaker{
 
-public class Pi extends Expression {
-
-
-    public Pi(Expression input) throws AlteringExpressionException
+    public Pi(Expression[] inputs)
     {
-        setArguments();
-    }
-
-    public void setArguments() throws AlteringExpressionException{
-        finalizeStates();
+        if(inputs.length!= getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
+    public double evaluate(){
         return Math.PI;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{};
+    public int getDefaultNumExpressions() {
+        return 1;
     }
 }

@@ -1,31 +1,33 @@
 package Model.Expressions.Math;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 
-public class Product extends Expression{
+import java.util.Arrays;
 
-    private Expression multiplicand;
-    private Expression multiplier;
+public class Product implements Expression, VariableArgumentTaker {
 
-    public Product(Expression multiplicand, Expression multiplier) throws AlteringExpressionException
-    {
-        setArguments(multiplicand, multiplier);
-    }
+    private Expression[] inputs;
 
-    public void setArguments(Expression multiplicand, Expression multiplier) throws AlteringExpressionException{
-        finalizeStates();
-        this.multiplicand = multiplicand;
-        this.multiplier = multiplier;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return multiplicand.evaluate() * multiplier.evaluate();
+    public Product(Expression[] inputs) {
+        if(inputs.length < getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public double evaluate() {
+        return Arrays.stream(inputs)
+                .map(expression -> expression.evaluate())
+                .reduce(1.0,(a,b) -> a*b);
     }
+
+    public int getDefaultNumExpressions(){
+        return 2;
+    }
+
 }
+
+
+
+

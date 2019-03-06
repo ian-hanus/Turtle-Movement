@@ -1,31 +1,26 @@
 package Model.Expressions.Math;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-import java.lang.Math;
+public class Log implements Expression, ExpressionTaker{
 
-public class Log extends Expression {
+    private Expression[] inputs;
 
-    private Expression input;
-
-    public Log(Expression input) throws AlteringExpressionException
+    public Log(Expression[] inputs)
     {
-        setArguments(input);
-    }
-
-    public void setArguments(Expression input) throws AlteringExpressionException{
-        finalizeStates();
-        this.input = input;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return Math.log(input.evaluate());
+        if(inputs.length!= getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression};
+    public double evaluate(){
+        return Math.log(inputs[0].evaluate());
+    }
+
+    @Override
+    public int getDefaultNumExpressions() {
+        return 1;
     }
 }

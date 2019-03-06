@@ -1,31 +1,26 @@
 package Model.Expressions.Math;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-public class Difference extends Expression{
+public class Difference implements Expression, ExpressionTaker{
 
-    private Expression minuend;
-    private Expression subtrahend;
+    private Expression[] inputs;
 
-    public Difference(Expression augend, Expression addend) throws AlteringExpressionException
-    {
-        setArguments(augend, addend);
-    }
+    public Difference(Expression[] inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
 
-    public void setArguments(Expression minuend, Expression subtrahend) throws AlteringExpressionException{
-        finalizeStates();
-        this.minuend = minuend;
-        this.subtrahend = subtrahend;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return minuend.evaluate() - subtrahend.evaluate();
+    public double evaluate() {
+        return inputs[0].evaluate() - inputs[1].evaluate();
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public int getDefaultNumExpressions(){
+        return 2;
     }
+
 }

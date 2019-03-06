@@ -1,31 +1,27 @@
 package Model.Expressions.Math;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-import java.lang.Math;
+public class Random implements Expression, ExpressionTaker{
 
-public class Random extends Expression {
+    private Expression[] inputs;
 
-    private Expression maxVal;
-
-    public Random(Expression maxVal) throws AlteringExpressionException
+    public Random(Expression[] inputs)
     {
-        setArguments(maxVal);
-    }
-
-    public void setArguments(Expression maxVal) throws AlteringExpressionException{
-        finalizeStates();
-        this.maxVal = maxVal;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return Math.random()*maxVal.evaluate();
+        if(inputs.length!= getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression};
+    public double evaluate(){
+        return Math.random()*inputs[0].evaluate();
+
+    }
+
+    @Override
+    public int getDefaultNumExpressions() {
+        return 1;
     }
 }

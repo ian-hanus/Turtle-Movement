@@ -1,32 +1,28 @@
 package Model.Expressions.Math;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-import java.lang.Math;
+public class Tan implements Expression, ExpressionTaker{
 
-public class Tan extends Expression {
+    private Expression[] inputs;
 
-    private Expression degrees;
-
-    public Tan(Expression degrees) throws AlteringExpressionException
+    public Tan(Expression[] inputs)
     {
-        setArguments(degrees);
+        if(inputs.length!= getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
-    public void setArguments(Expression degrees) throws AlteringExpressionException{
-        finalizeStates();
-        this.degrees = degrees;
-    }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        double radians = degrees.evaluate()/180*Math.PI;
+    public double evaluate(){
+        double radians = inputs[0].evaluate()/180*Math.PI;
         return Math.tan(radians);
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression};
+    public int getDefaultNumExpressions() {
+        return 1;
     }
 }

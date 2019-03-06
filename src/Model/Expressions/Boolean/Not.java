@@ -14,7 +14,6 @@ public class Not implements Expression, ExpressionTaker{
         this.inputs=inputs;
     }
 
-
     @Override
     public double evaluate(){
         return inputs[0].evaluate() == 0 ? 1 : 0;
