@@ -10,7 +10,8 @@ public class TurtleState {
     private boolean down;
     private boolean shouldReset;
 
-    public TurtleState(double xpos, double ypos, double orientation, boolean isVisible, boolean isDown){
+    public TurtleState(int i, double xpos, double ypos, double orientation, boolean isVisible, boolean isDown){
+        id = i;
         x = xpos;
         y = ypos;
         angle = orientation;
