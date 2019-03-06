@@ -70,6 +70,7 @@ public class View {
         myParser = new Parser();
         resetGUI();
         myScene = new Scene(myBorderPane, WINDOW_SIZE.getHeight(), WINDOW_SIZE.getWidth());
+        //myScene.getStylesheets().add(STYLE_SHEET);
         myScene.getStylesheets().add(getClass().getResource(STYLE_SHEET).toExternalForm());
     }
 

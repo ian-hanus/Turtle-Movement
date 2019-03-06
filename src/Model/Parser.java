@@ -221,7 +221,7 @@ public class Parser implements Parsing {
         }
 
         mostRecentTurtleState = turtleChanges.getLast();
-        turtleChanges.pop();
+        turtleChanges.removeLast();
 
         return new Result(returnValue, turtleChanges);
     }
