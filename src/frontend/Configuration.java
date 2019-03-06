@@ -1,6 +1,10 @@
 package frontend;
 
+import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.io.File;
@@ -17,6 +21,7 @@ public class Configuration {
     private Color myPenColor;
     private Language myLanguage;
     private double myPenWidth;
+    private VBox myConfigurationBox;
 
     private static final int DEFAULT_WIDTH = 10;
 
@@ -27,6 +32,81 @@ public class Configuration {
         myPenColor = Color.BLACK;
         myLanguage = ENGLISH;
         myPenWidth = DEFAULT_WIDTH;
+    }
+
+    public void drawConfig(GridPane pane, SLogoMain main, Canvas canvas){
+        myConfigurationBox = new RightBox("Configuration").getBox();
+        createLoadButton(myConfigurationBox, main, canvas);
+        createBackgroundPicker(myConfigurationBox, canvas);
+        createPenPicker(myConfigurationBox);
+        createLanguageDropdown(myConfigurationBox);
+        createSlider(myConfigurationBox);
+        pane.add(myConfigurationBox, 1, 0);
+    }
+
+    private void createSlider(VBox configBox){
+        HBox sliderRow = new HBox();
+        sliderRow.getStyleClass().add("color-picker-row");
+        Slider penSlider = new Slider(1, 20, 1);
+        penSlider.getStyleClass().add("slider");
+        penSlider.setOnDragDetected(e -> this.setPenWidth(penSlider.getValue()));
+        Label penLabel = new Label("Pen Width");
+        penLabel.getStyleClass().add("slider-label");
+        sliderRow.getChildren().addAll(penSlider, penLabel);
+        configBox.getChildren().add(sliderRow);
+    }
+
+    private void createLoadButton(VBox configBox, SLogoMain main, Canvas canvas){
+        Button loadImageButton = new Button("");
+        loadImageButton.setText("Load New Turtle Image");
+        loadImageButton.getStyleClass().add("load-button");
+        configBox.getChildren().add(loadImageButton);
+        loadImageButton.setOnAction(e -> loadImage(main, canvas));
+    }
+
+    private void loadImage(SLogoMain main, Canvas canvas){
+        try {
+            myTurtleImage = main.loadTurtleImage();
+        }
+        catch(NullPointerException x){
+            ErrorDisplay invalidFile = new ErrorDisplay("Image Loader", "Invalid file");
+            invalidFile.display();
+        }
+        this.setTurtleImage(myTurtleImage);
+        canvas.setTurtleImage(myTurtleImage);
+    }
+
+    private void createBackgroundPicker(VBox configBox, Canvas canvas){
+        ColorPicker backgroundColorPicker = new ColorPicker();
+        backgroundColorPicker.setOnAction(e -> canvas.setBackground(new Background(new BackgroundFill(backgroundColorPicker.getValue(), CornerRadii.EMPTY, Insets.EMPTY))));
+        HBox colorRow = createColorRow(backgroundColorPicker, "Background Color");
+        configBox.getChildren().add(colorRow);
+    }
+
+    private void createPenPicker(VBox configBox){
+        ColorPicker penColorPicker = new ColorPicker();
+        HBox colorRow = createColorRow(penColorPicker, "Pen Color");
+        configBox.getChildren().add(colorRow);
+        penColorPicker.setOnAction(e -> this.setPenColor(penColorPicker.getValue()));
+    }
+
+    private HBox createColorRow(ColorPicker colorPicker, String labelString){
+        HBox colorRow = new HBox();
+        colorRow.getStyleClass().add("color-picker-row");
+        colorPicker.getStyleClass().add("color-picker");
+        Label label= new Label(labelString);
+        label.getStyleClass().add("color-picker-label");
+        colorRow.getChildren().addAll(colorPicker, label);
+        return colorRow;
+    }
+
+    private void createLanguageDropdown(VBox configBox){
+        ComboBox languageBox = new ComboBox();
+        languageBox.setItems(FXCollections.observableArrayList(Language.values()));
+        languageBox.setPromptText("Language");
+        languageBox.getStyleClass().add("load-button");
+        configBox.getChildren().add(languageBox);
+        languageBox.setOnAction(e -> this.setLanguage((Language)languageBox.getValue()));
     }
 
     public Image getTurtleImage(){
@@ -68,39 +148,4 @@ public class Configuration {
     public double getPenWidth(){
         return myPenWidth;
     }
-//    /**
-//     * Get the current color of the turtle
-//     * @return a paint color corresponding to the current color of the turtle
-//     */
-//    Color getTurtleColor();
-//
-//    /**
-//     * Get the current color of the pen
-//     * @return a paint color corresponding to the current color of the pen
-//     */
-//    Color getPenColor();
-//
-//    /**
-//     * Reset the configuration to all of the defaults
-//     */
-//    void resetConfig();
-//
-//    /**
-//     * Set the color of the turtle
-//     * @param c is the paint color of the turtle
-//     */
-//    void setTurtleColor(Color c);
-//
-//    /**
-//     * Set the color of the pen
-//     * @param c is the paint color of the pen
-//     */
-//    void setPenColor(Color c);
-//
-//    /**
-//     * Set the language that will be coded into to translate the commands
-//     * @param s is the string representing the language
-//     */
-//    void setLanguage(String s);
-
 }

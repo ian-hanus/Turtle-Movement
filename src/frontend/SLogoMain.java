@@ -21,7 +21,7 @@ public class SLogoMain extends Application {
         VariableDisplay variableDisplay = new VariableDisplay();
         Configuration configuration = new Configuration();
         initializeImageChooser();
-        View newView = new View(commandHistory, variableDisplay, this, configuration, stage);
+        View newView = new View(commandHistory, variableDisplay, this, configuration);
         myStages.add(stage);
         myViews.add(newView);
         stage.setScene(newView.getScene());

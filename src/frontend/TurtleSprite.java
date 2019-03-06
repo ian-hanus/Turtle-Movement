@@ -14,6 +14,11 @@ import java.util.List;
 
 
 public class TurtleSprite extends ImageView {
+    public int getNum() {
+        return num;
+    }
+
+    private int num;
     private List<Line> myLines;
     private final double TURTLE_SIZE = 30;
     TurtleState currState;
@@ -27,6 +32,18 @@ public class TurtleSprite extends ImageView {
         this.setPreserveRatio(true);
         this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
     }
+    public TurtleSprite(TurtleState ts, double h, double w){
+        this.setX((ts.getX() + w/2) % w);
+        this.setY((-ts.getY() + h/2 ) % h);
+        this.setRotate(ts.getAngle());
+
+        currState = ts;
+        if (currState.isVisible()){
+            setTurtleImage(activeImage);
+        } else {
+            this.setImage(null);
+        }
+    }
 
     public void clearLines(){
         myLines.clear();
@@ -34,10 +51,9 @@ public class TurtleSprite extends ImageView {
 
     public void setTurtle(TurtleState ts, double h, double w){
 
-
-        this.setX((currState.getX() + w/2) % w);
-        this.setY((-currState.getY() + h/2 ) % h);
-        this.setRotate(currState.getAngle());
+        this.setX((ts.getX() + w/2) % w);
+        this.setY((-ts.getY() + h/2 ) % h);
+        this.setRotate(ts.getAngle());
 
         currState = ts;
         if (currState.isVisible()){
@@ -50,11 +66,22 @@ public class TurtleSprite extends ImageView {
     public void setTurtleImage(Image i) {
         this.setImage(i);
         activeImage = i;
+
+    }
+
+    public int getID(){
+        return currState.getID();
+    }
+    public boolean getPenDown(){
+        return currState.isDown();
+    }
+    public boolean getVisible(){
+        return currState.isVisible();
     }
 
     public void toggleActive(){
-        ColorAdjust inactive = new ColorAdjust(0, 0, 0, -1);
-        ColorAdjust active = new ColorAdjust(0, 0, 0, 0);
+        ColorAdjust inactive = new ColorAdjust(0, 0, .5, 0);
+        ColorAdjust active = new ColorAdjust(0, -1, -.5, 0);
         this.isActive = !this.isActive;
         if (this.isActive){
             this.setEffect(active);

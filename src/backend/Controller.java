@@ -3,11 +3,6 @@ package backend;
 import java.util.List;
 import java.util.Queue;
 
-<<<<<<< HEAD
-    public Result execute(String commands) {
-    return null;
-    }
-=======
 /**
  * Interface for the main class of the backend. The frontend will pass the commands entered into the terminal as strings
  * to the class that implements this interface. The class will then use the ParserAPI class to parse the strings and create
@@ -31,5 +26,4 @@ public interface Controller {
      * @return the list of Expression objects that correspond to the commands
      */
     List<Expression> parseCommands(String commands);
->>>>>>> 3cb9042b6f996d5f3d443e30e9c03a3a566f3805
 }

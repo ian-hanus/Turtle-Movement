@@ -1,8 +1,8 @@
 package frontend;
 
 public enum Language {
-    CHINESE("Chinese"), ENGLISH("English"), FRENCH("French"), GERMAN("German"), ITALIAN("Italian"), PORTUGUESE("Portuguese"),
-    RUSSIAN("Russian"), SPANISH("Spanish"), URDU("Urdu");
+    CHINESE("chinese"), ENGLISH("english"), FRENCH("french"), GERMAN("german"), ITALIAN("italian"), PORTUGUESE("portuguese"),
+    RUSSIAN("russian"), SPANISH("spanish"), URDU("urdu");
 
     private String myLabel;
 
