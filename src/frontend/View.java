@@ -27,6 +27,7 @@ public class View {
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableDisplay;
     private Palette myPalette;
+    private TurtleStatusDisplay myTurtleStatusDisplay;
 
     private final int GUI_WIDTH = 600;
     private final int GUI_HEIGHT = 1200;
@@ -82,6 +83,7 @@ public class View {
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             myCanvas.updateCanvas(currentStates);
             drawResults((currentResults.getReturnValue()));
+            myTurtleStatusDisplay.refresh(myCanvas.getTurtleList());
         }
         catch(Exception e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
@@ -102,10 +104,12 @@ public class View {
     }
 
     private void drawTurtleStatus(){
-        myTurtleStatus = new RightBox("Turtle Status").getBox();
-        myTurtleStatus.setMaxHeight(150);
-        myTurtleStatus.setMinHeight(150);
-        myRightPane.add(myTurtleStatus, 0, 0);
+        myTurtleStatusDisplay = new TurtleStatusDisplay(myTerminal, this, myCanvas.getTurtleList());
+        myTurtleStatusDisplay.getStyleClass().add("box-right");
+//        myTurtleStatus = new RightBox("Turtle Status").getBox();
+//        myTurtleStatus.setMaxHeight(150);
+//        myTurtleStatus.setMinHeight(150);
+        myRightPane.add(myTurtleStatusDisplay, 0, 0);
     }
 
     private HBox drawTitle(){

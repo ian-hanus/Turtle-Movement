@@ -31,33 +31,33 @@ public class TurtleStatusDisplay extends VBox {
 
     private TableView getTable(List<TurtleSprite> turtles){
         TableView<TurtleSprite> tsTV = new TableView<>();
-        tsTV.setEditable(true);
-        TableColumn idCol = new TableColumn("Number");
-        idCol.setCellValueFactory(
-                new PropertyValueFactory<TurtleSprite, Integer>("ID")
-        );
-        TableColumn xCol = new TableColumn("X Position");
-        xCol.setCellValueFactory(
-                new PropertyValueFactory<TurtleState, Double>("X")
-        );
-        TableColumn yCol = new TableColumn("Y Position");
-        yCol.setCellValueFactory(
-                new PropertyValueFactory<TurtleState, Double>("Y")
-        );
-        TableColumn headingCol = new TableColumn("Direction");
-        headingCol.setCellValueFactory(
-                new PropertyValueFactory<TurtleState, Double>("Angle")
-        );
-        TableColumn penCol = new TableColumn("Pen Down?");
-        penCol.setCellValueFactory(
-                new PropertyValueFactory<TurtleState, Boolean>("PenDown")
-        );
-        TableColumn visibilityCol = new TableColumn("Visible?");
-        visibilityCol.setCellValueFactory(
-                new PropertyValueFactory<TurtleState, Boolean>("Visibility")
-        );
-        tsTV.getColumns().addAll(idCol, xCol, yCol, headingCol, penCol, visibilityCol);
-        tsTV.getItems().addAll(turtles);
+//        tsTV.setEditable(true);
+//        TableColumn idCol = new TableColumn("Number");
+////        idCol.setCellValueFactory(
+////                new PropertyValueFactory<TurtleSprite, Integer>("ID")
+////        );
+//        TableColumn xCol = new TableColumn("X Position");
+//        xCol.setCellValueFactory(
+//                new PropertyValueFactory<TurtleState, Double>("X")
+//        );
+//        TableColumn yCol = new TableColumn("Y Position");
+//        yCol.setCellValueFactory(
+//                new PropertyValueFactory<TurtleState, Double>("Y")
+//        );
+//        TableColumn headingCol = new TableColumn("Direction");
+//        headingCol.setCellValueFactory(
+//                new PropertyValueFactory<TurtleState, Double>("Angle")
+//        );
+//        TableColumn penCol = new TableColumn("Pen Down?");
+//        penCol.setCellValueFactory(
+//                new PropertyValueFactory<TurtleState, Boolean>("PenDown")
+//        );
+//        TableColumn visibilityCol = new TableColumn("Visible?");
+//        visibilityCol.setCellValueFactory(
+//                new PropertyValueFactory<TurtleState, Boolean>("Visibility")
+//        );
+//        tsTV.getColumns().addAll(idCol, xCol, yCol, headingCol, penCol, visibilityCol);
+//        tsTV.getItems().addAll(turtles);
         return tsTV;
     };
 
