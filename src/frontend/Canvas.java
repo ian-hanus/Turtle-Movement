@@ -87,4 +87,10 @@ public class Canvas extends Pane {
     public void setPenColor(Color color){
         penColor = color;
     }
+
+    public List<TurtleSprite> getTurtleList(){
+        List<TurtleSprite> origList = new ArrayList<>();
+        for (TurtleSprite t : turtles.values()) origList.add(t);
+        return Collections.unmodifiableList(origList);
+    }
 }

@@ -104,10 +104,10 @@ public class TurtleSprite extends ImageView {
     public int getID(){
         return currState.getID();
     }
-    public boolean getPenDown(){
+    public boolean isPenDown(){
         return currState.isDown();
     }
-    public boolean getVisible(){
+    public boolean isVisibility(){
         return currState.isVisible();
     }
 
