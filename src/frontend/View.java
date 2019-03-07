@@ -31,13 +31,13 @@ public class View {
     private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
-    public View(CommandHistory commandHistory, VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
+    public View(VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
         myMain = main;
         myConfiguration = configuration;
-        myCommandHistory = commandHistory;
+        myTerminal = new Terminal();
+        myCommandHistory = new CommandHistory(myTerminal,this);
         myPalette = new Palette();
         myCanvas = new Canvas(new Image(new File("./src/GUIResources/turtle.png").toURI().toString()), Color.BLACK); // be cautious of path name
-        myTerminal = new Terminal();
         myVariableDisplay = variableDisplay;
 
         BorderPane borderPane = new BorderPane();
