@@ -17,10 +17,8 @@ public class SLogoMain extends Application {
 
     public void start(Stage stage){
         stage.setResizable(false);
-        VariableDisplay variableDisplay = new VariableDisplay();
-        Configuration configuration = new Configuration();
         initializeImageChooser();
-        View newView = new View(variableDisplay, this, configuration);
+        View newView = new View(this);
         myStages.add(stage);
         myViews.add(newView);
         stage.setScene(newView.getScene());

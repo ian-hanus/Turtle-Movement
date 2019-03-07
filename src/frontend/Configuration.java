@@ -23,7 +23,10 @@ public class Configuration {
     private double myPenWidth;
     private VBox myConfigurationBox;
 
-    private static final int DEFAULT_WIDTH = 10;
+    private static final int DEFAULT_PEN_WIDTH = 10;
+    private static final int MAX_PEN_WIDTH = 20;
+    private static final int MIN_PEN_WIDTH = 1;
+
 
     public Configuration(){
         myBackgroundColor = Color.WHITE;
@@ -31,14 +34,14 @@ public class Configuration {
         myTurtleImage = new Image(turtleFile.toURI().toString());
         myPenColor = Color.BLACK;
         myLanguage = ENGLISH;
-        myPenWidth = DEFAULT_WIDTH;
+        myPenWidth = DEFAULT_PEN_WIDTH;
     }
 
     public void drawConfig(GridPane pane, SLogoMain main, Canvas canvas){
         myConfigurationBox = new RightBox("Configuration").getBox();
         createLoadButton(myConfigurationBox, main, canvas);
         createBackgroundPicker(myConfigurationBox, canvas);
-        createPenPicker(myConfigurationBox);
+        createPenPicker(myConfigurationBox, canvas);
         createLanguageDropdown(myConfigurationBox);
         createSlider(myConfigurationBox);
         pane.add(myConfigurationBox, 1, 0);
@@ -47,7 +50,7 @@ public class Configuration {
     private void createSlider(VBox configBox){
         HBox sliderRow = new HBox();
         sliderRow.getStyleClass().add("color-picker-row");
-        Slider penSlider = new Slider(1, 20, 1);
+        Slider penSlider = new Slider(MIN_PEN_WIDTH, MAX_PEN_WIDTH, 1);
         penSlider.getStyleClass().add("slider");
         penSlider.setOnDragDetected(e -> this.setPenWidth(penSlider.getValue()));
         Label penLabel = new Label("Pen Width");
@@ -83,11 +86,11 @@ public class Configuration {
         configBox.getChildren().add(colorRow);
     }
 
-    private void createPenPicker(VBox configBox){
+    private void createPenPicker(VBox configBox, Canvas canvas){
         ColorPicker penColorPicker = new ColorPicker();
         HBox colorRow = createColorRow(penColorPicker, "Pen Color");
         configBox.getChildren().add(colorRow);
-        penColorPicker.setOnAction(e -> this.setPenColor(penColorPicker.getValue()));
+        penColorPicker.setOnAction(e -> canvas.setPenColor(penColorPicker.getValue()));
     }
 
     private HBox createColorRow(ColorPicker colorPicker, String labelString){

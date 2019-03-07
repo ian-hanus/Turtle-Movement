@@ -2,7 +2,6 @@ package frontend;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -36,10 +35,6 @@ public class CommandHistory {
 
     public void addHistory(String[] commands){
         myCommandHistory.addAll(Arrays.asList(commands));
-    }
-
-    public int getSize(){
-        return myCommandHistory.size();
     }
 
     public String getCommandString(int index){
