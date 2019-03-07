@@ -1,68 +1,59 @@
 package frontend;
 
-import backend.Turtle;
-import javafx.geometry.Insets;
+import javafx.animation.SequentialTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
 
 public class Canvas extends Pane {
-    private final int STARTING_ANGLE = 90;
-    private final double TURTLE_SIZE = 30;
+    private final double STARTING_ANGLE = 90;
+
+    private final TurtleState STARTING_STATE =  new TurtleState(0, 0, STARTING_ANGLE, true, true);
+    private final Color DEFAULT_PENCOLOR = Color.BLACK;
+    private Image turtleImage = new Image(new File("./src/GUIResources/turtle.png").toURI().toString());
     Color penColor;
-    ImageView turtleSprite = new ImageView();
-    Image activeTurtleImage;
-    TurtleState currState;
+    Map<Integer, TurtleSprite> turtles = new HashMap<>();
     //Set<Line> lines;
 
-    public Canvas(Image turtleImage, Color pencolor){
-        penColor = pencolor;
+    public Canvas(){
+        penColor = DEFAULT_PENCOLOR;
         //lines = new HashSet<>();
-        currState = new TurtleState(0, 0, STARTING_ANGLE, true, true);
-//        System.out.println(this.getHeight());
-//        System.out.println(this.getWidth());
-        activeTurtleImage = turtleImage;
-        turtleSprite.setFitHeight(TURTLE_SIZE);
-        turtleSprite.setFitWidth(TURTLE_SIZE);
-        turtleSprite.setPreserveRatio(true);
-        setTurtle(turtleSprite, currState);
-    }
 
-    private void setTurtle(ImageView sprite, TurtleState ts){
-        if (currState.isVisible()){
-            setTurtleImage(sprite, activeTurtleImage);
-        } else {
-            turtleSprite.setImage(null);
-        }
-        sprite.setX((currState.getX() + getWidth()/2) % getWidth());
-        sprite.setY((-currState.getY() + getHeight()/2 ) % getHeight());
-        sprite.setRotate(currState.getAngle());
-    }
-
-    public void setTurtleImage(ImageView sprite, Image i) {
-        if(!this.getChildren().contains(sprite)){
-            this.getChildren().add(sprite);
-        }
-        sprite.setImage(i);
-        activeTurtleImage = i;
+        turtles.put(1, new TurtleSprite(STARTING_STATE, turtleImage, this.getHeight(), this.getWidth()));
+        this.getChildren().add(turtles.get(1));
+////        System.out.println(this.getHeight());
+////        System.out.println(this.getWidth());
+//        activeTurtleImage = turtleImage;
+//        turtleSprite.setFitHeight(TURTLE_SIZE);
+//        turtleSprite.setFitWidth(TURTLE_SIZE);
+//        turtleSprite.setPreserveRatio(true);
+//        setTurtle(turtleSprite, currState);
     }
 
 
-    public void updateCanvas(List<TurtleState> states){
+
+
+
+
+
+    public void updateCanvas(Deque<TurtleState> states){
+        SequentialTransition seqT = new SequentialTransition();
         while (!states.isEmpty()){
-            if(currState.isDown()){
-                drawLine(currState, states.get(0), penColor);
+            TurtleState nextState = states.remove();
+            if (nextState.isDown()){
+                drawLine(turtles.get(1).currState, nextState, penColor);
             }
-            currState = states.remove(0);
+           // seqT.getChildren().add
+            turtles.get(1).setTurtle(nextState, getHeight(), getWidth());
+            System.out.println(seqT.getChildren().size());
         }
-        setTurtle(turtleSprite, currState);
-
+        System.out.println(seqT);
+        //seqT.play();
     }
 
 
@@ -75,15 +66,24 @@ public class Canvas extends Pane {
 //            System.out.println(String.format("END: %d, %d", end.getX(), end.getY() ));
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
             nextLine.setFill(penColor);
+            nextLine.setStroke(penColor);
+            nextLine.setStrokeWidth(1);
 
             this.getChildren().add(nextLine);
         }
     }
 
-    public ImageView getTurtleSprite(){
-        return turtleSprite;
+    public ImageView getTurtleSprite(int id){
+        return turtles.get(id);
     }
 
+    public void setTurtleImage(Image i){
+
+        turtleImage = i;
+        for (TurtleSprite t : turtles.values()){
+            t.setTurtleImage(i);
+        }
+    }
     public void setPenColor(Color color){
         penColor = color;
     }
