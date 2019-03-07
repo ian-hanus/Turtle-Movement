@@ -27,18 +27,21 @@ public class View {
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableDisplay;
     private Palette myPalette;
+    private TurtleStatusDisplay myTurtleStatusDisplay;
 
-    private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
+    private final int GUI_WIDTH = 600;
+    private final int GUI_HEIGHT = 1200;
+    private final Dimension WINDOW_SIZE = new Dimension(GUI_WIDTH, GUI_HEIGHT);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
-    public View(VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
+    public View(SLogoMain main) {
         myMain = main;
-        myConfiguration = configuration;
+        myConfiguration = new Configuration();
         myTerminal = new Terminal();
         myCommandHistory = new CommandHistory(myTerminal,this);
         myPalette = new Palette();
-        myCanvas = new Canvas(new Image(new File("./src/GUIResources/turtle.png").toURI().toString()), Color.BLACK); // be cautious of path name
-        myVariableDisplay = variableDisplay;
+        myVariableDisplay = new VariableDisplay();
+        myCanvas = new Canvas();
 
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
@@ -61,7 +64,7 @@ public class View {
         myVariableDisplay.drawVariables(myRightPane);
         drawTurtleStatus();
         myPalette.drawPalette(myRightPane);
-        drawResults();
+        //drawResults();
         drawCanvas();
     }
 
@@ -71,45 +74,42 @@ public class View {
     }
 
     public void runCommands(){
-        myTerminal.setInput(myTerminal.getTextArea().getText());
-        Result currentResults = null;
         myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
         myCommandHistory.updateCommandHistory(myRightPane);
         myVariableDisplay.updateVariableDisplay(myRightPane);
         try {
             Parser parser = new Parser();
-            currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+            Result currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
-            for(TurtleState ts:currentStates){
-                System.out.println(ts.getY());
-            }
-            List<TurtleState> currentListStates = new ArrayList<>();
-            currentListStates.addAll(currentStates);
-            myCanvas.updateCanvas(currentListStates);
-            myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
+            myCanvas.updateCanvas(currentStates);
+            drawResults((currentResults.getReturnValue()));
+            myTurtleStatusDisplay.refresh(myCanvas.getTurtleList());
         }
         catch(Exception e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
+            e1.printStackTrace();
             commandError.display();
         }
         myTerminal.getTextArea().setText("");
-        myResults.getChildren().removeAll();
         myPalette.drawPalette(myRightPane);
     }
 
-    private void drawResults(){
-        myResults = new RightBox("Results").getBox();
-        myResults.getStyleClass().add("borderless-right");
-        ScrollPane sp = new ScrollPane(myResults);
-        sp.getStyleClass().add("scroll-panes");
-        myRightPane.add(sp, 1, 2);
+    private void drawResults(double returnValue){
+        ReturnWindow returnWindow = new ReturnWindow(returnValue);
+//        myResults = new RightBox("Results").getBox();
+//        myResults.getStyleClass().add("borderless-right");
+//        ScrollPane sp = new ScrollPane(myResults);
+//        sp.getStyleClass().add("scroll-panes");
+//        myRightPane.add(sp, 1, 2);
     }
 
     private void drawTurtleStatus(){
-        myTurtleStatus = new RightBox("Turtle Status").getBox();
-        myTurtleStatus.setMaxHeight(150);
-        myTurtleStatus.setMinHeight(150);
-        myRightPane.add(myTurtleStatus, 0, 0);
+        myTurtleStatusDisplay = new TurtleStatusDisplay(myTerminal, this, myCanvas.getTurtleList());
+        myTurtleStatusDisplay.getStyleClass().add("box-right");
+//        myTurtleStatus = new RightBox("Turtle Status").getBox();
+//        myTurtleStatus.setMaxHeight(150);
+//        myTurtleStatus.setMinHeight(150);
+        myRightPane.add(myTurtleStatusDisplay, 0, 0);
     }
 
     private HBox drawTitle(){
