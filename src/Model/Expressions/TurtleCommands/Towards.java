@@ -34,7 +34,7 @@ public class Towards extends Expression {
         double vecY = y.evaluate() - copy.getY();
         double newAngle = Math.atan(vecY/vecX); //TODO:FIX
         copy.setAngle(newAngle);
-        queue.push(copy);
+        queue.addLast(copy);
         return Math.abs(newAngle-heading);
     }
 

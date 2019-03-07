@@ -29,7 +29,7 @@ public class Left extends Expression {
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle();
         copy.setAngle(heading-distanceAmount);
-        queue.push(copy);
+        queue.addLast(copy);
         return distanceAmount;
 
     }

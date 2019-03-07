@@ -31,8 +31,8 @@ public class Back extends Expression {
         double newX = copy.getX()-distanceAmount*Math.cos(heading);
         double newY= copy.getY()-distanceAmount*Math.sin(heading);
         copy.setX(newX);
-        copy.setX(newY);
-        queue.push(copy);
+        copy.setY(newY);
+        queue.addLast(copy);
         return distanceAmount;
 
     }

@@ -25,7 +25,7 @@ public class HideTurtle extends Expression {
         checkInitialization();
         TurtleState copy = new TurtleState(queue.getLast());
         copy.setVisibility(false);
-        queue.push(copy);
+        queue.addLast(copy);
         return 0;
     }
 

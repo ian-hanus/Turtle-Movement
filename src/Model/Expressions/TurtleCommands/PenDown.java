@@ -26,7 +26,7 @@ public class PenDown extends Expression {
         checkInitialization();
         TurtleState copy = new TurtleState(queue.getLast());
         copy.setDown(true);
-        queue.push(copy);
+        queue.addLast(copy);
         return 1;
     }
 

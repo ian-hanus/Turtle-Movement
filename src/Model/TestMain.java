@@ -9,6 +9,7 @@ public class TestMain {
         Parser p = new Parser();
         Result r = p.execute("fd 50", "english");
         TurtleState t = r.getTurtleStates().pop();
+        System.out.println(t.getX() + ", " + t.getY());
     }
 
 }

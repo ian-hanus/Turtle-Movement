@@ -25,7 +25,7 @@ public class PenUp extends Expression {
         checkInitialization();
         TurtleState copy = new TurtleState(queue.getLast());
         copy.setDown(false);
-        queue.push(copy);
+        queue.addLast(copy);
         return 0;
     }
 

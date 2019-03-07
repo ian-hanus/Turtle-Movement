@@ -29,7 +29,7 @@ public class SetHeading extends Expression {
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle();
         copy.setAngle(distanceAmount);
-        queue.push(copy);
+        queue.addLast(copy);
         return Math.abs(distanceAmount-heading);
     }
 
