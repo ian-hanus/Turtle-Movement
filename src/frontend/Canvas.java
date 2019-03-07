@@ -1,5 +1,6 @@
 package frontend;
 
+import javafx.animation.SequentialTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -23,7 +24,8 @@ public class Canvas extends Pane {
         penColor = DEFAULT_PENCOLOR;
         //lines = new HashSet<>();
 
-        turtles.put(1, new TurtleSprite(STARTING_STATE, this.getHeight(), this.getWidth()));
+        turtles.put(1, new TurtleSprite(STARTING_STATE, turtleImage, this.getHeight(), this.getWidth()));
+        this.getChildren().add(turtles.get(1));
 ////        System.out.println(this.getHeight());
 ////        System.out.println(this.getWidth());
 //        activeTurtleImage = turtleImage;
@@ -40,10 +42,18 @@ public class Canvas extends Pane {
 
 
     public void updateCanvas(Deque<TurtleState> states){
+        SequentialTransition seqT = new SequentialTransition();
         while (!states.isEmpty()){
-            TurtleState nextState = states.pop();
-            turtles.get(nextState.getID()).setTurtle(nextState, getHeight(), getWidth());
+            TurtleState nextState = states.remove();
+            if (nextState.isDown()){
+                drawLine(turtles.get(1).currState, nextState, penColor);
+            }
+           // seqT.getChildren().add
+            turtles.get(1).setTurtle(nextState, getHeight(), getWidth());
+            System.out.println(seqT.getChildren().size());
         }
+        System.out.println(seqT);
+        //seqT.play();
     }
 
 
@@ -56,6 +66,8 @@ public class Canvas extends Pane {
 //            System.out.println(String.format("END: %d, %d", end.getX(), end.getY() ));
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
             nextLine.setFill(penColor);
+            nextLine.setStroke(penColor);
+            nextLine.setStrokeWidth(1);
 
             this.getChildren().add(nextLine);
         }
@@ -66,9 +78,13 @@ public class Canvas extends Pane {
     }
 
     public void setTurtleImage(Image i){
+
         turtleImage = i;
         for (TurtleSprite t : turtles.values()){
             t.setTurtleImage(i);
         }
+    }
+    public void setPenColor(Color color){
+        penColor = color;
     }
 }

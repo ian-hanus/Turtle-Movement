@@ -81,15 +81,16 @@ public class View {
             currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             for(TurtleState ts:currentStates){
-                System.out.println(ts.getY());
+                //System.out.println(ts.getY());
             }
-            List<TurtleState> currentListStates = new ArrayList<>();
-            currentListStates.addAll(currentStates);
+//            List<TurtleState> currentListStates = new ArrayList<>();
+//            currentListStates.addAll(currentStates);
             myCanvas.updateCanvas(currentStates);
             myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
         }
         catch(Exception e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
+            e1.printStackTrace();
             commandError.display();
         }
         myTerminal.getTextArea().setText("");

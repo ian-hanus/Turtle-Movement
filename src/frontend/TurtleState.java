@@ -10,18 +10,19 @@ public class TurtleState {
     private boolean down;
     private boolean shouldReset;
 
-    public TurtleState(int i, double xpos, double ypos, double orientation, boolean isVisible, boolean isDown){
-        id = i;
+    public TurtleState(double xpos, double ypos, double orientation, boolean isVisible, boolean isDown){
+        //id = i;
         x = xpos;
         y = ypos;
         angle = orientation;
         visible = isVisible;
         down = isDown;
         shouldReset = false;
+
     }
 
     public TurtleState(TurtleState toCopy){
-        this.id = toCopy.getID();
+        //this.id = toCopy.getID();
         this.x = toCopy.getX();
         this.y = toCopy.getY();
         this.angle = toCopy.getAngle();

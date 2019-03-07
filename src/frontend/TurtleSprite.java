@@ -1,6 +1,7 @@
 package frontend;
 
 
+import javafx.animation.PathTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.ColorInput;
@@ -9,6 +10,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.util.Duration;
 
 import java.util.List;
 
@@ -24,6 +29,8 @@ public class TurtleSprite extends ImageView {
     TurtleState currState;
     Image activeImage;
     private boolean isActive;
+    private final double INACTIVE_BRIGHTNESS = -.5;
+    private final double ACTIVE_BRIGHTNESS = .5;
 
     public TurtleSprite(){
         super();
@@ -32,14 +39,26 @@ public class TurtleSprite extends ImageView {
         this.setPreserveRatio(true);
         this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
     }
-    public TurtleSprite(TurtleState ts, double h, double w){
-        this.setX((ts.getX() + w/2) % w);
-        this.setY((-ts.getY() + h/2 ) % h);
-        this.setRotate(ts.getAngle());
+    public TurtleSprite(Image image){
+        super();
+        this.setTurtleImage(image);
+        this.setFitHeight(TURTLE_SIZE);
+        this.setFitWidth(TURTLE_SIZE);
+        this.setPreserveRatio(true);
+        this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
+    }
+
+    public TurtleSprite(TurtleState ts, Image i, double h, double w){
+        super();
+        this.setFitHeight(TURTLE_SIZE);
+        this.setFitWidth(TURTLE_SIZE);
+        this.setPreserveRatio(true);
+        this.setTurtleImage(i);
+        this.placeTurtle(ts, h, w);
 
         currState = ts;
         if (currState.isVisible()){
-            setTurtleImage(activeImage);
+            //setTurtleImage(activeImage);
         } else {
             this.setImage(null);
         }
@@ -48,22 +67,35 @@ public class TurtleSprite extends ImageView {
     public void clearLines(){
         myLines.clear();
     }
-
-    public void setTurtle(TurtleState ts, double h, double w){
-
-        this.setX((ts.getX() + w/2) % w);
-        this.setY((-ts.getY() + h/2 ) % h);
+    public void placeTurtle(TurtleState ts, double h, double w){
+        this.setX((ts.getX() + w/2 - TURTLE_SIZE/2) % w);
+        this.setY((-ts.getY() + h/2 - TURTLE_SIZE/2 ) % h);
         this.setRotate(ts.getAngle());
-
-        currState = ts;
+        this.currState = ts;
+        System.out.println(this.currState.getX());
+        System.out.println(this.currState.getY());
+    }
+    public void setTurtle(TurtleState ts, double h, double w){
+        Path path = new Path();
+        path.getElements().add(new MoveTo(this.currState.getX(), this.currState.getY()));
+        path.getElements().add(new LineTo(ts.getX(), ts.getY()));
+        PathTransition transition = new PathTransition(new Duration(1000), path);
+        placeTurtle(ts, h, w);
         if (currState.isVisible()){
             setTurtleImage(activeImage);
         } else {
             this.setImage(null);
         }
+        //System.out.println(transition);
+        transition.play();
     }
 
     public void setTurtleImage(Image i) {
+
+
+//        System.out.println(this.getX());
+//        System.out.println(this.getY());
+
         this.setImage(i);
         activeImage = i;
 
@@ -80,8 +112,8 @@ public class TurtleSprite extends ImageView {
     }
 
     public void toggleActive(){
-        ColorAdjust inactive = new ColorAdjust(0, 0, .5, 0);
-        ColorAdjust active = new ColorAdjust(0, -1, -.5, 0);
+        ColorAdjust inactive = new ColorAdjust(0, 0, INACTIVE_BRIGHTNESS, 0);
+        ColorAdjust active = new ColorAdjust(0, -1, ACTIVE_BRIGHTNESS, 0);
         this.isActive = !this.isActive;
         if (this.isActive){
             this.setEffect(active);
