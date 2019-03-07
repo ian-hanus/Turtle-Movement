@@ -17,9 +17,13 @@ import java.util.List;
 public class CommandHistory {
     private List<String> myCommandHistory;
     private VBox myCommandBox;
+    private Terminal myTerminal;
+    private View myView;
 
-    public CommandHistory(){
+    public CommandHistory(Terminal terminal, View view){
         myCommandHistory = new ArrayList<>();
+        myTerminal = terminal;
+        myView = view;
     }
 
     public List<String> getCommandHistory(){
@@ -59,11 +63,12 @@ public class CommandHistory {
         for(String s:this.getCommandHistory()) {
             Button commandButton = new Button(s);
             this.getCommandBox().getChildren().add(commandButton);
-            commandButton.setOnAction(e -> openParams());
+            commandButton.setOnAction(e -> runHistory(s));
         }
     }
 
-    public void openParams(){
-        ParameterWindow pw = new ParameterWindow();
+    private void runHistory(String command){
+        myTerminal.getTextArea().setText(myTerminal.getTextArea().getText() + "\n" + command);
     }
+
 }

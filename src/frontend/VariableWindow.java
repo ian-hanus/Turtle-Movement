@@ -11,7 +11,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class VariableWindow extends Stage {
-    private int myNewValue;
     private TextField myVariableField;
 
     public VariableWindow(VariableDisplay variableDisplay, String variable){
@@ -38,7 +37,7 @@ public class VariableWindow extends Stage {
 
     public Node drawFieldGrid(String variable){
         GridPane variableGrid = new GridPane();
-        variableGrid.getStyleClass().add("param");
+        variableGrid.getStyleClass().add("variable-field");
         variableGrid.setHgap(10);
         drawVariableGrid(variableGrid, variable);
         return variableGrid;
