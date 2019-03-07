@@ -235,7 +235,7 @@
     -fx-translate-x: 20;
 }
 
-.param{
+.variable-field{
     -fx-padding: 5;
     -fx-spacing: 15;
     -fx-font-family: Verdana;
