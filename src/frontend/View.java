@@ -27,6 +27,7 @@ public class View {
     private CommandHistory myCommandHistory;
     private VariableDisplay myVariableDisplay;
     private Palette myPalette;
+    private TurtleStatusDisplay myTurtleStatusDisplay;
 
     private final int GUI_WIDTH = 600;
     private final int GUI_HEIGHT = 1200;
@@ -63,7 +64,7 @@ public class View {
         myVariableDisplay.drawVariables(myRightPane);
         drawTurtleStatus();
         myPalette.drawPalette(myRightPane);
-        drawResults();
+        //drawResults();
         drawCanvas();
     }
 
@@ -80,13 +81,9 @@ public class View {
             Parser parser = new Parser();
             Result currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
-            for(TurtleState ts:currentStates){
-                //System.out.println(ts.getY());
-            }
-//            List<TurtleState> currentListStates = new ArrayList<>();
-//            currentListStates.addAll(currentStates);
             myCanvas.updateCanvas(currentStates);
-            myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
+            drawResults((currentResults.getReturnValue()));
+            myTurtleStatusDisplay.refresh(myCanvas.getTurtleList());
         }
         catch(Exception e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
@@ -94,23 +91,25 @@ public class View {
             commandError.display();
         }
         myTerminal.getTextArea().setText("");
-        myResults.getChildren().removeAll();
         myPalette.drawPalette(myRightPane);
     }
 
-    private void drawResults(){
-        myResults = new RightBox("Results").getBox();
-        myResults.getStyleClass().add("borderless-right");
-        ScrollPane sp = new ScrollPane(myResults);
-        sp.getStyleClass().add("scroll-panes");
-        myRightPane.add(sp, 1, 2);
+    private void drawResults(double returnValue){
+        ReturnWindow returnWindow = new ReturnWindow(returnValue);
+//        myResults = new RightBox("Results").getBox();
+//        myResults.getStyleClass().add("borderless-right");
+//        ScrollPane sp = new ScrollPane(myResults);
+//        sp.getStyleClass().add("scroll-panes");
+//        myRightPane.add(sp, 1, 2);
     }
 
     private void drawTurtleStatus(){
-        myTurtleStatus = new RightBox("Turtle Status").getBox();
-        myTurtleStatus.setMaxHeight(150);
-        myTurtleStatus.setMinHeight(150);
-        myRightPane.add(myTurtleStatus, 0, 0);
+        myTurtleStatusDisplay = new TurtleStatusDisplay(myTerminal, this, myCanvas.getTurtleList());
+        myTurtleStatusDisplay.getStyleClass().add("box-right");
+//        myTurtleStatus = new RightBox("Turtle Status").getBox();
+//        myTurtleStatus.setMaxHeight(150);
+//        myTurtleStatus.setMinHeight(150);
+        myRightPane.add(myTurtleStatusDisplay, 0, 0);
     }
 
     private HBox drawTitle(){
