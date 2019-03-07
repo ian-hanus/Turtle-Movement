@@ -6,7 +6,7 @@ public class Log implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Log(Expression[] inputs)
+    public Log(Expression... inputs)
     {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));

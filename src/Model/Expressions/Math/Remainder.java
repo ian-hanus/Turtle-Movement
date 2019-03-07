@@ -6,7 +6,7 @@ public class Remainder implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Remainder(Expression[] inputs) {
+    public Remainder(Expression... inputs) {
         if(inputs.length != getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
         }

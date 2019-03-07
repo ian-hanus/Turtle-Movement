@@ -6,7 +6,7 @@ public class Random implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Random(Expression[] inputs)
+    public Random(Expression... inputs)
     {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));

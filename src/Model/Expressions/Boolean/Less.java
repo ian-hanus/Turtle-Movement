@@ -6,7 +6,7 @@ public class Less implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Less(Expression[] inputs) {
+    public Less(Expression... inputs) {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
         }

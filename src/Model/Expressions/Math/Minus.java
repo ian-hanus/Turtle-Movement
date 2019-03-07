@@ -6,7 +6,7 @@ public class Minus implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Minus(Expression[] inputs)
+    public Minus(Expression... inputs)
     {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));

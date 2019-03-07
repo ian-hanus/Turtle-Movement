@@ -6,7 +6,7 @@ public class Tan implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Tan(Expression[] inputs)
+    public Tan(Expression... inputs)
     {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));

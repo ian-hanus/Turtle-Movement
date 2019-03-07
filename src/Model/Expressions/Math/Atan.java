@@ -6,7 +6,7 @@ public class Atan implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Atan(Expression[] inputs)
+    public Atan(Expression... inputs)
     {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));

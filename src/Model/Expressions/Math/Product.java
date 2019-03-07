@@ -8,7 +8,7 @@ public class Product implements Expression, VariableArgumentTaker {
 
     private Expression[] inputs;
 
-    public Product(Expression[] inputs) {
+    public Product(Expression... inputs) {
         if(inputs.length < getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
         }

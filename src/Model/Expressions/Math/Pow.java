@@ -6,7 +6,7 @@ public class Pow implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Pow(Expression[] inputs) {
+    public Pow(Expression... inputs) {
         if(inputs.length != getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
         }

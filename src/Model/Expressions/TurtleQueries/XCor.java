@@ -1,19 +1,14 @@
 package Model.Expressions.TurtleQueries;
 import Model.Expressions.Interfaces.Expression;
-import Model.Expressions.Interfaces.ExpressionTaker;
+import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
 import java.util.Deque;
 
-public class XCor implements Expression, ExpressionTaker {
+public class XCor implements Expression, TurtleExpression {
 
-    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public XCor(Deque<TurtleState> queue, Expression[] inputs) {
-        if(inputs.length != getDefaultNumExpressions()){
-            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
-        }
-        this.inputs=inputs;
+    public XCor(Deque<TurtleState> queue) {
         this.queue=queue;
     }
 
@@ -23,7 +18,4 @@ public class XCor implements Expression, ExpressionTaker {
         return copy.getX();
     }
 
-    public int getDefaultNumExpressions(){
-        return 0;
-    }
 }

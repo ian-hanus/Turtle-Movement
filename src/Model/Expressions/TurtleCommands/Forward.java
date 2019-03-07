@@ -1,16 +1,17 @@
 package Model.Expressions.TurtleCommands;
 import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.TurtleExpression;
 import Model.Expressions.Interfaces.VariableArgumentTaker;
 import frontend.TurtleState;
 import java.util.Arrays;
 import java.util.Deque;
 
-public class Forward implements Expression, VariableArgumentTaker {
+public class Forward implements Expression, VariableArgumentTaker, TurtleExpression {
 
     private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public Forward(Deque<TurtleState> queue, Expression[] inputs) {
+    public Forward(Deque<TurtleState> queue, Expression... inputs) {
         if(inputs.length < getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
         }

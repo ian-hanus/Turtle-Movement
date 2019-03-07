@@ -1,19 +1,15 @@
 package Model.Expressions.TurtleQueries;
 import Model.Expressions.Interfaces.Expression;
 import Model.Expressions.Interfaces.ExpressionTaker;
+import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
 import java.util.Deque;
 
-public class IsShowing implements Expression, ExpressionTaker {
+public class IsShowing implements Expression, TurtleExpression {
 
-    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public IsShowing(Deque<TurtleState> queue, Expression[] inputs) {
-        if(inputs.length != getDefaultNumExpressions()){
-            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
-        }
-        this.inputs=inputs;
+    public IsShowing(Deque<TurtleState> queue) {
         this.queue=queue;
     }
 

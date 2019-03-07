@@ -6,7 +6,7 @@ public class Greater implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Greater(Expression[] inputs) {
+    public Greater(Expression... inputs) {
         if(inputs.length != getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
         }

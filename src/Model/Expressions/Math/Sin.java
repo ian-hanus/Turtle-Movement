@@ -6,7 +6,7 @@ public class Sin implements Expression, ExpressionTaker{
 
     private Expression[] inputs;
 
-    public Sin(Expression[] inputs)
+    public Sin(Expression... inputs)
     {
         if(inputs.length!= getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));

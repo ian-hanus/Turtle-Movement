@@ -8,7 +8,7 @@ public class Sum implements Expression, VariableArgumentTaker {
 
     private Expression[] inputs;
 
-    public Sum(Expression[] inputs) {
+    public Sum(Expression... inputs) {
         if(inputs.length < getDefaultNumExpressions()){
             throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
         }

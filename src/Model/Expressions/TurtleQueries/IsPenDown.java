@@ -1,19 +1,16 @@
 package Model.Expressions.TurtleQueries;
 import Model.Expressions.Interfaces.Expression;
 import Model.Expressions.Interfaces.ExpressionTaker;
+import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
 import java.util.Deque;
 
-public class IsPenDown implements Expression, ExpressionTaker {
+public class IsPenDown implements Expression, TurtleExpression {
 
     private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public IsPenDown(Deque<TurtleState> queue, Expression[] inputs) {
-        if(inputs.length != getDefaultNumExpressions()){
-            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
-        }
-        this.inputs=inputs;
+    public IsPenDown(Deque<TurtleState> queue) {
         this.queue=queue;
     }
 
@@ -21,9 +18,5 @@ public class IsPenDown implements Expression, ExpressionTaker {
     public double evaluate() {
         TurtleState copy = new TurtleState(queue.getLast());
         return copy.isDown() ? 1 : 0;
-    }
-
-    public int getDefaultNumExpressions(){
-        return 0;
     }
 }

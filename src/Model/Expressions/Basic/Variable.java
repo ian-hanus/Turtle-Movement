@@ -7,16 +7,20 @@ import java.util.Map;
 public class Variable implements Expression{
 
     private String name;
-    private Map<String, Double> variableMap;
+    private Map<String, Constant> variableMap;
 
-    public Variable(String name, Map<String, Double> map) {
+    public Variable(String name, Map<String, Constant> map) {
         this.name = name;
         this.variableMap = map;
     }
 
     @Override
     public double evaluate(){
-        return variableMap.get(name);
+        if(!variableMap.keySet().contains(name)){
+            variableMap.put(name, new Constant(0));
+        }
+        return variableMap.get(name).evaluate();
+
     }
 
 }
