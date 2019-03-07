@@ -27,6 +27,7 @@ public class Terminal {
         pane.getChildren().addAll(runButton, helpButton, loadButton);
         runButton.setOnAction(e -> view.runCommands());
         loadButton.setOnAction(e -> loadFile(view));
+        helpButton.setOnAction(e -> new HelpWindow());
         return pane;
     }
 

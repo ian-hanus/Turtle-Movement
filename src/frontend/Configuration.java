@@ -76,7 +76,7 @@ public class Configuration {
             invalidFile.display();
         }
         this.setTurtleImage(myTurtleImage);
-        canvas.setTurtleImage(canvas.getTurtleSprite(), myTurtleImage);
+        canvas.setTurtleImage(myTurtleImage);
     }
 
     private void createBackgroundPicker(VBox configBox, Canvas canvas){

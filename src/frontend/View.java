@@ -39,8 +39,8 @@ public class View {
         myTerminal = new Terminal();
         myCommandHistory = new CommandHistory(myTerminal,this);
         myPalette = new Palette();
-        myCanvas = new Canvas(new Image(new File("./src/GUIResources/turtle.png").toURI().toString()), Color.BLACK); // be cautious of path name
         myVariableDisplay = new VariableDisplay();
+        myCanvas = new Canvas();
 
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
@@ -81,15 +81,16 @@ public class View {
             Result currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             for(TurtleState ts:currentStates){
-                System.out.println(ts.getY());
+                //System.out.println(ts.getY());
             }
-            List<TurtleState> currentListStates = new ArrayList<>();
-            currentListStates.addAll(currentStates);
-            myCanvas.updateCanvas(currentListStates);
+//            List<TurtleState> currentListStates = new ArrayList<>();
+//            currentListStates.addAll(currentStates);
+            myCanvas.updateCanvas(currentStates);
             myResults.getChildren().add(new Text(Double.toString(currentResults.getReturnValue())));
         }
         catch(Exception e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
+            e1.printStackTrace();
             commandError.display();
         }
         myTerminal.getTextArea().setText("");
