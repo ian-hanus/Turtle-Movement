@@ -11,8 +11,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import static javafx.scene.paint.Color.BLACK;
 
@@ -21,6 +21,11 @@ public class Palette {
     private Map<Integer, Shape> myShapeMap;
     private VBox myPaletteBox;
 
+    private final static int DEFAULT_RECTANGLE_WIDTH = 15;
+    private final static int DEFAULT_RECTANGLE_HEIGHT = 15;
+    private final static int DEFAULT_RADIUS = 8;
+    private final static int DEFAULT_ELLIPSE_RADIUS = 6;
+
     public Palette(){
         myColorMap = new HashMap<>();
         myShapeMap = new HashMap<>();
@@ -28,19 +33,25 @@ public class Palette {
     }
 
     private void establishDefaults(){
-        this.addColorIndex(1, Color.RED);
-        this.addColorIndex(2, Color.BLUE);
-        this.addColorIndex(3, Color.GREEN);
-        this.addShapeIndex(4, new Rectangle(15, 15));
-        this.addShapeIndex(5, new Circle(8));
-        this.addShapeIndex(6, new Ellipse(6, 8));
+        int index = 1;
+        Color[] colorDefaults = new Color[]{Color.RED, Color.BLUE, Color.GREEN};
+        Shape[] shapeDefaults = new Shape[]{new Rectangle(DEFAULT_RECTANGLE_WIDTH, DEFAULT_RECTANGLE_HEIGHT),
+                new Circle(DEFAULT_RADIUS), new Ellipse(DEFAULT_ELLIPSE_RADIUS, DEFAULT_RADIUS)};
+        for(Color c:colorDefaults){
+            this.addIndex(index, c);
+            index++;
+        }
+        for(Shape s:shapeDefaults){
+            this.addIndex(index, s);
+            index++;
+        }
     }
 
-    public void addColorIndex(int index, Color color){
+    public void addIndex(int index, Color color){
         myColorMap.put(index, color);
     }
 
-    public void addShapeIndex(int index, Shape shape){
+    public void addIndex(int index, Shape shape){
         myShapeMap.put(index, shape);
     }
 

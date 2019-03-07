@@ -25,8 +25,8 @@ public class Canvas extends Pane {
         penColor = pencolor;
         //lines = new HashSet<>();
         currState = new TurtleState(0, 0, STARTING_ANGLE, true, true);
-//        System.out.println(this.getHeight());
-//        System.out.println(this.getWidth());
+        System.out.println(this.getHeight());
+        System.out.println(this.getWidth());
         activeTurtleImage = turtleImage;
         turtleSprite.setFitHeight(TURTLE_SIZE);
         turtleSprite.setFitWidth(TURTLE_SIZE);
@@ -75,6 +75,7 @@ public class Canvas extends Pane {
 //            System.out.println(String.format("END: %d, %d", end.getX(), end.getY() ));
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
             nextLine.setFill(penColor);
+            nextLine.setStroke(penColor);
 
             this.getChildren().add(nextLine);
         }

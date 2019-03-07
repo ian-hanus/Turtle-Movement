@@ -28,17 +28,19 @@ public class View {
     private VariableDisplay myVariableDisplay;
     private Palette myPalette;
 
-    private final Dimension WINDOW_SIZE = new Dimension(600, 1200);
+    private final int GUI_WIDTH = 600;
+    private final int GUI_HEIGHT = 1200;
+    private final Dimension WINDOW_SIZE = new Dimension(GUI_WIDTH, GUI_HEIGHT);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
-    public View(VariableDisplay variableDisplay, SLogoMain main, Configuration configuration) {
+    public View(SLogoMain main) {
         myMain = main;
-        myConfiguration = configuration;
+        myConfiguration = new Configuration();
         myTerminal = new Terminal();
         myCommandHistory = new CommandHistory(myTerminal,this);
         myPalette = new Palette();
         myCanvas = new Canvas(new Image(new File("./src/GUIResources/turtle.png").toURI().toString()), Color.BLACK); // be cautious of path name
-        myVariableDisplay = variableDisplay;
+        myVariableDisplay = new VariableDisplay();
 
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
@@ -71,14 +73,12 @@ public class View {
     }
 
     public void runCommands(){
-        myTerminal.setInput(myTerminal.getTextArea().getText());
-        Result currentResults = null;
         myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
         myCommandHistory.updateCommandHistory(myRightPane);
         myVariableDisplay.updateVariableDisplay(myRightPane);
         try {
             Parser parser = new Parser();
-            currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+            Result currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             for(TurtleState ts:currentStates){
                 System.out.println(ts.getY());
