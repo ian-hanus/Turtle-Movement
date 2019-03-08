@@ -6,5 +6,5 @@ module UI_module {
     requires javafx.media;
     requires javafx.web;
 
-    opens frontend to javafx.graphics;
+    opens frontend to javafx.graphics, javafx.base;
 }
