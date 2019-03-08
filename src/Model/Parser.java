@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Parser implements Parsing {
 
     private final Properties expressionClasses = new Properties();
-    private final  Map<String, Properties> languages = new HashMap<>();
+    private final Map<String, Properties> languages = new HashMap<>();
     private final Map<String, Constant> variables = new HashMap<>();
 
     private TurtleState mostRecentTurtleState;
