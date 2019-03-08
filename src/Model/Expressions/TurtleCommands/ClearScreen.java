@@ -32,6 +32,7 @@ public class ClearScreen extends Expression {
         copy.setX(newX);
         copy.setY(newY);
         copy.setShouldReset(true);
+        copy.setAngle(90);
         queue.addLast(copy);
         double distance = Math.sqrt(Math.pow(oldX-newX,2)+ Math.pow(oldY-newY,2));
         return distance;
