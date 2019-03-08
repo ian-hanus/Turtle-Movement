@@ -41,15 +41,6 @@ public class TurtleSprite extends ImageView {
         this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
         this.myLines = new ArrayList<>();
     }
-    public TurtleSprite(Image image){
-        super();
-        this.setTurtleImage(image);
-        this.setFitHeight(TURTLE_SIZE);
-        this.setFitWidth(TURTLE_SIZE);
-        this.setPreserveRatio(true);
-        this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
-        this.myLines = new ArrayList<>();
-    }
 
     public TurtleSprite(TurtleState ts, Image i, double h, double w){
         super();
@@ -64,7 +55,7 @@ public class TurtleSprite extends ImageView {
 
         currState = ts;
         if (currState.isVisible()){
-            //setTurtleImage(activeImage);
+            setTurtleImage(activeImage);
         } else {
             this.setImage(null);
         }
@@ -97,14 +88,9 @@ public class TurtleSprite extends ImageView {
         } else {
             this.setImage(null);
         }
-        //System.out.println(transition);
     }
 
     public void setTurtleImage(Image i) {
-
-
-//        System.out.println(this.getX());
-//        System.out.println(this.getY());
 
         this.setImage(i);
         activeImage = i;
@@ -144,6 +130,10 @@ public class TurtleSprite extends ImageView {
 
     public TurtleState getCurrState(){
         return new TurtleState(currState);
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }
 
