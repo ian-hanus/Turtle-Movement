@@ -39,7 +39,7 @@ public class View {
         myCommandHistory = new CommandHistory(myTerminal,this, "Command History");
         myPalette = new Palette();
         myVariableDisplay = new VariableDisplay();
-        myCanvas = new Canvas();
+        myCanvas = new Canvas(this, myTerminal);
         myUserCommand = new UserCommand();
         myParser = new Parser();
 

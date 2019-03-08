@@ -24,6 +24,10 @@ public class TurtleStatusDisplay extends VBox {
 
     }
 
+    @Override
+    public void requestFocus() {
+    }
+
     public void refresh(List<TurtleSprite> turtleSprites){
         turtleSpriteTableView.getItems().clear();
         ObservableList<TurtleState> data = FXCollections.observableArrayList();
@@ -45,7 +49,7 @@ public class TurtleStatusDisplay extends VBox {
         tsTV.setEditable(true);
         TableColumn<TurtleState, Double> idCol = new TableColumn("ID");
         idCol.setMinWidth(50);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        //idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         TableColumn xCol = new TableColumn("X Position");
         xCol.setCellValueFactory(new PropertyValueFactory<>("x"));
@@ -57,7 +61,7 @@ public class TurtleStatusDisplay extends VBox {
         penCol.setCellValueFactory(new PropertyValueFactory<>("down"));
         TableColumn visibleCol = new TableColumn("Visible?");
         visibleCol.setCellValueFactory(new PropertyValueFactory<>("visible"));
-        tsTV.getColumns().addAll(idCol, xCol, yCol, headingCol, penCol, visibleCol);
+        tsTV.getColumns().addAll(xCol, yCol, headingCol, penCol, visibleCol); //ADD ID COLUMN
         tsTV.setItems(data);
         return tsTV;
     }
