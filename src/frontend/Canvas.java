@@ -127,7 +127,6 @@ public class Canvas extends Pane {
     }
 
     private void handleKeyPress(KeyCode k){
-        System.out.println("HERE");
         StringBuilder sb = new StringBuilder();
         //sb.append("tell [");
         updateActiveTurtles();
@@ -144,7 +143,7 @@ public class Canvas extends Pane {
             sb.append("rt 15");
         } else if (k == KeyCode.LEFT) {
             sb.append("lt 15");
-        }
+        } else return;
         myTerminal.getTextArea().setText(myTerminal.getTextArea().getText() + "\n" + sb.toString());
         myView.runCommands();
         this.requestFocus();

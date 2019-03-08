@@ -111,7 +111,11 @@ public class View {
         Text titleText = new Text("SLogo: Team 1");
         titleText.setFill(Color.WHITE);
         title.getChildren().add(titleText);
-        Button newWindowButton = new Button("New Window");
+        Button newWindowButton = new Button("New Window"){
+            @Override
+            public void requestFocus(){};
+
+        };
         newWindowButton.setOnAction(e -> myMain.start(new Stage()));
         newWindowButton.getStyleClass().add("new-sim-button");
         titleBox.getChildren().addAll(title, newWindowButton);
