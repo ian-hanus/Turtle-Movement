@@ -106,7 +106,7 @@ public class Configuration {
     private void createLanguageDropdown(VBox configBox){
         ComboBox languageBox = new ComboBox();
         languageBox.setItems(FXCollections.observableArrayList(Language.values()));
-        languageBox.setPromptText("Language");
+        languageBox.setPromptText("english");
         languageBox.getStyleClass().add("load-button");
         configBox.getChildren().add(languageBox);
         languageBox.setOnAction(e -> this.setLanguage((Language)languageBox.getValue()));

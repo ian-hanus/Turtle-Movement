@@ -25,6 +25,7 @@ public class View {
     private VariableDisplay myVariableDisplay;
     private Palette myPalette;
     private TurtleStatusDisplay myTurtleStatusDisplay;
+    private Parser myParser;
 
     private final int GUI_WIDTH = 600;
     private final int GUI_HEIGHT = 1200;
@@ -40,6 +41,8 @@ public class View {
         myVariableDisplay = new VariableDisplay();
         myCanvas = new Canvas();
         myUserCommand = new UserCommand();
+        myParser = new Parser();
+
 
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
@@ -77,8 +80,7 @@ public class View {
         myCommandHistory.updateCommandHistory(myRightPane);
         myVariableDisplay.updateVariableDisplay(myRightPane);
         try {
-            Parser parser = new Parser();
-            Result currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+            Result currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             myCanvas.updateCanvas(currentStates);
             myTerminal.displayResult((currentResults.getReturnValue()));

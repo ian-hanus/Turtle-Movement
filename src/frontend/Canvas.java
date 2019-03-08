@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.*;
 
 public class Canvas extends Pane {
-    private final double STARTING_ANGLE = 90;
+    private final double STARTING_ANGLE = 0;
 
     private final TurtleState STARTING_STATE =  new TurtleState(0, 0, STARTING_ANGLE, true, true);
     private final Color DEFAULT_PENCOLOR = Color.BLACK;
@@ -36,10 +36,6 @@ public class Canvas extends Pane {
 //        turtleSprite.setPreserveRatio(true);
 //        setTurtle(turtleSprite, currState);
     }
-
-
-
-
 
 
 
