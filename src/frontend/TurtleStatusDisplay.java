@@ -30,34 +30,36 @@ public class TurtleStatusDisplay extends VBox {
 
 
     private TableView getTable(List<TurtleSprite> turtles){
-        TableView<TurtleSprite> tsTV = new TableView<>();
+        TableView<TurtleSpriteProps> tsTV = new TableView<>();
 //        tsTV.setEditable(true);
 //        TableColumn idCol = new TableColumn("Number");
-////        idCol.setCellValueFactory(
-////                new PropertyValueFactory<TurtleSprite, Integer>("ID")
-////        );
+//        idCol.setCellValueFactory(
+//                new PropertyValueFactory<TurtleSpriteProps, Integer>("id")
+//        );
 //        TableColumn xCol = new TableColumn("X Position");
 //        xCol.setCellValueFactory(
-//                new PropertyValueFactory<TurtleState, Double>("X")
+//                new PropertyValueFactory<TurtleSpriteProps, Double>("X")
 //        );
 //        TableColumn yCol = new TableColumn("Y Position");
 //        yCol.setCellValueFactory(
-//                new PropertyValueFactory<TurtleState, Double>("Y")
+//                new PropertyValueFactory<TurtleSpriteProps, Double>("Y")
 //        );
 //        TableColumn headingCol = new TableColumn("Direction");
 //        headingCol.setCellValueFactory(
-//                new PropertyValueFactory<TurtleState, Double>("Angle")
+//                new PropertyValueFactory<TurtleSpriteProps, Double>("angle")
 //        );
 //        TableColumn penCol = new TableColumn("Pen Down?");
 //        penCol.setCellValueFactory(
-//                new PropertyValueFactory<TurtleState, Boolean>("PenDown")
+//                new PropertyValueFactory<TurtleSpriteProps, Boolean>("down")
 //        );
 //        TableColumn visibilityCol = new TableColumn("Visible?");
 //        visibilityCol.setCellValueFactory(
-//                new PropertyValueFactory<TurtleState, Boolean>("Visibility")
+//                new PropertyValueFactory<TurtleSpriteProps, Boolean>("visible")
 //        );
 //        tsTV.getColumns().addAll(idCol, xCol, yCol, headingCol, penCol, visibilityCol);
-//        tsTV.getItems().addAll(turtles);
+//        for(TurtleSprite t : turtles){
+//            tsTV.getItems().add(new TurtleSpriteProps(t));
+//        }
         return tsTV;
     };
 

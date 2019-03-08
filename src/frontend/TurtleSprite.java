@@ -120,5 +120,8 @@ public class TurtleSprite extends ImageView {
         } else this.setEffect(inactive);
 
     }
+    public double getAngle(){
+        return this.currState.getAngle();
+    }
 }
 
