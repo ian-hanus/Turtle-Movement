@@ -18,11 +18,13 @@ public class CommandHistory {
     private VBox myCommandBox;
     private Terminal myTerminal;
     private View myView;
+    private String myTitle;
 
-    public CommandHistory(Terminal terminal, View view){
+    public CommandHistory(Terminal terminal, View view, String title){
         myCommandHistory = new ArrayList<>();
         myTerminal = terminal;
         myView = view;
+        myTitle = title;
     }
 
     public List<String> getCommandHistory(){
@@ -42,22 +44,19 @@ public class CommandHistory {
     }
 
     public void drawHistory(GridPane pane){
-        myCommandBox = new RightBox("Command History").getBox();
+        myCommandBox = new RightBox(myTitle).getBox();
         myCommandBox.getStyleClass().add("borderless-right");
         ScrollPane sp = new ScrollPane(myCommandBox);
         sp.getStyleClass().add("scroll-panes");
         pane.add(sp, 0, 2);
     }
 
-    public VBox getCommandBox(){
-        return myCommandBox;
-    }
 
     public void updateCommandHistory(GridPane pane){
         this.drawHistory(pane);
         for(String s:this.getCommandHistory()) {
             Button commandButton = new Button(s);
-            this.getCommandBox().getChildren().add(commandButton);
+            myCommandBox.getChildren().add(commandButton);
             commandButton.setOnAction(e -> runHistory(s));
         }
     }

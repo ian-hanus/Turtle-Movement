@@ -90,11 +90,12 @@
     -fx-focus-color: transparent;
     -fx-background-color: rgb(255, 255, 255);
     -fx-spacing: 2;
-    -fx-min-width: 1160;
-    -fx-max-width: 1160;
+    -fx-min-width: 1019;
+    -fx-max-width: 1019;
     -fx-min-height: 90;
     -fx-max-height: 90;
     -fx-translate-x: 2;
+    -fx-translate-y: -10;
     -fx-border-width: 0;
     -fx-border-color: white;
 }
@@ -156,8 +157,8 @@
     -fx-pref-width: 100;
     -fx-pref-height: 20;
     -fx-alignment: center;
-    -fx-translate-x: 840;
-    -fx-translate-y: -15;
+    -fx-translate-x: 700;
+    -fx-translate-y: -30;
     -fx-hgap: 10;
 }
 
@@ -242,4 +243,21 @@
     -fx-font-size: 14;
     -fx-font-weight: normal;
     -fx-border-color: rgb(0,50,0);
+}
+
+.return-pane{
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-text-alignment: center;
+    -fx-pref-height: 50;
+    -fx-pref-width: 200;
+    -fx-font-size: 10;
+}
+
+.results-box{
+    -fx-pref-width: 150;
+    -fx-pref-height: 125;
+    -fx-border-color: rgb(0,50,0);
+    -fx-border-width: 0 0 0 5;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }

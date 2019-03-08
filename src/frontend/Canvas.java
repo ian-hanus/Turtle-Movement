@@ -50,9 +50,9 @@ public class Canvas extends Pane {
             }
            // seqT.getChildren().add
             turtles.get(1).setTurtle(nextState, getHeight(), getWidth());
-            System.out.println(seqT.getChildren().size());
+//            System.out.println(seqT.getChildren().size());
         }
-        System.out.println(seqT);
+//        System.out.println(seqT);
         //seqT.play();
     }
 
