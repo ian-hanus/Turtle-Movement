@@ -20,10 +20,13 @@ public class Parser implements Parsing {
     private final Map<String, Properties> languages = new HashMap<>();
     private final Map<String, Constant> variables = new HashMap<>();
 
+    private Properties syntax;
+
     private TurtleState mostRecentTurtleState;
 
     public Parser() {
         readLanguages();
+        syntax = languages.get("syntax");
         readProperties(expressionClasses, "./src/ExpressionClasses.properties");
         mostRecentTurtleState = new TurtleState(0, 0, 90, true, true);
     }
@@ -47,7 +50,6 @@ public class Parser implements Parsing {
         }
         catch (IOException e) {
             // TODO What to do with this exception that should never be thrown?
-            e.printStackTrace();
         }
     }
 
@@ -63,23 +65,45 @@ public class Parser implements Parsing {
         return null;
     }
 
-    private String[] translate(String commands, String language) throws CommandNotFoundException {
+    private String[] translate(String commands, String language) throws ParsingException {
         Properties inputLanguage = languages.get(language.toLowerCase());
         String[] commandStrings = commands.toLowerCase().split(" ");
+        Stack<String> bracketStack = new Stack<>();
+        Pattern bracketClose = Pattern.compile(syntax.getProperty("ListEnd") + "|" + syntax.getProperty("GroupEnd"));
+
         for (int i = 0; i < commandStrings.length; i++) {
+            String currString = commandStrings[i];
+
+            if (bracketClose.matcher(currString).find()) {
+                bracketStack.push(currString);
+                continue;
+            }
+            if (currString.equals("[")) {
+                if(!bracketStack.pop().equals("]")) {
+                    throw new MisalignedBracketsException();
+                }
+                continue;
+            }
+            if (currString.equals("(")) {
+                if (!bracketStack.pop().equals(")")) {
+                    throw new MisalignedBracketsException();
+                }
+                continue;
+            }
+
             boolean commandFound = false;
-            for (String name : inputLanguage.stringPropertyNames()) {
-                Pattern regex = Pattern.compile(inputLanguage.getProperty(name));
-                if (regex.matcher(commandStrings[i]).find()) {
-                    String[] commandOptions = languages.get("english").getProperty(name).split("\\|");
+            for (String command : inputLanguage.stringPropertyNames()) {
+                Pattern translation = Pattern.compile(inputLanguage.getProperty(command));
+                if (translation.matcher(commandStrings[i]).find()) {
+                    String[] commandOptions = languages.get("english").getProperty(command).split("\\|");
                     commandStrings[i] = commandOptions[commandOptions.length - 1].replace("\\", "");
                     commandFound = true;
                 }
             }
             if (!commandFound) {
-                for (String name : languages.get("syntax").stringPropertyNames()) {
-                    Pattern regex = Pattern.compile(languages.get("syntax").getProperty(name));
-                    if (regex.matcher(commandStrings[i]).find()) {
+                for (String token : syntax.stringPropertyNames()) {
+                    Pattern tokenSyntax = Pattern.compile(syntax.getProperty(token));
+                    if (tokenSyntax.matcher(commandStrings[i]).find()) {
                         commandFound = true;
                     }
                 }
@@ -97,12 +121,17 @@ public class Parser implements Parsing {
         Deque<Object> currExpressions = new ArrayDeque<>();
         Deque<Class> currExpressionTypes = new ArrayDeque<>();
 
-        Properties syntax = languages.get("syntax");
+        String listEnd = syntax.getProperty("ListEnd").replace("\\", "");
+        String listStart = syntax.getProperty("ListStart").replace("\\", "");
+        String groupEnd = syntax.getProperty("GroupEnd").replace("\\", "");
+        String groupStart = syntax.getProperty("GroupStart").replace("\\", "");
         Pattern variableRegex = Pattern.compile(syntax.getProperty("Variable"));
 
-        int numEndBrackets = 0;
         boolean makingList = false;
         Deque<Expression> currList = new ArrayDeque<>();
+        
+        boolean makingGroup = false;
+        Deque<Expression> currGroup = new ArrayDeque<>();
 
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
         turtleChanges.addLast(mostRecentTurtleState);
@@ -110,12 +139,12 @@ public class Parser implements Parsing {
         for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
 
-            if (currString.equals(syntax.getProperty("ListEnd").replace("\\", ""))) {
+            if (currString.equals(listEnd)) {
                 numEndBrackets++;
                 makingList = true;
                 continue;
             }
-            if (currString.equals(syntax.getProperty("ListStart").replace("\\", ""))) {
+            if (currString.equals(listStart)) {
                 numEndBrackets--;
                 if (numEndBrackets < 0) {
                     throw new ImproperBracketsException();
@@ -124,6 +153,12 @@ public class Parser implements Parsing {
                 currExpressions.push(currList.toArray());
                 currExpressionTypes.push(Array.class);
                 continue;
+            }
+
+            if (currString.equals(groupEnd)) {
+                numEndParens++;
+                makingGroup = true;
+
             }
 
             if (variableRegex.matcher(currString).find()) {
