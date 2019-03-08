@@ -19,7 +19,7 @@ public class VariableWindow extends Stage {
         bp.setBottom(drawButtons(variableDisplay, variable));
         bp.setCenter(drawFieldGrid(variable));
         this.sizeToScene();
-        this.setTitle("Edit Parameters");
+        this.setTitle("Change variable value");
         this.setScene(scene);
         this.setResizable(false);
         this.show();

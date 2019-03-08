@@ -74,6 +74,7 @@ public class TurtleSprite extends ImageView {
         this.currState = ts;
         System.out.println(this.currState.getX());
         System.out.println(this.currState.getY());
+        System.out.println(this.currState.getAngle());
     }
     public void setTurtle(TurtleState ts, double h, double w){
         Path path = new Path();
