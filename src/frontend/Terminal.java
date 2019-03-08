@@ -3,7 +3,6 @@ package frontend;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -14,6 +13,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Place where user inputs commands.
@@ -40,7 +40,7 @@ public class Terminal {
         Button loadButton = createButton("Load");
         pane.getChildren().addAll(runButton, helpButton, loadButton);
         runButton.setOnAction(e -> view.runCommands());
-        loadButton.setOnAction(e -> loadFile(view));
+        loadButton.setOnAction(e -> loadTextFromFile());
         helpButton.setOnAction(e -> new HelpWindow());
         return pane;
     }
@@ -56,9 +56,6 @@ public class Terminal {
         myResults.getChildren().add(new Text("Returned: " + result));
     }
 
-    private void loadFile(View view){
-    }
-
     private void initializeProgramChooser(){
         myProgramChooser = new FileChooser();
         myProgramChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
@@ -68,14 +65,21 @@ public class Terminal {
 
     private void loadTextFromFile(){
         File programFile = myProgramChooser.showOpenDialog(new Stage());
-
+        String input = "";
         try {
             FileInputStream fileStream = new FileInputStream(programFile);
             byte[] data = new byte[(int) programFile.length()];
+            fileStream.read(data);
+            fileStream.close();
+            input = new String(data, "UTF-8");
         } catch (FileNotFoundException e) {
             ErrorDisplay fileError = new ErrorDisplay("File Error", "File Not Found");
             fileError.display();
+        } catch(IOException e1){
+            ErrorDisplay fileError = new ErrorDisplay("File Error", "Invalid File");
+            fileError.display();
         }
+        myTextArea.setText(input);
     }
 
     public TextArea getTextArea() {
