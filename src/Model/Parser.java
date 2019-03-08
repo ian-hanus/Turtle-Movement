@@ -1,11 +1,10 @@
 package Model;
 
 import Model.Exceptions.Parsing.*;
-import Model.Exceptions.UninitializedExpressionException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Controls.Make;
 import Model.Expressions.Controls.To;
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
 import frontend.TurtleState;
 
 import java.io.*;
@@ -54,12 +53,7 @@ public class Parser implements Parsing {
 
     public Result execute(String commands, String language) throws ParsingException {
         String[] translatedCommands = translate(commands, language);
-        try {
-            return parse(translatedCommands);
-        } catch (ClassNotFoundException | UninitializedExpressionException e) {
-            // TODO What to do with these exceptions that are never thrown?
-            e.printStackTrace();
-        }
+        return parse(translatedCommands);
 
         return null;
     }
@@ -93,7 +87,7 @@ public class Parser implements Parsing {
     }
 
     // TODO Refactor this lol
-    private Result parse(String[] commandStrings) throws ParsingException, ClassNotFoundException, UninitializedExpressionException {
+    private Result parse(String[] commandStrings) throws ParsingException, ClassNotFoundException {
         Stack<Expression> superExpressions = new Stack<>();
         Deque<Object> currExpressions = new ArrayDeque<>();
         Deque<Class> currExpressionTypes = new ArrayDeque<>();
