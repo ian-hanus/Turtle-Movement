@@ -129,16 +129,13 @@ public class TurtleSprite extends ImageView {
     public double getAngle(){
         return this.currState.getAngle();
     }
-<<<<<<< HEAD
+
     public List<Line> getLines(){
         return this.myLines;
     }
     public void addLine(Line l){
         this.myLines.add(l);
-=======
-    public List<Line> getMyLines(){
-        return myLines;
->>>>>>> 2379c8806de4a675ada1f9e1e9f2822a28eacb4b
-    }
+
+}
 }
 
