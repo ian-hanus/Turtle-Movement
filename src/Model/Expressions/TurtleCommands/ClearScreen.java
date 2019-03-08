@@ -25,9 +25,16 @@ public class ClearScreen extends Expression {
     public double evaluate() throws UninitializedExpressionException {
         checkInitialization();
         TurtleState copy = new TurtleState(queue.getLast());
+        double oldX = copy.getX();
+        double oldY = copy.getY();
+        double newX = 0;
+        double newY = 0;
+        copy.setX(newX);
+        copy.setY(newY);
         copy.setShouldReset(true);
         queue.addLast(copy);
-        return 1;
+        double distance = Math.sqrt(Math.pow(oldX-newX,2)+ Math.pow(oldY-newY,2));
+        return distance;
     }
 
     @Override
