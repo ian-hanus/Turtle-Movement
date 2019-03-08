@@ -6,21 +6,27 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 /**
  * Place where user inputs commands.
  */
 public class Terminal {
     private TextArea myTextArea;
+    private VBox myResults;
 
     public Terminal() {
         myTextArea = new TextArea();
         myTextArea.getStyleClass().add("text-area-terminal");
+        myResults = new VBox();
+        myResults.getStyleClass().add("results-box");
     }
 
     public Node drawTerminal(FlowPane pane, View view){
         pane.getStyleClass().add("box-bot");
-        pane.getChildren().addAll(new Label("Terminal"), this.getTextArea());
+        myResults.getChildren().add(new Text("Returned: "));
+        pane.getChildren().addAll(myTextArea, myResults);
         Button runButton = createButton("Run");
         Button helpButton = createButton("Help");
         Button loadButton = createButton("Load");
@@ -37,10 +43,19 @@ public class Terminal {
         return button;
     }
 
+    public void displayResult(double result){
+        myResults.getChildren().clear();
+        myResults.getChildren().add(new Text("Returned: " + result));
+    }
+
     private void loadFile(View view){
     }
 
     public TextArea getTextArea() {
         return myTextArea;
+    }
+
+    public VBox getResults(){
+        return myResults;
     }
 }
