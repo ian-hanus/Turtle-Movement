@@ -51,7 +51,7 @@ public class View {
 
         borderPane.setTop(drawTitle());
         borderPane.setRight(myRightPane);
-        borderPane.setBottom(myTerminal.drawTerminal(terminalPane, this));
+        borderPane.setBottom(myTerminal.drawTerminal(terminalPane, this, myCanvas, myConfiguration));
         borderPane.setCenter(drawCanvas());
 
         resetGUI();

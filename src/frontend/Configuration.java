@@ -81,7 +81,7 @@ public class Configuration {
 
     private void createBackgroundPicker(VBox configBox, Canvas canvas){
         ColorPicker backgroundColorPicker = new ColorPicker();
-        backgroundColorPicker.setOnAction(e -> canvas.setBackground(new Background(new BackgroundFill(backgroundColorPicker.getValue(), CornerRadii.EMPTY, Insets.EMPTY))));
+        backgroundColorPicker.setOnAction(e -> canvas.setBackgroundColor(backgroundColorPicker.getValue()));
         HBox colorRow = createColorRow(backgroundColorPicker, "Background Color");
         configBox.getChildren().add(colorRow);
     }
