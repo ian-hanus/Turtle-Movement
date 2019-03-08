@@ -139,26 +139,24 @@ public class Parser implements Parsing {
 
             if (currString.equals(listEnd) || currString.equals(groupEnd)) {
                 currExpressions.push(currString);
-                continue;
             }
-            if (currString.equals(listStart)) {
+            else if (currString.equals(listStart)) {
                 List<Expression> currList = new ArrayList<>();
                 while (!currExpressions.getFirst().equals(listEnd)) {
                     currList.add((Expression)currExpressions.pop());
                 }
                 currExpressions.pop();
                 currExpressions.push(currList.toArray());
-                continue;
             }
 
             if (variableRegex.matcher(currString).find()) {
                 currExpressions.push(new Variable(currString, variables));
             }
 
-            try {
+            else if (Pattern.compile(syntax.getProperty("Constant")).matcher(currString).find()) {
                 double constant = Double.parseDouble(currString);
                 currExpressions.push(new Constant(constant));
-            } catch (NumberFormatException notConstant) {
+            } else {
                 // ignore "("
                 if (currString.equals(groupStart)) {
                     continue;
@@ -197,7 +195,7 @@ public class Parser implements Parsing {
                     // TODO What to do with exception that should never be thrown?
                 }
                 catch (Exception e) {
-                    // TODO What to do with reflection errors that should never be thrown?
+                      // TODO What to do with reflection errors that should never be thrown?
                 }
                 if (!currExpressions.isEmpty()) {
                     List<Expression> currArgs = new ArrayList<>();
@@ -218,6 +216,7 @@ public class Parser implements Parsing {
                     }
                 }
 
+                // TODO
                 if (expressionClass.equals(Make.class)) {
                     currExpressions.addLast(variables);
                     currExpressionTypes.addLast(Map.class);
