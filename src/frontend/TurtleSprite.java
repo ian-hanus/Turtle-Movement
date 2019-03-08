@@ -124,5 +124,8 @@ public class TurtleSprite extends ImageView {
     public double getAngle(){
         return this.currState.getAngle();
     }
+    public List<Line> getMyLines(){
+        return myLines;
+    }
 }
 

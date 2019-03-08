@@ -17,6 +17,7 @@ public class Canvas extends Pane {
     private final Color DEFAULT_PENCOLOR = Color.BLACK;
     private Image turtleImage = new Image(new File("./src/GUIResources/turtle.png").toURI().toString());
     Color penColor;
+    Double penWidth;
     Map<Integer, TurtleSprite> turtles = new HashMap<>();
     //Set<Line> lines;
 
@@ -45,6 +46,12 @@ public class Canvas extends Pane {
         SequentialTransition seqT = new SequentialTransition();
         while (!states.isEmpty()){
             TurtleState nextState = states.remove();
+//            if(nextState.shouldReset()){
+//                for (Line l : (turtles.get(nextState.getID())).getMyLines()){
+//                    this.getChildren().remove(l);
+//                }
+//                turtles.get(nextState.getID()).clearLines();
+//            }
             if (nextState.isDown()){
                 drawLine(turtles.get(1).currState, nextState, penColor);
             }
@@ -67,7 +74,7 @@ public class Canvas extends Pane {
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
             nextLine.setFill(penColor);
             nextLine.setStroke(penColor);
-            nextLine.setStrokeWidth(1);
+            nextLine.setStrokeWidth(penWidth);
 
             this.getChildren().add(nextLine);
         }
@@ -86,6 +93,9 @@ public class Canvas extends Pane {
     }
     public void setPenColor(Color color){
         penColor = color;
+    }
+    public void setPenWidth(Double pw){
+        penWidth = pw;
     }
 
     public List<TurtleSprite> getTurtleList(){
