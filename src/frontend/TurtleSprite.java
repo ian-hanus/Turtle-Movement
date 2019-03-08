@@ -15,6 +15,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,6 +39,7 @@ public class TurtleSprite extends ImageView {
         this.setFitWidth(TURTLE_SIZE);
         this.setPreserveRatio(true);
         this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
+        this.myLines = new ArrayList<>();
     }
     public TurtleSprite(Image image){
         super();
@@ -46,6 +48,7 @@ public class TurtleSprite extends ImageView {
         this.setFitWidth(TURTLE_SIZE);
         this.setPreserveRatio(true);
         this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
+        this.myLines = new ArrayList<>();
     }
 
     public TurtleSprite(TurtleState ts, Image i, double h, double w){
@@ -55,6 +58,8 @@ public class TurtleSprite extends ImageView {
         this.setPreserveRatio(true);
         this.setTurtleImage(i);
         this.placeTurtle(ts, h, w);
+        this.myLines = new ArrayList<>();
+        this.setOnMouseClicked((MouseEvent e) -> this.toggleActive());
 
         currState = ts;
         if (currState.isVisible()){
@@ -123,6 +128,12 @@ public class TurtleSprite extends ImageView {
     }
     public double getAngle(){
         return this.currState.getAngle();
+    }
+    public List<Line> getLines(){
+        return this.myLines;
+    }
+    public void addLine(Line l){
+        this.myLines.add(l);
     }
 }
 

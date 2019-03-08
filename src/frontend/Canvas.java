@@ -17,10 +17,12 @@ public class Canvas extends Pane {
     private final Color DEFAULT_PENCOLOR = Color.BLACK;
     private Image turtleImage = new Image(new File("./src/GUIResources/turtle.png").toURI().toString());
     Color penColor;
+    Double penWidth;
     Map<Integer, TurtleSprite> turtles = new HashMap<>();
     //Set<Line> lines;
 
     public Canvas(){
+        penWidth = 1.5;
         penColor = DEFAULT_PENCOLOR;
         //lines = new HashSet<>();
 
@@ -42,7 +44,6 @@ public class Canvas extends Pane {
 
 
     public void updateCanvas(Deque<TurtleState> states){
-        SequentialTransition seqT = new SequentialTransition();
         while (!states.isEmpty()){
             TurtleState nextState = states.remove();
             if (nextState.isDown()){
@@ -50,6 +51,12 @@ public class Canvas extends Pane {
             }
            // seqT.getChildren().add
             turtles.get(1).setTurtle(nextState, getHeight(), getWidth());
+            if (nextState.shouldReset()){
+                for(Line l : (turtles.get(1)).getLines()){
+                    this.getChildren().remove(l);
+                }
+                turtles.get(1).clearLines();
+            }
 //            System.out.println(seqT.getChildren().size());
         }
 //        System.out.println(seqT);
@@ -67,8 +74,9 @@ public class Canvas extends Pane {
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
             nextLine.setFill(penColor);
             nextLine.setStroke(penColor);
-            nextLine.setStrokeWidth(1);
+            nextLine.setStrokeWidth(penWidth);
 
+            turtles.get(1).addLine(nextLine);
             this.getChildren().add(nextLine);
         }
     }
@@ -86,6 +94,9 @@ public class Canvas extends Pane {
     }
     public void setPenColor(Color color){
         penColor = color;
+    }
+    public void setPenWidth(Double w){
+        penWidth = w;
     }
 
     public List<TurtleSprite> getTurtleList(){
