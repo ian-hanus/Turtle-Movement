@@ -26,7 +26,7 @@ public class Parser implements Parsing {
     public Parser() {
         readLanguages();
         readProperties(expressionClasses, "./src/ExpressionClasses.properties");
-        mostRecentTurtleState = new TurtleState(0, 0, 0, true, true);
+        mostRecentTurtleState = new TurtleState(0, 0, 90, true, true);
     }
 
     private void readLanguages() {
