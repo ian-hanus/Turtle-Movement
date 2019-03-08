@@ -33,25 +33,25 @@ public class View {
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
     public View(SLogoMain main) {
-        myMain = main;
-        myConfiguration = new Configuration();
-        myTerminal = new Terminal();
-        myCommandHistory = new CommandHistory(myTerminal,this, "Command History");
-        myPalette = new Palette();
-        myVariableDisplay = new VariableDisplay();
-        myCanvas = new Canvas();
-        myUserCommand = new UserCommand();
-        myParser = new Parser();
-
-
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
         myRightPane = new GridPane();
         myRightPane.getStyleClass().add("pane-right");
 
+        myMain = main;
+        myConfiguration = new Configuration();
+        myTerminal = new Terminal();
+        myCommandHistory = new CommandHistory(myTerminal,this, "Command History");
+        myPalette = new Palette();
+        myVariableDisplay = new VariableDisplay(myRightPane);
+        myCanvas = new Canvas();
+        myUserCommand = new UserCommand();
+        myParser = new Parser();
+
+
         borderPane.setTop(drawTitle());
         borderPane.setRight(myRightPane);
-        borderPane.setBottom(myTerminal.drawTerminal(terminalPane, this, myCanvas, myConfiguration));
+        borderPane.setBottom(myTerminal.drawTerminal(terminalPane, this, myCanvas, myConfiguration, myVariableDisplay, myUserCommand));
         borderPane.setCenter(drawCanvas());
 
         resetGUI();
@@ -62,7 +62,7 @@ public class View {
     private void resetGUI(){
         myConfiguration.drawConfig(myRightPane, myMain, myCanvas);
         myCommandHistory.drawHistory(myRightPane);
-        myVariableDisplay.drawVariables(myRightPane);
+        myVariableDisplay.drawVariables();
         myUserCommand.drawUserCommands(myRightPane);
         drawTurtleStatus();
         myPalette.drawPalette(myRightPane);
@@ -78,7 +78,7 @@ public class View {
     public void runCommands(){
         myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
         myCommandHistory.updateCommandHistory(myRightPane);
-        myVariableDisplay.updateVariableDisplay(myRightPane);
+        myVariableDisplay.updateVariableDisplay();
         try {
             Result currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();

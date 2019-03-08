@@ -45,4 +45,12 @@ public class UserCommand {
         }
         terminal.getTextArea().setText(callCommand);
     }
+
+    public Map<String, String[]> getUserCommands(){
+        return myDefinedCommands;
+    }
+
+    public void setUserCommands(Map<String, String[]> inputCommands){
+        myDefinedCommands = inputCommands;
+    }
 }
