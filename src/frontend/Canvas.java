@@ -46,6 +46,12 @@ public class Canvas extends Pane {
     public void updateCanvas(Deque<TurtleState> states){
         while (!states.isEmpty()){
             TurtleState nextState = states.remove();
+//            if(nextState.shouldReset()){
+//                for (Line l : (turtles.get(nextState.getID())).getMyLines()){
+//                    this.getChildren().remove(l);
+//                }
+//                turtles.get(nextState.getID()).clearLines();
+//            }
             if (nextState.isDown()){
                 drawLine(turtles.get(1).currState, nextState, penColor);
             }
@@ -97,6 +103,7 @@ public class Canvas extends Pane {
     }
     public void setPenWidth(Double w){
         penWidth = w;
+
     }
 
     public List<TurtleSprite> getTurtleList(){
