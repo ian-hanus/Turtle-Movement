@@ -14,10 +14,12 @@ public class VariableDisplay {
     private Map<String, String> myVariableHistory;
     private List<String> myKeyOrder;
     private VBox myVariableBox;
+    private GridPane myPane;
 
-    public VariableDisplay(){
+    public VariableDisplay(GridPane gridPane){
         myVariableHistory = new HashMap<>();
         myKeyOrder = new ArrayList<>();
+        myPane = gridPane;
     }
 
     public void addVariable(String name, String value){
@@ -29,6 +31,11 @@ public class VariableDisplay {
         return myVariableHistory.get(myKeyOrder.get(index));
     }
 
+    public void setVariables(Map<String, String> variableHistory){
+        myVariableHistory = variableHistory;
+        updateVariableDisplay();
+    }
+
     public Map<String, String> getVariables(){
         return myVariableHistory;
     }
@@ -38,16 +45,16 @@ public class VariableDisplay {
         return key + " = " + myVariableHistory.get(key);
     }
 
-    public void drawVariables(GridPane gridPane){
+    public void drawVariables(){
         myVariableBox = new RightBox("Current Variables").getBox();
         myVariableBox.getStyleClass().add("borderless-right");
         ScrollPane sp = new ScrollPane(myVariableBox);
         sp.getStyleClass().add("scroll-panes");
-        gridPane.add(sp, 0, 1);
+        myPane.add(sp, 0, 1);
     }
 
-    public void updateVariableDisplay(GridPane gridPane){
-        drawVariables(gridPane);
+    public void updateVariableDisplay(){
+        drawVariables();
         for(String s:this.getVariables().keySet()){
             Button variableButton = new Button(s + " " + this.getVariables().get(s));
             myVariableBox.getChildren().add(variableButton);
