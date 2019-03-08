@@ -7,9 +7,12 @@ public class TestMain {
 
     public static void main(String[] args) throws ParsingException {
         Parser p = new Parser();
-        Result r = p.execute("fd 50", "english");
+        p.execute("fd 50", "english");
+        Result r = p.execute("fd rt 90", "english");
         TurtleState t = r.getTurtleStates().pop();
-        System.out.println(t.getX() + ", " + t.getY());
+        System.out.println(t.getX() + ", " + t.getY() + "(" + t.getAngle() + ")");
+        t = r.getTurtleStates().pop();
+        System.out.println(t.getX() + ", " + t.getY() + "(" + t.getAngle() + ")");
     }
 
 }
