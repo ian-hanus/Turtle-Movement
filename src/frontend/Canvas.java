@@ -127,7 +127,6 @@ public class Canvas extends Pane {
     }
 
     private void handleKeyPress(KeyCode k){
-        System.out.println("HERE");
         StringBuilder sb = new StringBuilder();
         //sb.append("tell [");
         updateActiveTurtles();
