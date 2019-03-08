@@ -144,7 +144,7 @@ public class Canvas extends Pane {
             sb.append("rt 15");
         } else if (k == KeyCode.LEFT) {
             sb.append("lt 15");
-        }
+        } else return;
         myTerminal.getTextArea().setText(myTerminal.getTextArea().getText() + "\n" + sb.toString());
         myView.runCommands();
         this.requestFocus();
