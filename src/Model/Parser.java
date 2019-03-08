@@ -53,7 +53,12 @@ public class Parser implements Parsing {
 
     public Result execute(String commands, String language) throws ParsingException {
         String[] translatedCommands = translate(commands, language);
-        return parse(translatedCommands);
+        try {
+            return parse(translatedCommands);
+        }
+        catch (ClassNotFoundException e) {
+            // TODO What to do with exceptions that should never be thrown?
+        }
 
         return null;
     }
