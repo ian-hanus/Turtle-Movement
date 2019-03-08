@@ -53,10 +53,19 @@ public class Configuration {
         Slider penSlider = new Slider(MIN_PEN_WIDTH, MAX_PEN_WIDTH, 1);
         penSlider.getStyleClass().add("slider");
         penSlider.setOnDragDetected(e -> this.setPenWidth(penSlider.getValue()));
-        Label penLabel = new Label("Pen Width");
+        Label penLabel = new Label("Pen Width | Pen Up");
         penLabel.getStyleClass().add("slider-label");
-        sliderRow.getChildren().addAll(penSlider, penLabel);
+        CheckBox penUp = new CheckBox();
+        penUp.setTranslateX(22.5);
+        penUp.setOnAction(e -> penState(penUp));
+        sliderRow.getChildren().addAll(penSlider, penLabel, penUp);
         configBox.getChildren().add(sliderRow);
+    }
+
+    private void penState(CheckBox penUp){
+        if(penUp.isSelected()){
+
+        }
     }
 
     private void createLoadButton(VBox configBox, SLogoMain main, Canvas canvas){

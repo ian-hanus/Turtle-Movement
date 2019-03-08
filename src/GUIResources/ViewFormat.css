@@ -226,8 +226,8 @@
 }
 
 .slider{
-    -fx-min-width: 175;
-    -fx-max-width: 175;
+    -fx-min-width: 125;
+    -fx-max-width: 125;
     -fx-translate-x: 20;
 }
 
