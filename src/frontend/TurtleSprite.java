@@ -70,7 +70,7 @@ public class TurtleSprite extends ImageView {
     public void placeTurtle(TurtleState ts, double h, double w){
         this.setX((ts.getX() + w/2 - TURTLE_SIZE/2) % w);
         this.setY((-ts.getY() + h/2 - TURTLE_SIZE/2 ) % h);
-        this.setRotate(ts.getAngle());
+        this.setRotate(ts.getAngle()-90);
         this.currState = ts;
         System.out.println(this.currState.getX());
         System.out.println(this.currState.getY());
@@ -120,6 +120,9 @@ public class TurtleSprite extends ImageView {
             this.setEffect(active);
         } else this.setEffect(inactive);
 
+    }
+    public double getAngle(){
+        return this.currState.getAngle();
     }
 }
 

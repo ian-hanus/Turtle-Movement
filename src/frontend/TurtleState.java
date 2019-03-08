@@ -1,5 +1,7 @@
 package frontend;
 
+import javafx.beans.property.*;
+
 public class TurtleState {
 
     private int id;
@@ -40,12 +42,17 @@ public class TurtleState {
     public double getAngle() {
         return angle;
     }
+
     public boolean isVisible() {
         return visible;
     }
+
+
     public boolean isDown() {
         return down;
     }
+
+
     public boolean shouldReset() { return shouldReset; }
 
     public void setID(int id) {this.id = id;}

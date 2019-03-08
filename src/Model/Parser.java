@@ -221,7 +221,8 @@ public class Parser implements Parsing {
             returnValue = superExpressions.pop().evaluate();
         }
 
-        mostRecentTurtleState = turtleChanges.pop();
+        mostRecentTurtleState = turtleChanges.getLast();
+        turtleChanges.pop();
 
         return new Result(returnValue, turtleChanges);
     }
