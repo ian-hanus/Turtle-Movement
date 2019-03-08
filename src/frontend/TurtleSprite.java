@@ -24,12 +24,12 @@ public class TurtleSprite extends ImageView {
         return num;
     }
 
+    TurtleState currState;
     private int num;
+    private boolean isActive;
+    Image activeImage;
     private List<Line> myLines;
     private final double TURTLE_SIZE = 30;
-    TurtleState currState;
-    Image activeImage;
-    private boolean isActive;
     private final double INACTIVE_BRIGHTNESS = -.5;
     private final double ACTIVE_BRIGHTNESS = .5;
 
@@ -53,6 +53,7 @@ public class TurtleSprite extends ImageView {
 
     public TurtleSprite(TurtleState ts, Image i, double h, double w){
         super();
+
         this.setFitHeight(TURTLE_SIZE);
         this.setFitWidth(TURTLE_SIZE);
         this.setPreserveRatio(true);
@@ -83,9 +84,13 @@ public class TurtleSprite extends ImageView {
     }
     public void setTurtle(TurtleState ts, double h, double w){
         Path path = new Path();
-        path.getElements().add(new MoveTo(this.currState.getX(), this.currState.getY()));
-        path.getElements().add(new LineTo(ts.getX(), ts.getY()));
-        PathTransition transition = new PathTransition(new Duration(1000), path);
+        if(currState.getX() != ts.getX() || currState.getY() != ts.getY()) {
+            path.getElements().add(new MoveTo(((currState.getX() + w / 2) % w), ((-currState.getY() + h / 2) % h)));
+            path.getElements().add(new LineTo(((ts.getX() + w / 2) % w), ((-ts.getY() + h / 2) % h)));
+            PathTransition transition = new PathTransition(new Duration(200), path);
+            transition.setNode(this);
+            transition.play();
+        }
         placeTurtle(ts, h, w);
         if (currState.isVisible()){
             setTurtleImage(activeImage);
@@ -93,7 +98,6 @@ public class TurtleSprite extends ImageView {
             this.setImage(null);
         }
         //System.out.println(transition);
-        transition.play();
     }
 
     public void setTurtleImage(Image i) {
@@ -107,7 +111,7 @@ public class TurtleSprite extends ImageView {
 
     }
 
-    public int getID(){
+    public double getID(){
         return currState.getID();
     }
     public boolean isPenDown(){
@@ -137,5 +141,9 @@ public class TurtleSprite extends ImageView {
         this.myLines.add(l);
 
 }
+
+    public TurtleState getCurrState(){
+        return new TurtleState(currState);
+    }
 }
 

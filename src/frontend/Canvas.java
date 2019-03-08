@@ -5,15 +5,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 import java.io.File;
 import java.util.*;
 
 public class Canvas extends Pane {
-    private final double STARTING_ANGLE = 0;
 
-    private final TurtleState STARTING_STATE =  new TurtleState(0, 0, STARTING_ANGLE, true, true);
+    private final TurtleState STARTING_STATE =  new TurtleState();
     private final Color DEFAULT_PENCOLOR = Color.BLACK;
     private Image turtleImage = new Image(new File("./src/GUIResources/turtle.png").toURI().toString());
     Color penColor;
@@ -42,16 +42,11 @@ public class Canvas extends Pane {
     public void updateCanvas(Deque<TurtleState> states){
         while (!states.isEmpty()){
             TurtleState nextState = states.remove();
-//            if(nextState.shouldReset()){
-//                for (Line l : (turtles.get(nextState.getID())).getMyLines()){
-//                    this.getChildren().remove(l);
-//                }
-//                turtles.get(nextState.getID()).clearLines();
-//            }
+//
             if (nextState.isDown()){
                 drawLine(turtles.get(1).currState, nextState, penColor);
             }
-           // seqT.getChildren().add
+
             turtles.get(1).setTurtle(nextState, getHeight(), getWidth());
             if (nextState.shouldReset()){
                 for(Line l : (turtles.get(1)).getLines()){
@@ -59,24 +54,18 @@ public class Canvas extends Pane {
                 }
                 turtles.get(1).clearLines();
             }
-//            System.out.println(seqT.getChildren().size());
         }
-//        System.out.println(seqT);
-        //seqT.play();
     }
 
 
     private void drawLine (TurtleState start, TurtleState end, Color penColor){
-        //System.out.println("DRAWING");
         boolean wrapVert = ((getHeight()/2 + start.getY()))/getHeight() == end.getY()/getHeight();
         boolean wrapHorz = ((getWidth()/2 + start.getX())/getWidth()) == end.getX()/getWidth();
         if (!wrapHorz && !wrapVert){
-//            System.out.println(String.format("START: %d, %d", start.getX(), start.getY() ));
-//            System.out.println(String.format("END: %d, %d", end.getX(), end.getY() ));
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
-            nextLine.setFill(penColor);
-            nextLine.setStroke(penColor);
-            nextLine.setStrokeWidth(penWidth);
+            nextLine.setFill(Color.BLACK);//Color.color(start.getPenColor(), start.getPenColor(), 1.0));
+            nextLine.setStroke(Color.BLACK);//color(start.getPenColor(), start.getPenColor(), 1.0));
+            nextLine.setStrokeWidth(5);//start.getPenSize());
 
             turtles.get(1).addLine(nextLine);
             this.getChildren().add(nextLine);
