@@ -1,33 +1,29 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-public class Remainder extends Expression{
+public class Remainder implements Expression, ExpressionTaker{
 
-    private Expression dividend;
-    private Expression divisor;
+    private Expression[] inputs;
 
-    public Remainder(Expression dividend, Expression divisor) throws AlteringExpressionException
-    {
-        setArguments(dividend, divisor);
-    }
-
-    public void setArguments(Expression dividend, Expression divisor) throws AlteringExpressionException{
-        finalizeStates();
-        this.dividend = dividend;
-        this.divisor = divisor;
+    public Remainder(Expression... inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return dividend.evaluate() % divisor.evaluate();
+    public double evaluate() {
+        return inputs[0].evaluate() % inputs[1].evaluate();
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public int getDefaultNumExpressions(){
+        return 2;
     }
+
 }
+
+
+
+

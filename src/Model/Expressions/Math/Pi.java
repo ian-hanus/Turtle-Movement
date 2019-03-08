@@ -1,29 +1,13 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
-import java.lang.Math;
+import Model.Expressions.Interfaces.Expression;
 
-public class Pi extends Expression {
+public class Pi implements Expression{
 
-
-    public Pi() throws AlteringExpressionException
-    {
-        setArguments();
-    }
-
-    public void setArguments() throws AlteringExpressionException{
-        finalizeStates();
+    public Pi() {
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
+    public double evaluate(){
         return Math.PI;
-    }
-
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{};
     }
 }

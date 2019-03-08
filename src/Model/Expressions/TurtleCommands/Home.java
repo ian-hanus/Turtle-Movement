@@ -1,28 +1,27 @@
 package Model.Expressions.TurtleCommands;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
-import java.lang.Math;
-import java.util.Deque;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
+import Model.Expressions.Interfaces.TurtleExpression;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 import frontend.TurtleState;
+import java.util.Arrays;
+import java.util.Deque;
 
-public class Home extends Expression {
+public class Home implements Expression, ExpressionTaker, TurtleExpression {
 
+    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public Home(Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(queue);
-    }
-
-    public void setArguments(Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.queue = queue;
+    public Home(Deque<TurtleState> queue, Expression... inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
+    public double evaluate() {
         TurtleState copy = new TurtleState(queue.getLast());
         double oldX = copy.getX();
         double oldY = copy.getY();
@@ -35,8 +34,7 @@ public class Home extends Expression {
         return distance;
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 0;
     }
 }

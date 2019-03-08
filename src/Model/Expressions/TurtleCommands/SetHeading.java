@@ -1,31 +1,27 @@
 package Model.Expressions.TurtleCommands;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
-import java.lang.Math;
-import java.util.Deque;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
+import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
+import java.util.Deque;
 
-public class SetHeading extends Expression {
+public class SetHeading implements Expression, ExpressionTaker, TurtleExpression {
 
-    private Expression rotation;
+    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public SetHeading(Expression distance, Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(distance, queue);
-    }
-
-    public void setArguments(Expression rotation, Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.rotation = rotation;
-        this.queue = queue;
+    public SetHeading(Deque<TurtleState> queue, Expression... inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        double distanceAmount = rotation.evaluate();
+    public double evaluate() {
+
+        double distanceAmount = inputs[0].evaluate();
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle();
         copy.setAngle(distanceAmount);
@@ -33,9 +29,8 @@ public class SetHeading extends Expression {
         return Math.abs(distanceAmount-heading);
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 1;
     }
+
 }

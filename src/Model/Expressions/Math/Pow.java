@@ -1,33 +1,29 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-public class Pow extends Expression{
+public class Pow implements Expression, ExpressionTaker{
 
-    private Expression base;
-    private Expression exponent;
+    private Expression[] inputs;
 
-    public Pow(Expression base, Expression exponent) throws AlteringExpressionException
-    {
-        setArguments(base, exponent);
-    }
-
-    public void setArguments(Expression base, Expression exponent) throws AlteringExpressionException{
-        finalizeStates();
-        this.base = base;
-        this.exponent = exponent;
+    public Pow(Expression... inputs) {
+        if(inputs.length != getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return Math.pow(base.evaluate(), exponent.evaluate());
+    public double evaluate() {
+        return Math.pow(inputs[0].evaluate(), inputs[1].evaluate());
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public int getDefaultNumExpressions(){
+        return 2;
     }
+
 }
+
+
+
+

@@ -1,11 +1,11 @@
 package Model.Expressions.Basic;
 
-import Model.Expressions.Expression;
+import Model.Expressions.Interfaces.Expression;
 
-public class Constant extends Expression{
+public class Constant implements Expression{
 
 
-    private final double constant;
+    private double constant;
 
     public Constant(double constant){
         this.constant = constant;
@@ -14,11 +14,6 @@ public class Constant extends Expression{
     @Override
     public double evaluate(){
         return constant;
-    }
-
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{Double.TYPE};
     }
 
 

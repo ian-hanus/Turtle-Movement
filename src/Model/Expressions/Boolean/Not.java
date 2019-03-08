@@ -1,31 +1,26 @@
 package Model.Expressions.Boolean;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-public class Not extends Expression{
+public class Not implements Expression, ExpressionTaker{
 
-    private Expression input;
+    private Expression[] inputs;
 
-    public Not(Expression input) throws AlteringExpressionException
+    public Not(Expression... inputs)
     {
-        setArguments(input);
-    }
-
-    public void setArguments(Expression input) throws AlteringExpressionException{
-        finalizeStates();
-        this.input = input;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return input.evaluate() == 0 ? 1 : 0;
+        if(inputs.length!= getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public double evaluate(){
+        return inputs[0].evaluate() == 0 ? 1 : 0;
+    }
+
+    @Override
+    public int getDefaultNumExpressions() {
+        return 1;
     }
 }

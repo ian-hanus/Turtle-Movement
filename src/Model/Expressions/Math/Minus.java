@@ -1,31 +1,26 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
 
-public class Minus extends Expression{
+public class Minus implements Expression, ExpressionTaker{
 
-    private Expression minuend;
+    private Expression[] inputs;
 
-    public Minus(Expression minuend) throws AlteringExpressionException
+    public Minus(Expression... inputs)
     {
-        setArguments(minuend);
-    }
-
-    public void setArguments(Expression minuend) throws AlteringExpressionException{
-        finalizeStates();
-        this.minuend = minuend;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return -minuend.evaluate();
+        if(inputs.length!= getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression};
+    public double evaluate(){
+        return -inputs[0].evaluate();
+    }
+
+    @Override
+    public int getDefaultNumExpressions() {
+        return 1;
     }
 }

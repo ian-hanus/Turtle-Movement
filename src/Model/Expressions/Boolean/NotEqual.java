@@ -1,33 +1,30 @@
 package Model.Expressions.Boolean;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 
-public class NotEqual extends Expression{
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-    private Expression input1;
-    private Expression input2;
+public class NotEqual implements Expression, VariableArgumentTaker {
 
-    public NotEqual(Expression input1, Expression input2) throws AlteringExpressionException
-    {
-        setArguments(input1, input2);
-    }
+    private Expression[] inputs;
 
-    public void setArguments(Expression input1, Expression input2) throws AlteringExpressionException{
-        finalizeStates();
-        this.input1 = input1;
-        this.input2 = input2;
-    }
-
-    @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return input1.evaluate() != input2.evaluate() ? 1 : 0;
+    public NotEqual(Expression... inputs) {
+        if(inputs.length == 0){
+            throw new IllegalArgumentException(String.format("Insufficient Expressions input, at least %d expected", getDefaultNumExpressions()));
+        }
+        this.inputs = inputs;
     }
 
     @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public double evaluate() {
+        Set<Double> results = Arrays.stream(inputs)
+                .map(expression -> expression.evaluate())
+                .collect(Collectors.toSet());
+        return results.size()==inputs.length ? 0 : 1;
+    }
+    public int getDefaultNumExpressions(){
+        return 2;
     }
 }

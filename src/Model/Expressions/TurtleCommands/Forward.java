@@ -1,45 +1,45 @@
 package Model.Expressions.TurtleCommands;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
-import java.lang.Math;
-import java.util.Deque;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.TurtleExpression;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 import frontend.TurtleState;
+import java.util.Arrays;
+import java.util.Deque;
 
-public class Forward extends Expression {
+public class Forward implements Expression, VariableArgumentTaker, TurtleExpression {
 
-    private Expression distance;
+    private Expression[] inputs;
     private Deque<TurtleState> queue;
 
-    public Forward(Expression distance, Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(distance, queue);
-    }
-
-    public void setArguments(Expression distance, Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.distance = distance;
-        this.queue = queue;
+    public Forward(Deque<TurtleState> queue, Expression... inputs) {
+        if(inputs.length < getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        double distanceAmount = distance.evaluate();
+    public double evaluate() {
+        double distance = Arrays.stream(inputs)
+                .map(expression -> expression.evaluate())
+                .reduce(0.0, (a,b) -> a+b);
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle()*Math.PI/180;
-        double newX = copy.getX()+distanceAmount*Math.sin(heading);
-        double newY= copy.getY()+distanceAmount*Math.cos(heading);
+        double newX = copy.getX()+distance*Math.cos(heading);
+        double newY= copy.getY()+distance*Math.sin(heading);
         copy.setX(newX);
         copy.setY(newY);
         queue.addLast(copy);
-        return distanceAmount;
-
+        return distance;
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 1;
     }
+
 }
+
+
+
+

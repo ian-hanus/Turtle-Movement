@@ -1,33 +1,25 @@
 package Model.Expressions.TurtleQueries;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
-import java.util.Deque;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.ExpressionTaker;
+import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
+import java.util.Deque;
 
-public class IsShowing extends Expression {
+public class IsShowing implements Expression, TurtleExpression {
 
     private Deque<TurtleState> queue;
 
-    public IsShowing(Deque<TurtleState> queue) throws AlteringExpressionException
-    {
-        setArguments(queue);
-    }
-
-    public void setArguments(Deque<TurtleState> queue) throws AlteringExpressionException{
-        finalizeStates();
-        this.queue = queue;
+    public IsShowing(Deque<TurtleState> queue) {
+        this.queue=queue;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
+    public double evaluate() {
         TurtleState copy = new TurtleState(queue.getLast());
         return copy.isVisible() ? 1 : 0;
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        return new Class[]{java.util.Deque.class};
+    public int getDefaultNumExpressions(){
+        return 0;
     }
 }

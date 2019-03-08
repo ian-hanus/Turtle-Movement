@@ -1,33 +1,33 @@
 package Model.Expressions.Math;
-import Model.Exceptions.UninitializedExpressionException;
-import Model.Expressions.Expression;
-import Model.Exceptions.AlteringExpressionException;
+import Model.Expressions.Interfaces.Expression;
+import Model.Expressions.Interfaces.VariableArgumentTaker;
 
-public class Sum extends Expression{
+import java.util.Arrays;
 
-    private Expression augend;
-    private Expression addend;
+public class Sum implements Expression, VariableArgumentTaker {
 
-    public Sum(Expression augend, Expression addend) throws AlteringExpressionException
-    {
-        setArguments(augend, addend);
-    }
+    private Expression[] inputs;
 
-    public void setArguments(Expression augend, Expression addend) throws AlteringExpressionException{
-        finalizeStates();
-        this.augend = augend;
-        this.addend = addend;
+    public Sum(Expression... inputs) {
+        if(inputs.length < getDefaultNumExpressions()){
+            throw new IllegalArgumentException(String.format("At least %d Expression required", getDefaultNumExpressions()));
+        }
+        this.inputs=inputs;
     }
 
     @Override
-    public double evaluate() throws UninitializedExpressionException {
-        checkInitialization();
-        return augend.evaluate() + addend.evaluate();
+    public double evaluate() {
+        return Arrays.stream(inputs)
+                .map(expression -> expression.evaluate())
+                .reduce(0.0, (a,b) -> a+b);
     }
 
-    @Override
-    public Class[] getArgumentTypes() {
-        Class expression = super.getClass();
-        return new Class[]{expression, expression};
+    public int getDefaultNumExpressions(){
+        return 2;
     }
+
 }
+
+
+
+
