@@ -1,33 +1,31 @@
 package frontend;
 
+import Model.Exceptions.Parsing.ParsingException;
 import Model.Parser;
 import Model.Result;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.io.File;
 import java.util.Deque;
-import java.util.List;
 
 public class View {
     private Scene myScene;
     private SLogoMain myMain;
     private GridPane myRightPane;
     private Canvas myCanvas;
-    private VBox myTurtleStatus, myResults;
     private Terminal myTerminal;
     private Configuration myConfiguration;
     private CommandHistory myCommandHistory;
+    private UserCommand myUserCommand;
     private VariableDisplay myVariableDisplay;
     private Palette myPalette;
     private TurtleStatusDisplay myTurtleStatusDisplay;
+    private Parser myParser;
 
     private final int GUI_WIDTH = 600;
     private final int GUI_HEIGHT = 1200;
@@ -38,10 +36,13 @@ public class View {
         myMain = main;
         myConfiguration = new Configuration();
         myTerminal = new Terminal();
-        myCommandHistory = new CommandHistory(myTerminal,this);
+        myCommandHistory = new CommandHistory(myTerminal,this, "Command History");
         myPalette = new Palette();
         myVariableDisplay = new VariableDisplay();
         myCanvas = new Canvas();
+        myUserCommand = new UserCommand();
+        myParser = new Parser();
+
 
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
@@ -62,6 +63,7 @@ public class View {
         myConfiguration.drawConfig(myRightPane, myMain, myCanvas);
         myCommandHistory.drawHistory(myRightPane);
         myVariableDisplay.drawVariables(myRightPane);
+        myUserCommand.drawUserCommands(myRightPane);
         drawTurtleStatus();
         myPalette.drawPalette(myRightPane);
         //drawResults();
@@ -78,37 +80,27 @@ public class View {
         myCommandHistory.updateCommandHistory(myRightPane);
         myVariableDisplay.updateVariableDisplay(myRightPane);
         try {
-            Parser parser = new Parser();
-            Result currentResults = parser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
+            Result currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             myCanvas.updateCanvas(currentStates);
-            drawResults((currentResults.getReturnValue()));
+            myTerminal.displayResult((currentResults.getReturnValue()));
             myTurtleStatusDisplay.refresh(myCanvas.getTurtleList());
         }
-        catch(Exception e1){
+        catch(ParsingException e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
-            e1.printStackTrace();
             commandError.display();
+        }
+        catch(NullPointerException e2){
+            ErrorDisplay noCommandError = new ErrorDisplay("User Input", "Command not valid");
+            noCommandError.display();
         }
         myTerminal.getTextArea().setText("");
         myPalette.drawPalette(myRightPane);
     }
 
-    private void drawResults(double returnValue){
-        ReturnWindow returnWindow = new ReturnWindow(returnValue);
-//        myResults = new RightBox("Results").getBox();
-//        myResults.getStyleClass().add("borderless-right");
-//        ScrollPane sp = new ScrollPane(myResults);
-//        sp.getStyleClass().add("scroll-panes");
-//        myRightPane.add(sp, 1, 2);
-    }
-
     private void drawTurtleStatus(){
         myTurtleStatusDisplay = new TurtleStatusDisplay(myTerminal, this, myCanvas.getTurtleList());
         myTurtleStatusDisplay.getStyleClass().add("box-right");
-//        myTurtleStatus = new RightBox("Turtle Status").getBox();
-//        myTurtleStatus.setMaxHeight(150);
-//        myTurtleStatus.setMinHeight(150);
         myRightPane.add(myTurtleStatusDisplay, 0, 0);
     }
 
