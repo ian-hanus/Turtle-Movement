@@ -65,8 +65,8 @@ public class Canvas extends Pane {
         boolean wrapHorz = ((getWidth()/2 + start.getX())/getWidth()) == end.getX()/getWidth();
         if (!wrapHorz && !wrapVert){
             Line nextLine = new Line((start.getX() + getWidth()/2) % getWidth(),  (getHeight()/2-start.getY()) % getHeight(), (end.getX() + getWidth()/2) % getWidth(), (getHeight()/2-end.getY()) % getHeight());
-            nextLine.setFill(Color.BLACK);//Color.color(start.getPenColor(), start.getPenColor(), 1.0));
-            nextLine.setStroke(Color.BLACK);//color(start.getPenColor(), start.getPenColor(), 1.0));
+            nextLine.setFill(penColor);//Color.color(start.getPenColor(), start.getPenColor(), 1.0));
+            nextLine.setStroke(penColor);//color(start.getPenColor(), start.getPenColor(), 1.0));
             nextLine.setStrokeWidth(5);//start.getPenSize());
 
             turtles.get(1).addLine(nextLine);
