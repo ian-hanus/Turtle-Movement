@@ -1,6 +1,7 @@
 package frontend;
 
 import javafx.animation.SequentialTransition;
+import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -15,13 +16,16 @@ public class Canvas extends Pane {
 
     private final TurtleState STARTING_STATE =  new TurtleState(0, 0, STARTING_ANGLE, true, true);
     private final Color DEFAULT_PENCOLOR = Color.BLACK;
+    private final Color DEFAULT_BACKCOLOR = Color.WHITE;
     private Image turtleImage = new Image(new File("./src/GUIResources/turtle.png").toURI().toString());
     Color penColor;
+    Color backgroundColor;
     Map<Integer, TurtleSprite> turtles = new HashMap<>();
     //Set<Line> lines;
 
     public Canvas(){
         penColor = DEFAULT_PENCOLOR;
+        backgroundColor = DEFAULT_BACKCOLOR;
         //lines = new HashSet<>();
 
         turtles.put(1, new TurtleSprite(STARTING_STATE, turtleImage, this.getHeight(), this.getWidth()));
@@ -82,6 +86,19 @@ public class Canvas extends Pane {
     }
     public void setPenColor(Color color){
         penColor = color;
+    }
+
+    public Color getPenColor(){
+        return penColor;
+    }
+
+    public void setBackgroundColor(Color color){
+        backgroundColor = color;
+        this.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
+    public Color getBackgroundColor(){
+        return backgroundColor;
     }
 
     public List<TurtleSprite> getTurtleList(){
