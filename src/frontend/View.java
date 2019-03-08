@@ -76,15 +76,18 @@ public class View {
     }
 
     public void runCommands(){
-        myCommandHistory.addHistory(myTerminal.getTextArea().getText().split("\n"));
-        myCommandHistory.updateCommandHistory(myRightPane);
-        myVariableDisplay.updateVariableDisplay();
         try {
             Result currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
             Deque<TurtleState> currentStates = currentResults.getTurtleStates();
             myCanvas.updateCanvas(currentStates);
             myTerminal.displayResult((currentResults.getReturnValue()));
             myTurtleStatusDisplay.refresh(myCanvas.getTurtleList());
+//            myCommandHistory.addHistory(currentResults.getCommandHistory());
+//            myCommandHistory.updateCommandHistory(myRightPane);
+//            myUserCommand.setUserCommands(currentResults.getUserCommmands());
+//            myUserCommand.updateUserCommands(myTerminal);
+//            myVariableDisplay.setVariables(currentResults.getVariables());
+//            myVariableDisplay.updateVariableDisplay();
         }
         catch(ParsingException e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());
