@@ -42,26 +42,17 @@ public class TurtleState {
     public double getAngle() {
         return angle;
     }
-    public DoubleProperty getAngleProp(){
-        return new SimpleDoubleProperty(angle);
-    }
-    public IntegerProperty getIDProp(){
-        return new SimpleIntegerProperty(id);
-    }
+
     public boolean isVisible() {
         return visible;
     }
-    public BooleanProperty isVisibleProp(){
-        return new SimpleBooleanProperty(visible);
-    }
+
 
     public boolean isDown() {
         return down;
     }
 
-    public BooleanProperty isDownProp(){
-        return new SimpleBooleanProperty(down);
-    }
+
     public boolean shouldReset() { return shouldReset; }
 
     public void setID(int id) {this.id = id;}
