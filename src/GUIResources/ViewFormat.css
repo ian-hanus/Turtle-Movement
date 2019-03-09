@@ -157,7 +157,7 @@
     -fx-pref-width: 100;
     -fx-pref-height: 20;
     -fx-alignment: center;
-    -fx-translate-x: 700;
+    -fx-translate-x: 300;
     -fx-translate-y: -30;
     -fx-hgap: 10;
 }
@@ -226,8 +226,8 @@
 }
 
 .slider{
-    -fx-min-width: 175;
-    -fx-max-width: 175;
+    -fx-min-width: 125;
+    -fx-max-width: 125;
     -fx-translate-x: 20;
 }
 

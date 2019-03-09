@@ -10,8 +10,6 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static javafx.scene.paint.Color.BLACK;
