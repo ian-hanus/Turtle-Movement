@@ -5,16 +5,11 @@ import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
 import java.util.Deque;
 
-public class ClearScreen implements Expression, ExpressionTaker, TurtleExpression {
+public class ClearScreen implements Expression, TurtleExpression {
 
-    private Expression[] inputs;
     Deque<TurtleState> queue;
 
-    public ClearScreen(Deque<TurtleState> queue, Expression... inputs) {
-        if(inputs.length != getDefaultNumExpressions()){
-            throw new IllegalArgumentException(String.format("Exactly %d Expressions required", getDefaultNumExpressions()));
-        }
-        this.inputs=inputs;
+    public ClearScreen(Deque<TurtleState> queue) {
         this.queue=queue;
     }
 

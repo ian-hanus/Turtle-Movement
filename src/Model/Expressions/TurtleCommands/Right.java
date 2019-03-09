@@ -26,7 +26,7 @@ public class Right implements Expression, VariableArgumentTaker, TurtleExpressio
                 .reduce(0.0, (a,b) -> a+b);
         TurtleState copy = new TurtleState(queue.getLast());
         double heading = copy.getAngle();
-        copy.setAngle(heading-distance);
+        copy.setAngle(heading+distance);
         queue.addLast(copy);
         return distance;
     }
