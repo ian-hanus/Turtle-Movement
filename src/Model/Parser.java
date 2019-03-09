@@ -7,6 +7,7 @@ import Model.Expressions.Basic.Constant;
 import Model.Expressions.Basic.Procedure;
 import Model.Expressions.Basic.ProcedureFactory;
 import Model.Expressions.Basic.Variable;
+import Model.Expressions.Controls.Make;
 import Model.Expressions.Interfaces.Expression;
 import Model.Expressions.Interfaces.ExpressionTaker;
 import Model.Expressions.Interfaces.TurtleExpression;
@@ -143,9 +144,14 @@ public class Parser implements Parsing {
             } else if (variableRegex.matcher(currString).find()) {
                 if (i != commandStrings.length - 1 && commandStrings[i + 1].equals(listStart)) {
                     currExpressions.push(currString);
-                } else {
+                }
+                else if (i != 0 && commandStrings[i-1].equals("set")) {
+                    currExpressions.push(new Make(currString, variables, (Expression)currExpressions.pop()));
+                }
+                else {
                     currExpressions.push(new Variable(currString, variables));
                 }
+
             } else if (currString.equals("set")) {
                 // TODO do nothing
             } else if (Pattern.compile(syntax.getProperty("Constant")).matcher(currString).find()) {
