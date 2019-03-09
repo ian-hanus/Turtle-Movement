@@ -164,9 +164,7 @@ public class Parser implements Parsing {
                         continue;
                     }
 
-                    // TODO Implement user-defined procedures
-                    var expressionClass = Class.forName(expressionClasses.getProperty(currString));
-                    if (expressionClass == null) {
+                    if (expressionClasses.getProperty(currString) == null) {
                         if (procedures.keySet().contains(currString)) {
                             List<Expression> currArgs = new ArrayList<>();
                             while (!currExpressions.isEmpty()) {
@@ -184,6 +182,7 @@ public class Parser implements Parsing {
                         continue;
                     }
 
+                    var expressionClass = Class.forName(expressionClasses.getProperty(currString));
                     Expression currCommand;
                     Expression[] inputs = null;
 
