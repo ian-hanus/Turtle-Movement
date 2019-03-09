@@ -1,6 +1,8 @@
 package Model;
 
-import Model.Exceptions.Parsing.*;
+import Model.Exceptions.Parsing.CommandNotFoundException;
+import Model.Exceptions.Parsing.MisalignedBracketsException;
+import Model.Exceptions.Parsing.ParsingException;
 import Model.Expressions.Basic.Constant;
 import Model.Expressions.Basic.Procedure;
 import Model.Expressions.Basic.ProcedureFactory;
@@ -10,8 +12,10 @@ import Model.Expressions.Interfaces.ExpressionTaker;
 import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
 
-import java.io.*;
-import java.lang.reflect.Method;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -50,8 +54,7 @@ public class Parser implements Parsing {
         try {
             InputStream inputStream = new FileInputStream(fileName);
             prop.load(inputStream);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             // TODO What to do with this exception that should never be thrown?
         }
     }
@@ -66,17 +69,16 @@ public class Parser implements Parsing {
         Properties inputLanguage = languages.get(language.toLowerCase());
         String[] commandStrings = commands.toLowerCase().split(" ");
         Stack<String> bracketStack = new Stack<>();
-        Pattern bracketClose = Pattern.compile(syntax.getProperty("ListEnd") + "|" + syntax.getProperty("GroupEnd"));
 
-        for (int i = 0; i < commandStrings.length; i++) {
+        for (int i = commandStrings.length - 1; i >= 0; i--) {
             String currString = commandStrings[i];
 
-            if (bracketClose.matcher(currString).find()) {
+            if (Pattern.compile(syntax.getProperty("ListEnd")).matcher(currString).find() || Pattern.compile(syntax.getProperty("GroupEnd")).matcher(currString).find()) {
                 bracketStack.push(currString);
                 continue;
             }
             if (currString.equals("[")) {
-                if(!bracketStack.pop().equals("]")) {
+                if (!bracketStack.pop().equals("]")) {
                     throw new MisalignedBracketsException();
                 }
                 continue;
@@ -131,30 +133,22 @@ public class Parser implements Parsing {
 
             if (currString.equals(listEnd) || currString.equals(groupEnd)) {
                 currExpressions.push(currString);
-            }
-            else if (currString.equals(listStart)) {
+            } else if (currString.equals(listStart)) {
                 List<Expression> currList = new ArrayList<>();
                 while (!currExpressions.getFirst().equals(listEnd)) {
                     currList.add((Expression) currExpressions.pop());
                 }
                 currExpressions.pop();
                 currExpressions.push(currList.toArray());
-            }
-
-            if (variableRegex.matcher(currString).find()) {
+            } else if (variableRegex.matcher(currString).find()) {
                 if (i != commandStrings.length - 1 && commandStrings[i + 1].equals(listStart)) {
                     currExpressions.push(currString);
-                }
-                else {
+                } else {
                     currExpressions.push(new Variable(currString, variables));
                 }
-            }
-
-            else if (currString.equals("set")) {
+            } else if (currString.equals("set")) {
                 // TODO do nothing
-            }
-
-            else if (Pattern.compile(syntax.getProperty("Constant")).matcher(currString).find()) {
+            } else if (Pattern.compile(syntax.getProperty("Constant")).matcher(currString).find()) {
                 double constant = Double.parseDouble(currString);
                 currExpressions.push(new Constant(constant));
             } else {
@@ -172,11 +166,13 @@ public class Parser implements Parsing {
                             while (!currExpressions.isEmpty()) {
                                 currArgs.add((Expression) currExpressions.pop());
                             }
-                            Expression[] inputs = (Expression[]) currArgs.toArray();
+                            Expression[] inputs = new Expression[currArgs.size()];
+                            for (int j = 0; j < currArgs.size(); j++) {
+                                inputs[j] = currArgs.get(j);
+                            }
                             Procedure proc = procedures.get(currString).acceptParameters(inputs);
                             currExpressions.push(proc);
-                        }
-                        else {
+                        } else {
                             throw new CommandNotFoundException();
                         }
                         continue;
@@ -186,13 +182,13 @@ public class Parser implements Parsing {
                     Expression[] inputs = null;
 
                     // if not making list/group, push extra parameters to super expressions
-                    if (!currExpressions.contains(listEnd) && !currExpressions.contains(groupEnd)) {
+                    /*if (!currExpressions.contains(listEnd) && !currExpressions.contains(groupEnd)) {
                         Method numExpressionsMethod = expressionClass.getDeclaredMethod("getDefaultNumExpressions");
                         int numExpressions = (Integer) numExpressionsMethod.invoke(expressionClass.getConstructor().newInstance());
                         if (currExpressions.size() > numExpressions) {
                             superExpressions.push((Expression) currExpressions.removeLast());
                         }
-                    }
+                    } */
 
                     // if group is complete, turn inputs into array
                     if (i != 0 && commandStrings[i - 1].equals(groupStart)) {
@@ -201,7 +197,10 @@ public class Parser implements Parsing {
                             currArgs.add((Expression) currExpressions.pop());
                         }
                         currExpressions.pop();
-                        inputs = (Expression[]) currArgs.toArray();
+                        inputs = new Expression[currArgs.size()];
+                        for (int j = 0; j < currArgs.size(); j++) {
+                            inputs[j] = currArgs.get(j);
+                        }
                     }
 
                     if (!currExpressions.isEmpty()) {
@@ -210,10 +209,9 @@ public class Parser implements Parsing {
                         while (!currExpressions.isEmpty()) {
                             Object curr = currExpressions.pop();
                             if (curr instanceof Expression[]) {
-                                lists.push((Expression[])curr);
-                            }
-                            else {
-                                currArgs.add((Expression) currExpressions.pop());
+                                lists.push((Expression[]) curr);
+                            } else {
+                                currArgs.add((Expression) curr);
                             }
                         }
 
@@ -221,7 +219,10 @@ public class Parser implements Parsing {
                             currExpressions.addLast(lists.pop());
                         }
 
-                        inputs = (Expression[]) currArgs.toArray();
+                        inputs = new Expression[currArgs.size()];
+                        for (int j = 0; j < currArgs.size(); j++) {
+                            inputs[j] = currArgs.get(j);
+                        }
                     }
 
                     if (TurtleExpression.class.isAssignableFrom(expressionClass)) {
@@ -230,19 +231,13 @@ public class Parser implements Parsing {
                         } else {
                             currCommand = (Expression) expressionClass.getDeclaredConstructor(Deque.class).newInstance(turtleChanges);
                         }
-                    }
-
-                    else if (Pattern.compile("dotimes|for|if").matcher(currString).find()) {
+                    } else if (Pattern.compile("dotimes|for|if").matcher(currString).find()) {
                         currCommand = (Expression) expressionClass.getDeclaredConstructor(String.class, Map.class, Expression[].class).newInstance((String) currExpressions.pop(), (Map) currExpressions.pop(), (Expression[]) currExpressions.pop());
-                    }
-
-                    else if (currString.equals("ifelse")) {
+                    } else if (currString.equals("ifelse")) {
                         currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class, Expression[].class, Expression[].class).newInstance((Expression[]) currExpressions.pop(), (Expression[]) currExpressions.pop(), (Expression[]) currExpressions.pop());
-                    }
-                    else if (currString.equals("repeat")) {
+                    } else if (currString.equals("repeat")) {
                         currCommand = (Expression) expressionClass.getDeclaredConstructor(String.class, Expression[].class).newInstance((String) currExpressions.pop(), (Expression[]) currExpressions.pop());
-                    }
-                    else if (currString.equals("To")) {
+                    } else if (currString.equals("To")) {
                         String name = (String) currExpressions.pop();
                         Expression[] vars = (Expression[]) currExpressions.pop();
                         String[] varNames = new String[vars.length];
@@ -251,24 +246,21 @@ public class Parser implements Parsing {
                             varNames[j] = currVar.getName();
                         }
                         currCommand = (Expression) expressionClass.getDeclaredConstructor(Map.class, Map.class, String.class, String[].class, Expression[].class).newInstance(variables, procedures, name, varNames, inputs);
-                    }
-
-                    else {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class).newInstance((Expression[]) inputs);
+                    } else {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class).newInstance(inputs);
                     }
                     currExpressions.push(currCommand);
-                }
-                catch (ParsingException e) {
+                } catch (ParsingException e) {
                     throw e;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                     // TODO split up into correct exceptions
                 }
             }
         }
 
         while (!currExpressions.isEmpty()) {
-            superExpressions.push((Expression)currExpressions.pop());
+            superExpressions.push((Expression) currExpressions.pop());
         }
 
         double returnValue = 0;
