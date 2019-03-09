@@ -30,4 +30,8 @@ public class ProcedureFactory implements VariableArgumentTaker {
         return variables.length;
     }
 
+    public String[] getVariables() {
+        return variables;
+    }
+
 }

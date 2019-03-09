@@ -2,17 +2,15 @@ package Model;
 
 import Model.Exceptions.Parsing.*;
 import Model.Expressions.Basic.Constant;
+import Model.Expressions.Basic.Procedure;
+import Model.Expressions.Basic.ProcedureFactory;
 import Model.Expressions.Basic.Variable;
-import Model.Expressions.Controls.Make;
-import Model.Expressions.Controls.To;
 import Model.Expressions.Interfaces.Expression;
 import Model.Expressions.Interfaces.ExpressionTaker;
 import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -23,6 +21,7 @@ public class Parser implements Parsing {
     private final Properties expressionClasses = new Properties();
     private final Map<String, Properties> languages = new HashMap<>();
     private final Map<String, Constant> variables = new HashMap<>();
+    private final Map<String, ProcedureFactory> procedures = new HashMap<>();
 
     private Properties syntax;
 
@@ -59,14 +58,7 @@ public class Parser implements Parsing {
 
     public Result execute(String commands, String language) throws ParsingException {
         String[] translatedCommands = translate(commands, language);
-        try {
-            return parse(translatedCommands);
-        }
-        catch (ClassNotFoundException e) {
-            // TODO What to do with exceptions that should never be thrown?
-        }
-
-        return null;
+        return parse(translatedCommands);
     }
 
     // TODO Refactor this
@@ -121,7 +113,7 @@ public class Parser implements Parsing {
     }
 
     // TODO Refactor this lol
-    private Result parse(String[] commandStrings) throws ParsingException, ClassNotFoundException {
+    private Result parse(String[] commandStrings) throws ParsingException {
         Stack<Expression> superExpressions = new Stack<>();
         Deque<Object> currExpressions = new ArrayDeque<>();
         Deque<TurtleState> turtleChanges = new ArrayDeque<>();
@@ -130,7 +122,7 @@ public class Parser implements Parsing {
         Pattern variableRegex = Pattern.compile(syntax.getProperty("Variable"));
 
         String listEnd = syntax.getProperty("ListEnd").replace("\\", "");
-        String listStart = syntax.getProperty("ListStart").replace("\\", "");;
+        String listStart = syntax.getProperty("ListStart").replace("\\", "");
         String groupEnd = syntax.getProperty("GroupEnd").replace("\\", "");
         String groupStart = syntax.getProperty("GroupStart").replace("\\", "");
 
@@ -143,117 +135,139 @@ public class Parser implements Parsing {
             else if (currString.equals(listStart)) {
                 List<Expression> currList = new ArrayList<>();
                 while (!currExpressions.getFirst().equals(listEnd)) {
-                    currList.add((Expression)currExpressions.pop());
+                    currList.add((Expression) currExpressions.pop());
                 }
                 currExpressions.pop();
                 currExpressions.push(currList.toArray());
             }
 
             if (variableRegex.matcher(currString).find()) {
-                currExpressions.push(new Variable(currString, variables));
+                if (i != commandStrings.length - 1 && commandStrings[i + 1].equals(listStart)) {
+                    currExpressions.push(currString);
+                }
+                else {
+                    currExpressions.push(new Variable(currString, variables));
+                }
+            }
+
+            else if (currString.equals("set")) {
+                // TODO do nothing
             }
 
             else if (Pattern.compile(syntax.getProperty("Constant")).matcher(currString).find()) {
                 double constant = Double.parseDouble(currString);
                 currExpressions.push(new Constant(constant));
             } else {
-                // ignore "("
-                if (currString.equals(groupStart)) {
-                    continue;
-                }
-
-                // TODO Implement user-defined procedures
-                var expressionClass = Class.forName(expressionClasses.getProperty(currString));
-                Constructor[] exprConstructors = expressionClass.getConstructors();
-                Constructor exprConstructor = exprConstructors[exprConstructors.length - 1];
-                Class[] exprParams = exprConstructor.getParameterTypes();
-                int numParams = exprParams.length;
-
-                Expression currCommand = null;
-
-                // if group is complete, turn inputs into array
-                if (i != 0 && commandStrings[i - 1].equals(groupStart)) {
-                    List<Expression> currArgs = new ArrayList<>();
-                    while (!currExpressions.getFirst().equals(groupEnd)) {
-                        currArgs.add((Expression)currExpressions.pop());
-                    }
-                    currExpressions.pop();
-                    currExpressions.push(currArgs.toArray());
-                }
-
-                // if not making list/group, push extra parameters to super expressions
                 try {
-                    if (!currExpressions.contains(listEnd) && !currExpressions.contains(groupEnd)) {
-                        Method numExpressionsMethod = expressionClass.getDeclaredMethod("getDefaultNumExpressions");
-                        int numExpressions = (Integer)numExpressionsMethod.invoke(expressionClass.getConstructor().newInstance());
-                        if (currExpressions.size() > numExpressions) {
-                            superExpressions.push((Expression)currExpressions.removeLast());
-                        }
+                    // ignore "("
+                    if (currString.equals(groupStart)) {
+                        continue;
                     }
-                }
-                catch (NoSuchMethodException e) {
-                    // TODO What to do with exception that should never be thrown?
-                }
-                catch (Exception e) {
-                      // TODO What to do with reflection errors that should never be thrown?
-                }
-                if (!currExpressions.isEmpty()) {
-                    List<Expression> currArgs = new ArrayList<>();
-                    while (!currExpressions.isEmpty()) {
-                        currArgs.add((Expression)currExpressions.pop());
-                    }
-                    currExpressions.push(currArgs);
-                }
 
-                try {
-                    if (TurtleExpression.class.isAssignableFrom(expressionClass)) {
-                        if (ExpressionTaker.class.isAssignableFrom(expressionClass)) {
-                            currCommand = (Expression) expressionClass.getDeclaredConstructor(Deque.class, Arrays.class).newInstance(turtleChanges,(Expression[])  currExpressions.pop());
+                    // TODO Implement user-defined procedures
+                    var expressionClass = Class.forName(expressionClasses.getProperty(currString));
+                    if (expressionClass == null) {
+                        if (procedures.keySet().contains(currString)) {
+                            List<Expression> currArgs = new ArrayList<>();
+                            while (!currExpressions.isEmpty()) {
+                                currArgs.add((Expression) currExpressions.pop());
+                            }
+                            Expression[] inputs = (Expression[]) currArgs.toArray();
+                            Procedure proc = procedures.get(currString).acceptParameters(inputs);
+                            currExpressions.push(proc);
                         }
                         else {
+                            throw new CommandNotFoundException();
+                        }
+                        continue;
+                    }
+
+                    Expression currCommand;
+                    Expression[] inputs = null;
+
+                    // if not making list/group, push extra parameters to super expressions
+                    if (!currExpressions.contains(listEnd) && !currExpressions.contains(groupEnd)) {
+                        Method numExpressionsMethod = expressionClass.getDeclaredMethod("getDefaultNumExpressions");
+                        int numExpressions = (Integer) numExpressionsMethod.invoke(expressionClass.getConstructor().newInstance());
+                        if (currExpressions.size() > numExpressions) {
+                            superExpressions.push((Expression) currExpressions.removeLast());
+                        }
+                    }
+
+                    // if group is complete, turn inputs into array
+                    if (i != 0 && commandStrings[i - 1].equals(groupStart)) {
+                        List<Expression> currArgs = new ArrayList<>();
+                        while (!currExpressions.getFirst().equals(groupEnd)) {
+                            currArgs.add((Expression) currExpressions.pop());
+                        }
+                        currExpressions.pop();
+                        inputs = (Expression[]) currArgs.toArray();
+                    }
+
+                    if (!currExpressions.isEmpty()) {
+                        List<Expression> currArgs = new ArrayList<>();
+                        Stack<Expression[]> lists = new Stack<>();
+                        while (!currExpressions.isEmpty()) {
+                            Object curr = currExpressions.pop();
+                            if (curr instanceof Expression[]) {
+                                lists.push((Expression[])curr);
+                            }
+                            else {
+                                currArgs.add((Expression) currExpressions.pop());
+                            }
+                        }
+
+                        while (!lists.isEmpty()) {
+                            currExpressions.addLast(lists.pop());
+                        }
+
+                        inputs = (Expression[]) currArgs.toArray();
+                    }
+
+                    if (TurtleExpression.class.isAssignableFrom(expressionClass)) {
+                        if (ExpressionTaker.class.isAssignableFrom(expressionClass)) {
+                            currCommand = (Expression) expressionClass.getDeclaredConstructor(Deque.class, Expression[].class).newInstance(turtleChanges, inputs);
+                        } else {
                             currCommand = (Expression) expressionClass.getDeclaredConstructor(Deque.class).newInstance(turtleChanges);
                         }
                     }
-                }
 
-                // TODO
-                if (expressionClass.equals(Make.class)) {
-                    currExpressions.addLast(variables);
-                    currExpressionTypes.addLast(Map.class);
-                }
-                if (expressionClass.equals(To.class)) {
-                    currExpressions.addLast(expressionClasses);
-                    currExpressionTypes.addLast(Properties.class);
-                }
-                try {
-                    if (numParams == 0) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor().newInstance();
-                    } else if (numParams == 1) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.pop()).newInstance(currExpressions.pop());
-                    } else if (numParams == 2) {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.pop(), currExpressionTypes.pop()).newInstance(currExpressions.pop(), currExpressions.pop());
-                    } else {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(currExpressionTypes.pop(), currExpressionTypes.pop(), currExpressionTypes.pop()).newInstance(currExpressions.pop(), currExpressions.pop(), currExpressions.pop());
+                    else if (Pattern.compile("dotimes|for|if").matcher(currString).find()) {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(String.class, Map.class, Expression[].class).newInstance((String) currExpressions.pop(), (Map) currExpressions.pop(), (Expression[]) currExpressions.pop());
                     }
-                } catch (EmptyStackException e) {
-                    throw new IncorrectNumArgsException();
-                } catch (NoSuchMethodException e) {
-                    throw new IncorrectArgTypeException();
-                } catch (Exception e) {
-                    // TODO What to do with reflection errors that should never be thrown?
-                    e.printStackTrace();
-                }
-                if (makingList) {
-                    currList.push(currCommand);
-                } else {
+
+                    else if (currString.equals("ifelse")) {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class, Expression[].class, Expression[].class).newInstance((Expression[]) currExpressions.pop(), (Expression[]) currExpressions.pop(), (Expression[]) currExpressions.pop());
+                    }
+                    else if (currString.equals("repeat")) {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(String.class, Expression[].class).newInstance((String) currExpressions.pop(), (Expression[]) currExpressions.pop());
+                    }
+                    else if (currString.equals("To")) {
+                        String name = (String) currExpressions.pop();
+                        Expression[] vars = (Expression[]) currExpressions.pop();
+                        String[] varNames = new String[vars.length];
+                        for (int j = 0; j < vars.length; j++) {
+                            Variable currVar = (Variable) vars[j];
+                            varNames[j] = currVar.getName();
+                        }
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Map.class, Map.class, String.class, String[].class, Expression[].class).newInstance(variables, procedures, name, varNames, inputs);
+                    }
+
+                    else {
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class).newInstance(inputs);
+                    }
                     currExpressions.push(currCommand);
-                    currExpressionTypes.push(Expression.class);
+                }
+                catch (ParsingException e) {
+                    throw e;
+                }
+                catch (Exception e) {
+                    // TODO split up into correct exceptions
                 }
             }
         }
 
         while (!currExpressions.isEmpty()) {
-            // TODO I don't think this is right
             superExpressions.push((Expression)currExpressions.pop());
         }
 
@@ -266,6 +280,17 @@ public class Parser implements Parsing {
         mostRecentTurtleState = turtleChanges.getLast();
         turtleChanges.pop();
 
-        return new Result(returnValue, turtleChanges);
+        Map<String, Double> varMap = new HashMap<>();
+        for (Map.Entry<String, Constant> varEntry : variables.entrySet()) {
+            varMap.put(varEntry.getKey(), varEntry.getValue().evaluate());
+        }
+
+        Map<String, String[]> procMap = new HashMap<>();
+        for (Map.Entry<String, ProcedureFactory> procEntry : procedures.entrySet()) {
+            procMap.put(procEntry.getKey(), procEntry.getValue().getVariables());
+        }
+
+        return new Result(returnValue, turtleChanges, varMap, procMap);
     }
+
 }

@@ -23,6 +23,10 @@ public class Variable implements Expression{
 
     }
 
+    public String getName() {
+        return name;
+    }
+
 }
 
 
