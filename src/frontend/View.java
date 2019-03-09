@@ -84,10 +84,10 @@ public class View {
             myTurtleStatusDisplay.refresh(myCanvas.getTurtleList());
 //            myCommandHistory.addHistory(currentResults.getCommandHistory());
 //            myCommandHistory.updateCommandHistory(myRightPane);
-//            myUserCommand.setUserCommands(currentResults.getUserCommmands());
-//            myUserCommand.updateUserCommands(myTerminal);
-//            myVariableDisplay.setVariables(currentResults.getVariables());
-//            myVariableDisplay.updateVariableDisplay();
+            myUserCommand.setUserCommands(currentResults.getProcedureMap());
+            myUserCommand.updateUserCommands(myTerminal);
+            myVariableDisplay.setVariables(currentResults.getVariableMap());
+            myVariableDisplay.updateVariableDisplay();
         }
         catch(ParsingException e1){
             ErrorDisplay commandError = new ErrorDisplay("Runtime Error", e1.getMessage());

@@ -254,7 +254,7 @@ public class Parser implements Parsing {
                     }
 
                     else {
-                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class).newInstance(inputs);
+                        currCommand = (Expression) expressionClass.getDeclaredConstructor(Expression[].class).newInstance((Expression[]) inputs);
                     }
                     currExpressions.push(currCommand);
                 }
@@ -280,9 +280,9 @@ public class Parser implements Parsing {
         mostRecentTurtleState = turtleChanges.getLast();
         turtleChanges.pop();
 
-        Map<String, Double> varMap = new HashMap<>();
+        Map<String, String> varMap = new HashMap<>();
         for (Map.Entry<String, Constant> varEntry : variables.entrySet()) {
-            varMap.put(varEntry.getKey(), varEntry.getValue().evaluate());
+            varMap.put(varEntry.getKey(), Double.toString(varEntry.getValue().evaluate()));
         }
 
         Map<String, String[]> procMap = new HashMap<>();
