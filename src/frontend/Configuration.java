@@ -12,7 +12,8 @@ import java.io.File;
 import static frontend.Language.ENGLISH;
 
 /**
- * Stores the features of our simulation that should be able to be changed from a series of dropdowns and menus
+ * Stores the features of our simulation that should be able to be changed from a series of dropdowns and menus, allowing
+ * user to change background color, pen color, pen size, and turtle image
  */
 public class Configuration {
     private Color myBackgroundColor;
@@ -27,7 +28,10 @@ public class Configuration {
     private static final int MAX_PEN_WIDTH = 20;
     private static final int MIN_PEN_WIDTH = 1;
 
-
+    /**
+     * The configuration constructor establishes all of the defaults of the new window. These can later be changed through
+     * interacting with the box or running terminal commands
+     */
     public Configuration(){
         myBackgroundColor = Color.WHITE;
         File turtleFile = new File(defaultPath);
@@ -37,6 +41,12 @@ public class Configuration {
         myPenWidth = DEFAULT_PEN_WIDTH;
     }
 
+    /**
+     * Draws each of the components in the configuration into the box that will be passed to the View
+     * @param pane
+     * @param main
+     * @param canvas
+     */
     public void drawConfig(GridPane pane, SLogoMain main, Canvas canvas){
         myConfigurationBox = new RightBox("Configuration").getBox();
         createLoadButton(myConfigurationBox, main, canvas);
@@ -121,42 +131,62 @@ public class Configuration {
         languageBox.setOnAction(e -> this.setLanguage((Language)languageBox.getValue()));
     }
 
-    public Image getTurtleImage(){
-        return myTurtleImage;
-    }
+//    public Image getTurtleImage(){
+//        return myTurtleImage;
+//    }
+//
+//    public Color getBackgroundColor(){
+//        return myBackgroundColor;
+//    }
 
-    public Color getBackgroundColor(){
-        return myBackgroundColor;
-    }
-
+    /**
+     * Sets the turtle image equal to the new image chosen in the main view
+     * @param turtleImage
+     */
     public void setTurtleImage(Image turtleImage){
         myTurtleImage = turtleImage;
     }
 
-    public void setBackgroundColor(Color color){
-        myBackgroundColor = color;
-    }
+//    public void setBackgroundColor(Color color){
+//        myBackgroundColor = color;
+//    }
+//
+//    public void setPenColor(Color color){
+//        myPenColor = color;
+//    }
 
-    public void setPenColor(Color color){
-        myPenColor = color;
-    }
-
+    /**
+     * Changes the language of the user input so that the backend knows what to translate the instructions to
+     * @param language is the Language enumeration corresponding to the desired user input language
+     */
     public void setLanguage(Language language){
         myLanguage = language;
     }
 
+    /**
+     * Gets the language of the user input so that the back end can decode each of the instructions
+     * @return the Language enumeration corresponding to the user input language
+     */
     public Language getLanguage(){
         return myLanguage;
     }
 
-    public Color getPenColor(){
-        return myPenColor;
-    }
+//    public Color getPenColor(){
+//        return myPenColor;
+//    }
 
+    /**
+     * Sets the width of the pen, controlled by the slider in the configuration box or by command through terminal
+     * @param penWidth is the desired width of the pen in pixels
+     */
     public void setPenWidth(double penWidth){
         myPenWidth = penWidth;
     }
 
+    /**
+     * Gets the width of the pen, which is changed by changing the line width on the canvas
+     * @return the width of the pen in pixels
+     */
     public double getPenWidth(){
         return myPenWidth;
     }

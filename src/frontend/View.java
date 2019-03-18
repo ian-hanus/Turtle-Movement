@@ -32,6 +32,10 @@ public class View {
     private final Dimension WINDOW_SIZE = new Dimension(GUI_WIDTH, GUI_HEIGHT);
     private final String STYLE_SHEET = "/GUIResources/ViewFormat.css";
 
+    /**
+     * Class that combines and controls the display of each of the individual components used in the SLogo program
+     * @param main is the SLogoMain that the view is being run on
+     */
     public View(SLogoMain main) {
         BorderPane borderPane = new BorderPane();
         FlowPane terminalPane = new FlowPane();
@@ -75,6 +79,10 @@ public class View {
         return myCanvas;
     }
 
+    /**
+     * Runs the actual commands and updates each of the necessary displays, including canvas, command history, variables,
+     * user defined commands, and configuration
+     */
     public void runCommands(){
         try {
             Result currentResults = myParser.execute(myTerminal.getTextArea().getText(), myConfiguration.getLanguage().toString());
@@ -125,6 +133,10 @@ public class View {
         return titleBox;
     }
 
+    /**
+     * Returns the scene corresponding to the view, to be diplayed on the Stage in main
+     * @return Scene used to display state of SLogo on the stage
+     */
     public Scene getScene(){
         return myScene;
     }
