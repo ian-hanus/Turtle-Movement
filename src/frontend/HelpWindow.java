@@ -13,6 +13,9 @@ import java.nio.file.Paths;
 public class HelpWindow extends Stage {
 private final String HELP_URL = "./src/GUIResources/helpInfo.html";
 
+    /**
+     * Displays the help window, using HTML information gathered from the help pages on the class website
+     */
     public HelpWindow(){
         WebView webView = new WebView();
         StringBuilder sb = new StringBuilder();

@@ -14,6 +14,10 @@ import java.util.*;
 
 import static javafx.scene.paint.Color.BLACK;
 
+/**
+ * Palette containing the information about available default and user defined shapes and colors that can be controlled
+ * through commands on the backend
+ */
 public class Palette {
     private Map<Integer, Color> myColorMap;
     private Map<Integer, Shape> myShapeMap;
@@ -24,6 +28,10 @@ public class Palette {
     private final static int DEFAULT_RADIUS = 8;
     private final static int DEFAULT_ELLIPSE_RADIUS = 6;
 
+    /**
+     * Constructor that creates the list of available shapes and colors and displays the default values available to the
+     * user
+     */
     public Palette(){
         myColorMap = new HashMap<>();
         myShapeMap = new HashMap<>();
@@ -45,22 +53,36 @@ public class Palette {
         }
     }
 
+    /**
+     * Method to add a new color object to the palette. Overwrites any other color with the index
+     * @param index is the index that corresponds to the color
+     * @param color is the desired color that will be able to be called by the index
+     */
     public void addIndex(int index, Color color){
         myColorMap.put(index, color);
     }
 
+    /**
+     * Method to add a new shape object to the palette. Overwrites any other shape with the same index
+     * @param index is the index corresponding to the desired shape
+     * @param shape is the shape that the user can call by using the index
+     */
     public void addIndex(int index, Shape shape){
         myShapeMap.put(index, shape);
     }
 
-    public Map<Integer, Color> getColorMap(){
+    private Map<Integer, Color> getColorMap(){
         return myColorMap;
     }
 
-    public Map<Integer, Shape> getShapeMap(){
+    private Map<Integer, Shape> getShapeMap(){
         return myShapeMap;
     }
 
+    /**
+     * Draws the palette with all established shapes and colors displayed for the user to choose from
+     * @param pane is the pane in which the palette will be displayed
+     */
     public void drawPalette(GridPane pane){
         myPaletteBox = new RightBox("Palette").getBox();
         myPaletteBox.getStyleClass().add("borderless-right");

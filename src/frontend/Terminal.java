@@ -13,13 +13,16 @@ import java.io.*;
 import java.util.Map;
 
 /**
- * Place where user inputs commands.
+ * For entering user input, seeing returns, and loading/saving results, preferences, and libraries
  */
 public class Terminal {
     private TextArea myTextArea;
     private VBox myResults;
     private FileChooser myProgramChooser = new FileChooser();
 
+    /**
+     * Constructor for a Terminal object that establishes the format, the buttons, and the textarea used for user input
+     */
     public Terminal() {
         myTextArea = new TextArea();
         myTextArea.getStyleClass().add("text-area-terminal");
@@ -28,6 +31,16 @@ public class Terminal {
         initializeProgramChooser(myProgramChooser, "*.logo");
     }
 
+    /**
+     * Draws each of the objects in the terminal to the VBox terminal display
+     * @param pane is the pane in which the terminal will be displayed
+     * @param view is the View that the terminal will be in, and will communicate with the other displays in this view
+     * @param canvas is the canvas containing the turtles that the commands entered in terminal will effect
+     * @param configuration is the object containing all of the preferences of the current window
+     * @param variableDisplay is the display of all of the variables currently available
+     * @param userCommand is the list of all of the user defined commands that can be saved
+     * @return the Node that corresponds to the terminal display
+     */
     public Node drawTerminal(FlowPane pane, View view, Canvas canvas, Configuration configuration, VariableDisplay variableDisplay, UserCommand userCommand){
         pane.getStyleClass().add("box-bot");
         myResults.getChildren().add(new Text("Returned: "));
@@ -138,6 +151,10 @@ public class Terminal {
 //        System.out.println(canvas.getBackgroundColor());
     }
 
+    /**
+     * Displays the result from the last run made by the program
+     * @param result is the Double returned by the last command run
+     */
     public void displayResult(double result){
         myResults.getChildren().clear();
         myResults.getChildren().add(new Text("Returned: " + result));
@@ -173,6 +190,10 @@ public class Terminal {
         myTextArea.setText(input);
     }
 
+    /**
+     * Getter for the text area users use to input commands
+     * @return TextArea for commands to be entered into
+     */
     public TextArea getTextArea() {
         return myTextArea;
     }

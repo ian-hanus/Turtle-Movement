@@ -13,6 +13,9 @@ public class ErrorDisplay extends Alert {
         this.setContentText(message);
     }
 
+    /**
+     * Displays the error in the popup and stops the program running until the user dismisses it
+     */
     public void display(){
         this.showAndWait();
     }
