@@ -15,6 +15,9 @@ public class TurtleState {
     private boolean shouldReset;
     private static final int STARTING_ANGLE = 90;
 
+    /**
+     * default constructor
+     */
     public TurtleState(){
         this.x = 0;
         this.y = 0;
@@ -29,6 +32,20 @@ public class TurtleState {
         this.shape = 0;
 
     }
+
+    /**
+     * constructor for creating a new state
+     * @param xpos the x position
+     * @param ypos the y position
+     * @param orientation angle heading
+     * @param isVisible whether it's visible
+     * @param isDown state of the pen
+     * @param id number associated with this sprite
+     * @param background background color
+     * @param penColor pen color
+     * @param penSize pen size
+     * @param shape shape
+     */
     public TurtleState(double xpos, double ypos, double orientation, boolean isVisible,
                        boolean isDown, double id, double background, double penColor,
                        double penSize, double shape) {
@@ -45,6 +62,10 @@ public class TurtleState {
         this.shape = shape;
     }
 
+    /**
+     * constrcutro that returns an identical state to the parameter given
+     * @param toCopy the state to copy
+     */
     public TurtleState(TurtleState toCopy) {
         this.x = toCopy.getX();
         this.y = toCopy.getY();
@@ -59,6 +80,11 @@ public class TurtleState {
         this.shape = toCopy.getShape();
     }
 
+    /**
+     * constructor that allows for the copying of a turtlestate from another, with rounded values
+     * @param toCopy the state which to copy from
+     * @param display a flag
+     */
     public TurtleState(TurtleState toCopy, boolean display){
 
         this.x = .01 * Math.floor(((toCopy.getX()*100)));
@@ -74,6 +100,11 @@ public class TurtleState {
         this.shape = toCopy.getShape();
 
     }
+
+    /**
+     * The remainder of methods are standard getters and setters. The instance variables are manipulated mostly at the turtlesprite level and are not often modifiable
+     * @return
+     */
 
     public double getID() {
         return id;
