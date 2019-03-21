@@ -16,6 +16,12 @@ public class TurtleStatusDisplay extends VBox {
     private List<TurtleSprite> turtleSpriteList;
     private TableView<TurtleState> turtleSpriteTableView;
 
+    /**
+     * Constructor to create a new version of this display
+     * @param terminal
+     * @param view
+     * @param t
+     */
     public TurtleStatusDisplay(Terminal terminal, View view, List<TurtleSprite> t){
         turtleSpriteTableView = getTable(t);
         this.getChildren().add(turtleSpriteTableView);
@@ -28,6 +34,10 @@ public class TurtleStatusDisplay extends VBox {
     public void requestFocus() {
     }
 
+    /**
+     * updates the displayed turtlestates with each execution of code
+     * @param turtleSprites the sprites over which to fetch new states
+     */
     public void refresh(List<TurtleSprite> turtleSprites){
         turtleSpriteTableView.getItems().clear();
         ObservableList<TurtleState> data = FXCollections.observableArrayList();

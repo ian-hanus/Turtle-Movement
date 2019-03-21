@@ -1,7 +1,9 @@
 package frontend;
 
-import Model.Parser;
-import javafx.animation.SequentialTransition;
+/**
+ * The display on which the turtles and their lines are displayed. This is updated upon the execution of each set of commands
+ */
+
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,9 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
-import java.security.Key;
 import java.util.*;
 
 public class Canvas extends Pane {
@@ -30,6 +30,9 @@ public class Canvas extends Pane {
     Map<Integer, TurtleSprite> turtles = new HashMap<>();
     //Set<Line> lines;
 
+    /**
+     * Default constructor
+     */
     public Canvas(){
         penWidth = 1.5;
         penColor = DEFAULT_PENCOLOR;
@@ -39,6 +42,11 @@ public class Canvas extends Pane {
         activeTurtles = new ArrayList<>();
     }
 
+    /**
+     * Constructor used to initialize a new canvas in a new window of SLogo
+     * @param v the view in which the canvas should be rendered
+     * @param t the terminal associated with this canvas, i.e. where the updates should come from
+     */
     public Canvas(View v, Terminal t){
         this();
         myView = v;
@@ -48,7 +56,10 @@ public class Canvas extends Pane {
     }
 
 
-
+    /**
+     * Called upon the completion of execution of a set of commands, used to render changes to the canvas
+     * @param states the delta of states between the last canvas and changes executed by the current SLogo code run
+     */
     public void updateCanvas(Deque<TurtleState> states){
         while (!states.isEmpty()){
             TurtleState nextState = states.remove();
@@ -82,10 +93,19 @@ public class Canvas extends Pane {
         }
     }
 
+    /**
+     * allows for the manipulation and alteration of a turtle by other parts of the frontend
+     * @param id the ID of the turtle in question
+     * @return the TurtleSprite with id ID
+     */
     public ImageView getTurtleSprite(int id){
         return turtles.get(id);
     }
 
+    /**
+     * allows other parts of the frontend to manipulate the image of a specific turtle
+     * @param i
+     */
     public void setTurtleImage(Image i){
 
         turtleImage = i;
@@ -93,33 +113,59 @@ public class Canvas extends Pane {
             t.setTurtleImage(i);
         }
     }
+
+    /**
+     * used both internally and externally to change the current pen color, accessible to other components of the frontend where the pencolor may be changed from
+     * @param color the new color
+     */
     public void setPenColor(Color color){
         penColor = color;
     }
+    /**
+     * used both internally and externally to change the current pen width, accessible to other components of the frontend where the width may be changed from
+     * @param w the new width
+     */
     public void setPenWidth(Double w){
         penWidth = w;
 
     }
 
+    /**
+     * allows other classes to see what the current pen color is
+     * @return current pen color
+     */
     public Color getPenColor(){
         return penColor;
     }
-
+    /**
+     * used both internally and externally to change the current background, accessible to other components of the frontend where the background color may be changed from
+     * @param color the new color
+     */
     public void setBackgroundColor(Color color){
         backgroundColor = color;
         this.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
     }
-
+    /**
+     * returns the current background color
+     */
     public Color getBackgroundColor(){
         return backgroundColor;
     }
 
+    /**
+     *
+     * @return an unmodifiable list of the turtles currently present for other components to inspect
+     */
     public List<TurtleSprite> getTurtleList(){
         List<TurtleSprite> origList = new ArrayList<>();
         for (TurtleSprite t : turtles.values()) origList.add(t);
         return Collections.unmodifiableList(origList);
     }
 
+    /**
+     * Allows for the manpiulation of the pen status of all active turtles
+     * @param state either up or down
+     */
     public void setPenState(boolean state){
         for (TurtleSprite t : turtles.values()){
             t.currState.setDown(state);
