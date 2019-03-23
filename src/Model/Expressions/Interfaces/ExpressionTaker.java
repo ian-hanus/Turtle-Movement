@@ -6,7 +6,7 @@ package Model.Expressions.Interfaces;
  * this helps inform any given parser of the ordinal structure of arguments while remaining agnostic to exact syntax or design.
  */
 
-public interface ExpressionTaker extends Expression{
+public interface ExpressionTaker{
 
     /**
      * @return The exact number of Expression arguments that the implementing class is expecting as inputs

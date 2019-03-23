@@ -13,6 +13,9 @@ public interface Expression{
      *
      * @return the result of the command being run on the inputs given in its constructor
      */
-    public abstract double evaluate();
+    public double evaluate();
+    
+
+
 
 }
