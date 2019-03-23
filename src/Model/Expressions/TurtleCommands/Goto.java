@@ -1,9 +1,10 @@
 package Model.Expressions.TurtleCommands;
+
 import Model.Expressions.Interfaces.Expression;
 import Model.Expressions.Interfaces.ExpressionTaker;
 import Model.Expressions.Interfaces.TurtleExpression;
 import frontend.TurtleState;
-import java.util.Arrays;
+
 import java.util.Deque;
 
 public class Goto implements Expression, ExpressionTaker, TurtleExpression {

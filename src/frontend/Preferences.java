@@ -1,12 +1,9 @@
 package frontend;
 
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Serializable object that can hold window preferences to be loaded into a new window such as pen and background

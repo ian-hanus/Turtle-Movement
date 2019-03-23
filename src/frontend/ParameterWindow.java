@@ -11,7 +11,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Opens a box that allows the user to enter parameters for user defined commands to be rerun

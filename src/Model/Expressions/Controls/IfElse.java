@@ -1,10 +1,7 @@
 package Model.Expressions.Controls;
-import Model.Expressions.Basic.Constant;
+
 import Model.Expressions.Interfaces.Expression;
 import Model.Expressions.Interfaces.ExpressionTaker;
-import Model.Expressions.Interfaces.VariableArgumentTaker;
-
-import java.util.Map;
 
 public class IfElse implements Expression, ExpressionTaker{
 

@@ -1,7 +1,5 @@
 package Model.Expressions.Interfaces;
 
-import java.lang.Class;
-
 /**
  * Abstract superclass of the inheritance hierarchy that represents the possible types of commands.
  */
