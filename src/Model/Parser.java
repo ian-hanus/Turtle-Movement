@@ -21,6 +21,10 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 // TODO What to do with exceptions that should never be thrown?
+
+/**
+ * @author Jonathan Yu
+ */
 public class Parser implements Parsing {
 
     private final Properties expressionClasses = new Properties();
@@ -60,6 +64,13 @@ public class Parser implements Parsing {
         }
     }
 
+    /**
+     * Translates and parses the string of commands. Then, runs each command and returns the result of the last one.
+     * @param commands the string representing all of the entered
+     * @param language the language of the entered commands
+     * @return the return value of the final command
+     * @throws ParsingException error in how the commands were entered, caught by the parser
+     */
     public Result execute(String commands, String language) throws ParsingException {
         String[] translatedCommands = translate(commands, language);
         return parse(translatedCommands);

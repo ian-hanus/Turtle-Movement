@@ -1,5 +1,8 @@
 package Model.Exceptions.Parsing;
 
+/**
+ * @author Jonathan Yu
+ */
 public class MisalignedBracketsException extends ParsingException {
 
     public MisalignedBracketsException() {

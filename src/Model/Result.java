@@ -5,6 +5,9 @@ import frontend.TurtleState;
 import java.util.Deque;
 import java.util.Map;
 
+/**
+ * @author Jonathan Yu
+ */
 public class Result {
 
     private double returnValue;
@@ -19,18 +22,34 @@ public class Result {
         procedures = procs;
     }
 
+    /**
+     * Gets the return value of the result of the entered command(s)
+     * @return the return value
+     */
     public double getReturnValue() {
         return returnValue;
     }
 
+    /**
+     * Gets the deque of turtle states representing "destinations" as a result of the entered command(s)
+     * @return the deque of turtle states
+     */
     public Deque<TurtleState> getTurtleStates() {
         return turtleStates;
     }
 
+    /**
+     * Gets the mapping of variable names to values
+     * @return the map of variables
+     */
     public Map<String, String> getVariableMap() {
         return variables;
     }
 
+    /**
+     * Gets the mapping of procedure names to values
+     * @return the map of procedures
+     */
     public Map<String, String[]> getProcedureMap() {
         return procedures;
     }
